@@ -33,4 +33,4 @@ pouvoir être publié avant la fin de l’année scolaire.
 
 
 
-Ce fichier a été généré par ChatGPT à partir du fichier PLANNING.pdf, qui a été rédigé à la main.
+Ce fichier a été généré par ChatGPT à partir du fichier PLANNING.pdf, qui a été rédigé à la main. Consulter PLANNING.pdf pour une meilleur lisibilité.
