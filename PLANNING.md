@@ -33,4 +33,4 @@ pouvoir être publié avant la fin de l’année scolaire.
 
 
 
-Ce fichier a été généré par ChatGPT à partir du fichier [PLANNING.pdf](https://gitlab.telecom-paris.fr/proj104/2024-2025/3d-modeling/-/blob/main/PLANNING.pdf?ref_type=heads), qui a été rédigé à la main. Consulter PLANNING.pdf pour une meilleur lisibilité.
+Ce fichier a été généré par ChatGPT à partir du fichier [PLANNING.pdf](https://gitlab.telecom-paris.fr/proj104/2024-2025/3d-modeling/-/blob/main/PLANNING.pdf?ref_type=heads), qui a été rédigé à la main. Consulter [PLANNING.pdf](https://gitlab.telecom-paris.fr/proj104/2024-2025/3d-modeling/-/blob/main/PLANNING.pdf?ref_type=heads) pour une meilleur lisibilité.
