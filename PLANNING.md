@@ -22,9 +22,9 @@ weekday monday
 todayMarker off
 
 section P1 - Établissement d’un prototype
-Rencontre encadrant et présentation: 01/02/2024, 1w
-Établissement du planning, répartition des tâches: 08/02/2024, 1w
-Première lecture des ressources: 08/02/2024, 1w
+Rencontre encadrant et présentation: 15/02/2024, 1w
+Établissement du planning, répartition des tâches: 22/02/2024, 1w
+Première lecture des ressources: 22/02/2024, 1w
 Étude du travail existant et choix d'algorithme de génération de ribs (G1) : 01/03/2024, 2w
 Familiarisation API Blender (G2): 01/03/2024, 2w
 Rédaction cahier des charges: 08/03/2024, 1w
