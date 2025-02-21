@@ -22,30 +22,28 @@ weekday monday
 todayMarker off
 
 section P1 - Établissement d’un prototype
-Rencontre encadrant et présentation: 01/02/2024, 1d
-Établissement du planning, répartition des tâches: 08/02/2024, 1d
+Rencontre encadrant et présentation: 01/02/2024, 1w
+Établissement du planning, répartition des tâches: 08/02/2024, 1w
 Première lecture des ressources: 08/02/2024, 1w
-Étude du travail existant: 01/03/2024, 2w
-Choix des algorithmes: 01/03/2024, 2w
-Familiarisation API Blender: 01/03/2024, 2w
-Rédaction cahier des charges: 01/03/2024, 2w
-Implémentation génération de ribs: 18/03/2024, 2w
-Création interface graphique: 18/03/2024, 2w
-Intégration à Blender: 01/04/2024, 2w
-Fusion des codes et tests: 01/04/2024, 2w
-Sélection des jeux de test: 15/04/2024, 1w
-Validation prototype: milestone, 26/04/2024, 1d
+Étude du travail existant et choix d'algorithme de génération de ribs (G1) : 01/03/2024, 2w
+Familiarisation API Blender (G2): 01/03/2024, 2w
+Rédaction cahier des charges: 08/03/2024, 1w
+Implémentation du code de génération de ribs (G1): 18/03/2024, 2w
+Création interface graphique et intégration à Blender (G2): 18/03/2024, 2w
+Fusion des codes : 01/04/2024, 2w
+Sélection des jeux données de test et tests : 08/04/2024, 1w
+Validation prototype: milestone, 18/04/2024, 1d
 
-section P2 - Création du produit final
+section P2 - Création du produit final publiable
 Débriefing évaluation intermédiaire: 01/05/2024, 1w
 Réévaluation cahier des charges: 01/05/2024, 1w
-Optimisation performances: 08/05/2024, 1M
-Amélioration interface utilisateur: 08/05/2024, 1M
+Optimisation performances (G1): 08/05/2024, 1M
+Amélioration interface utilisateur (G2): 08/05/2024, 1M
 Implémentation fonctionnalités additionnelles: 08/05/2024, 1M
-Fusion codes et tests finaux: 01/06/2024, 2w
-Sélection jeu de données complexe: 15/06/2024, 1w
-Documentation et tutoriels: 15/06/2024, 2w
-Publication du plugin: milestone, 26/06/2024, 1d
+Fusion codes : 01/06/2024, 3w
+Sélection jeu de données complexe et tests finaux: 08/06/2024, 2w
+Documentation et tutoriels: 08/06/2024, 2w
+Publication du plugin: milestone, 27/06/2024, 1d
 Présentation finale du projet: milestone, 27/06/2024, 1d
 ```
 
@@ -72,4 +70,4 @@ Présentation finale du projet: milestone, 27/06/2024, 1d
 
 
 
-Ce fichier a été généré par ChatGPT à partir du fichier [PLANNING.pdf](https://gitlab.telecom-paris.fr/proj104/2024-2025/3d-modeling/-/blob/main/PLANNING.pdf?ref_type=heads), qui a été rédigé à la main. Consulter [PLANNING.pdf](https://gitlab.telecom-paris.fr/proj104/2024-2025/3d-modeling/-/blob/main/PLANNING.pdf?ref_type=heads) pour une meilleur lisibilité.
+Les visuels en .md ont été générés par ChatGPT à partir du fichier [PLANNING.pdf](https://gitlab.telecom-paris.fr/proj104/2024-2025/3d-modeling/-/blob/main/PLANNING.pdf?ref_type=heads), qui a été rédigé à la main. Consultez [PLANNING.pdf](https://gitlab.telecom-paris.fr/proj104/2024-2025/3d-modeling/-/blob/main/PLANNING.pdf?ref_type=heads) pour une meilleur lisibilité.
