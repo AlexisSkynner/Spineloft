@@ -22,27 +22,30 @@ weekday monday
 todayMarker off
 
 section P1 - Établissement d’un prototype
-Rencontre encadrant et présentation: 01/02/2024, 1w
-Établissement du planning: 08/02/2024, 1w
-Lecture des ressources: 15/02/2024, 1w
+Rencontre encadrant et présentation: 01/02/2024, 1d
+Établissement du planning, répartition des tâches: 08/02/2024, 1d
+Première lecture des ressources: 08/02/2024, 1w
 Étude du travail existant: 01/03/2024, 2w
-Choix algorithmes: 15/03/2024, 2w
+Choix des algorithmes: 01/03/2024, 2w
 Familiarisation API Blender: 01/03/2024, 2w
-Rédaction cahier des charges: 15/03/2024, 2w
-Implémentation génération de ribs: 01/04/2024, 2w
-Création interface graphique: 01/04/2024, 2w
-Intégration à Blender: 15/04/2024, 2w
-Fusion des codes et tests: 01/05/2024, 2w
-Validation prototype: milestone, 20/05/2024, 1d
+Rédaction cahier des charges: 01/03/2024, 2w
+Implémentation génération de ribs: 18/03/2024, 2w
+Création interface graphique: 18/03/2024, 2w
+Intégration à Blender: 01/04/2024, 2w
+Fusion des codes et tests: 01/04/2024, 2w
+Sélection des jeux de test: 15/04/2024, 1w
+Validation prototype: milestone, 26/04/2024, 1d
 
 section P2 - Création du produit final
-Débriefing évaluation intermédiaire: 01/06/2024, 1w
-Optimisation performances: 08/06/2024, 1M
-Amélioration interface utilisateur: 08/06/2024, 1M
-Implémentation fonctionnalités additionnelles: 08/06/2024, 1M
-Fusion codes et tests finaux: 01/07/2024, 2w
-Documentation et tutoriels: 15/07/2024, 2w
-Publication du plugin: milestone, 29/07/2024, 1d
+Débriefing évaluation intermédiaire: 01/05/2024, 1w
+Réévaluation cahier des charges: 01/05/2024, 1w
+Optimisation performances: 08/05/2024, 1M
+Amélioration interface utilisateur: 08/05/2024, 1M
+Implémentation fonctionnalités additionnelles: 08/05/2024, 1M
+Fusion codes et tests finaux: 01/06/2024, 2w
+Sélection jeu de données complexe: 15/06/2024, 1w
+Documentation et tutoriels: 15/06/2024, 2w
+Publication du plugin: milestone, 26/06/2024, 1d
 Présentation finale du projet: milestone, 27/06/2024, 1d
 ```
 
