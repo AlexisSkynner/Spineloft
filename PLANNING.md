@@ -25,13 +25,13 @@ section P1 - Établissement d’un prototype
 Rencontre encadrant et présentation: 15/02/2024, 1w
 Établissement du planning, répartition des tâches: 22/02/2024, 1w
 Première lecture des ressources: 22/02/2024, 1w
-Étude du travail existant et choix d'algorithme de génération de ribs (G1) : 01/03/2024, 2w
+Étude du travail existant & choix d'algorithme de génération de ribs (G1) : 01/03/2024, 2w
 Familiarisation API Blender (G2): 01/03/2024, 2w
 Rédaction cahier des charges: 08/03/2024, 1w
 Implémentation du code de génération de ribs (G1): 18/03/2024, 2w
-Création interface graphique et intégration à Blender (G2): 18/03/2024, 2w
+Création interface graphique & intégration à Blender (G2): 18/03/2024, 2w
 Fusion des codes : 01/04/2024, 2w
-Sélection des jeux données de test et tests : 08/04/2024, 1w
+Sélection jeu de données de test & tests : 08/04/2024, 1w
 Validation prototype: milestone, 18/04/2024, 1d
 
 section P2 - Création du produit final publiable
@@ -41,8 +41,8 @@ Optimisation performances (G1): 08/05/2024, 1M
 Amélioration interface utilisateur (G2): 08/05/2024, 1M
 Implémentation fonctionnalités additionnelles: 08/05/2024, 1M
 Fusion codes : 01/06/2024, 3w
-Sélection jeu de données complexe et tests finaux: 08/06/2024, 2w
-Documentation et tutoriels: 08/06/2024, 2w
+Sélection jeu de données & tests finaux: 08/06/2024, 2w
+Documentation & tutoriels: 08/06/2024, 2w
 Publication du plugin: milestone, 27/06/2024, 1d
 Présentation finale du projet: milestone, 27/06/2024, 1d
 ```
