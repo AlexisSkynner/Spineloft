@@ -32,7 +32,7 @@ Implémentation du code de génération de ribs (G1): 18/03/2024, 2w
 Création interface graphique & intégration à Blender (G2): 18/03/2024, 2w
 Fusion des codes : 01/04/2024, 2w
 Sélection jeu de données de test & tests : 08/04/2024, 1w
-Validation prototype: milestone, 18/04/2024, 1d
+Validation prototype: milestone, 16/04/2024, 1d
 
 section P2 - Création du produit final publiable
 Débriefing évaluation intermédiaire: 01/05/2024, 1w
