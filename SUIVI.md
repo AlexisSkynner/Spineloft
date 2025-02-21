@@ -9,3 +9,6 @@
 
 20/02/2025
 - (Dorian) : Ajout du planning (fichier PLANNING.md et PLANNING.pdf)
+
+21/02/2025
+- (Dorian) : Modification de PLANNING.md pour répondre aux attentes de formatage. 
