@@ -12,6 +12,42 @@ Dans un premier temps, l’objectif sera de réaliser un prototype fonctionnel a
 le prototype dans le but de le rendre plus rapide, robuste et ergonomique pour l’évaluation finale (fin juin). Le plugin final sera documenté et user-friendly afin de 
 pouvoir être publié avant la fin de l’année scolaire. 
 
+```mermaid
+gantt
+title Planning du projet
+dateFormat DD/MM/YYYY
+axisFormat %e %b %y
+tickInterval 1month
+weekday monday
+todayMarker off
+
+section P1 - Établissement d’un prototype
+Rencontre encadrant et présentation: 01/02/2024, 1w
+Établissement du planning: 08/02/2024, 1w
+Lecture des ressources: 15/02/2024, 1w
+Étude du travail existant: 01/03/2024, 2w
+Choix algorithmes: 15/03/2024, 2w
+Familiarisation API Blender: 01/03/2024, 2w
+Rédaction cahier des charges: 15/03/2024, 2w
+Implémentation génération de ribs: 01/04/2024, 2w
+Création interface graphique: 01/04/2024, 2w
+Intégration à Blender: 15/04/2024, 2w
+Fusion des codes et tests: 01/05/2024, 2w
+Validation prototype: milestone, 20/05/2024, 1d
+
+section P2 - Création du produit final
+Débriefing évaluation intermédiaire: 01/06/2024, 1w
+Optimisation performances: 08/06/2024, 1M
+Amélioration interface utilisateur: 08/06/2024, 1M
+Implémentation fonctionnalités additionnelles: 08/06/2024, 1M
+Fusion codes et tests finaux: 01/07/2024, 2w
+Documentation et tutoriels: 15/07/2024, 2w
+Publication du plugin: milestone, 29/07/2024, 1d
+Présentation finale du projet: milestone, 27/06/2024, 1d
+```
+
+
+
 | Phase | Mois | Semaine | Tâches principales | Groupe |
 |-------|------|---------|-------------------|--------|
 | **P1 – Établissement d’un prototype** | **Février** | 1 | Rencontre avec l’encadrant et présentation des attentes du projet | 1 et 2 |
