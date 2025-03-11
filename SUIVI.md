@@ -21,6 +21,6 @@
 - répartition des taches à faire chez soi pour la prochaine séance
 
 ### 11/03/2025 - WEEK 3 
-- Dorian et Timothée ont regardé le fonctionnement de Blender et des plugs-in 
-- Alexis a fait un cours de C++ de OpenCourseWar pour pouvoir coder la suite du projet en C++
-- Alex a fait l'implementation de la fonction distance d2 en C++
+- (Dorian et Timothée) : ont regardé le fonctionnement de Blender et des plugs-in 
+- (Alexis) : a fait un cours de C++ de OpenCourseWar pour pouvoir coder la suite du projet en C++
+- (Alex) : a fait l'implementation de la fonction distance d2 en C++
