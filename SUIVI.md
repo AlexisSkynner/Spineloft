@@ -19,3 +19,8 @@
 - lecture du code (Python) déjà existant : sur conseil de l'encadrant, nous avons décidé d'ignorer l'implémentation déjà existante (codée à la va-vite)
 - donc nous repartons avec une implémentation "from scratch" de l'algorithme, cette fois en C++
 - répartition des taches à faire chez soi pour la prochaine séance
+
+### 11/03/2025 - WEEK 3 
+- Dorian et Timothée ont regardé le fonctionnement de Blender et des plugs-in 
+- Alexis a fait un cours de C++ de OpenCourseWar pour pouvoir coder la suite du projet en C++
+- Alex a fait l'implementation de la fonction distance d2 en C++
