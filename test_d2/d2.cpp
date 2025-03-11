@@ -41,17 +41,6 @@ public:
     }
 };
 
-double perimeter(std::vector<Point> stroke)
-{
-    double ans = 0.;
-    for(auto it = stroke.begin(); it != stroke.end() - 1; it++)
-    {
-        Point diff = *it - *(it + 1);
-        ans += diff.length();
-    }
-    return ans;
-}
-
 template<typename T>
 double integrate(T& f, double a, double b)
 {
@@ -82,12 +71,15 @@ double d2(Point x, std::vector<Point> stroke)
         Point q1 = *(p_i + 1) - *p_i;
         q1 = q1 / q1.length();
 
-        auto f = [&](double t){ return 1.0 / (q0 - q1 * t).length2(); };
+        auto f = [&](double t){ return (q0 - q1 * t).length2() <= 0 ? 0. : 1.0 / (q0 - q1 * t).length2(); };
         sumOfIntegrals += integrate(f, 0., T);
     }
     return sqrt(A / sumOfIntegrals);
 }
 
+// TODO : write d2 gradient function directly
+// (the optimized one, with nabla I)
+// then use OpenCV for output
 int main(int argc, char** argv)
 {
     std::vector<Point> stroke;
@@ -103,7 +95,7 @@ int main(int argc, char** argv)
         for(int x = 0; x < 50; x++)
         {
             double d = d2(Point(x, y), stroke);
-            std::cout << static_cast<int>(d / 5.4) << " ";
+            std::cout << d << " ";
         }
         std::cout << std::endl;
     }
