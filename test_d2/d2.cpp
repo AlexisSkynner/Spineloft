@@ -82,7 +82,7 @@ double d2(Point x, std::vector<Point> stroke)
         Point q1 = *(p_i + 1) - *p_i;
         q1 = q1 / q1.length();
 
-        auto f = [&](double t){ return (q0 - q1 * t).length2(); };
+        auto f = [&](double t){ return 1.0 / (q0 - q1 * t).length2(); };
         sumOfIntegrals += integrate(f, 0., T);
     }
     return sqrt(A / sumOfIntegrals);
@@ -103,7 +103,7 @@ int main(int argc, char** argv)
         for(int x = 0; x < 50; x++)
         {
             double d = d2(Point(x, y), stroke);
-            std::cout << static_cast<int>(d * 200) << " ";
+            std::cout << static_cast<int>(d / 5.4) << " ";
         }
         std::cout << std::endl;
     }
