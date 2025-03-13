@@ -24,3 +24,7 @@
 - (Dorian et Timothée) : ont regardé le fonctionnement de Blender et des plugs-in 
 - (Alexis) : a fait un cours de C++ de OpenCourseWar pour pouvoir coder la suite du projet en C++
 - (Alex) : a fait l'implementation de la fonction distance d2 en C++
+
+
+### 13/03/2025 
+- (Alexis) : apprentissage de C++ terminé : passage au code des ribs avec Alex
