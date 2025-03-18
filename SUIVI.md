@@ -28,3 +28,8 @@
 
 ### 13/03/2025 
 - (Alexis) : apprentissage de C++ terminé : passage au code des ribs avec Alex
+
+### 18/03/2025
+- (Groupe entier) : Entretient avec l'encadrant pour faire un point sur l'avancée du projet
+- (Alexis + Alex) : Implémentation de la fonction d2 en C++. Le debug est encore à réaliser
+- (Dorian + Timothée) : Premier programme Python pour tester les différentes fonctionnalités offertes par l'API Blender et prototype d'IHM
