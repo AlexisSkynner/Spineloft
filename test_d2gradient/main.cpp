@@ -15,30 +15,11 @@ public:
     double get_x() { return x; }
     double get_y() { return y; }
 
-    Vec2 operator+(const Vec2 p)
-    {
-        return Vec2(x + p.x, y + p.y);
-    }
-
-    Vec2 operator-()
-    {
-        return Vec2(-x, -y);
-    }
-
-    Vec2 operator-(const Vec2 p)
-    {
-        return Vec2(x - p.x, y - p.y);
-    }
-
-    Vec2 operator*(const double a)
-    {
-        return Vec2(x * a, y * a);
-    }
-
-    Vec2 operator/(const double a)
-    {
-        return Vec2(x / a, y / a);
-    }
+    Vec2 operator+(const Vec2 p) { return Vec2(x + p.x, y + p.y); }
+    Vec2 operator-() { return Vec2(-x, -y); }
+    Vec2 operator-(const Vec2 p) { return Vec2(x - p.x, y - p.y); }
+    Vec2 operator*(const double a) { return Vec2(x * a, y * a); }
+    Vec2 operator/(const double a) { return Vec2(x / a, y / a); }
 
     double length()
     {
@@ -58,9 +39,8 @@ public:
 
 bool is_double_zero(double x)
 {
-    // const double epsilon = 0.000000000000000000000001;
-    // return fabs(x) < epsilon;
-    return x == 0.0;
+    const double epsilon = 0.00000000000001;
+    return fabs(x) < epsilon;
 }
 
 double w(Vec2 x, double t, double a, double ux, double vx)
