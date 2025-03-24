@@ -88,7 +88,7 @@ rebuild_cache/fast: rebuild_cache
 # The main all target
 all: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/alexonceanu/Documents/Cours/Cours_Telecom/Artishow!/3d-modeling/test_d2gradient/CMakeFiles /Users/alexonceanu/Documents/Cours/Cours_Telecom/Artishow!/3d-modeling/test_d2gradient//CMakeFiles/progress.marks
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 -o3 all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/alexonceanu/Documents/Cours/Cours_Telecom/Artishow!/3d-modeling/test_d2gradient/CMakeFiles 0
 	./SpineLoft < stroke.txt
 .PHONY : all
