@@ -132,6 +132,16 @@ C=[]
 
 shapeSquare=copy.deepcopy(Shape(A,B,C))
 
+#Circle
+n=20
+X=np.arange(0,n)
+A=[(0.5*np.cos(2*np.pi*x/n) , 0, 0.5*np.sin(2*np.pi*x/n)) for x in X]
+B=[(0,n-1)]+[(i,i+1) for i in range (n-1)]
+C=[]
+
+shapeCircle=copy.deepcopy(Shape(A,B,C))
+
+
 
 shapeStart = shapeHeart
 
@@ -207,6 +217,16 @@ def addFaces(finalShape:Shape,startShape:Shape, listPts:list):
 
             
             finalShape.faces.append(tuple(face))
+    
+    #Ajout de la face de début et de fin
+    firstFace=[]
+    lastFace=[]  
+    for i in range(nbVertices):
+        firstFace.append(i)
+        lastFace.append(nbVertices*l-i-1)
+    
+    finalShape.faces.append(tuple(firstFace))
+    finalShape.faces.append(tuple(lastFace))
     
     return(finalShape)
 

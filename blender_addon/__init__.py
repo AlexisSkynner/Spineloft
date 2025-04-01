@@ -22,7 +22,6 @@ bl_info = {
 
 def register():
 
-
     everythingIsOkay=True
 
     try: #On essaie d'installer les différentes librairies
@@ -31,6 +30,9 @@ def register():
         if "module_installer" in locals():
             importlib.reload(module_installer)
         
+        from . import register_script
+        if "register_script" in locals():
+            importlib.reload(register_script)
 
         from . import ui
         if "ui" in locals():
@@ -40,11 +42,11 @@ def register():
         if "gen_vol" in locals():
             importlib.reload(gen_vol)
 
-        from . import register_script
-        everythingIsOkay=True
+        
 
     except: #Si ça marche pas, on désactive le module.
         everythingIsOkay=False
+        raise KeyboardInterrupt()
 
 
     if everythingIsOkay:
@@ -65,8 +67,6 @@ def unregister():
     except:
        pass
        
-
-
 
 
 
