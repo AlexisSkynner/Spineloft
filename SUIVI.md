@@ -38,7 +38,7 @@
 - (Groupe entier) : Entretient avec l'encadrant pour faire un point sur l'avancée du projet
 - (Alexis) : Implémentation du détourrage d'image avec canny
 - (Alex) : Débuggage réussi de la fonction d2
-- (Dorian) :
+- (Dorian) : Implantation Blender du programme permettant de générer le volume grâce aux extrémités des ribs
 
 ### 30/03/2025 :
 - (Alexis) Début d'implémentation de intersect 
