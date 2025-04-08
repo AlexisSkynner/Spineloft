@@ -210,10 +210,13 @@ int main(int argc, char** argv)
 
             const int amp = 10000000;
 
-            pixel[0] = std::min(255, static_cast<int>(fabs(grad.get_x()) * amp));
-            // pixel[1] = std::min(255, static_cast<int>(grad.length() * amp));
-            pixel[1] = 0;
-            pixel[2] = std::min(255, static_cast<int>(fabs(grad.get_y()) * amp));
+            int sineOfGradLength = static_cast<int>(255 * powf(sin(grad.length() * amp), 10.0));
+
+            // pixel[0] = std::min(255, static_cast<int>(fabs(grad.get_x()) * amp));
+            pixel[0] = 0;
+            pixel[1] = std::min(255, sineOfGradLength);
+            pixel[2] = 0;
+            // pixel[2] = std::min(255, static_cast<int>(fabs(grad.get_y()) * amp));
 
             // std::cout << grad.get_x() << " " << grad.get_y() << "  ";
 
