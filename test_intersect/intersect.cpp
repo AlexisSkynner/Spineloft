@@ -4,7 +4,7 @@
 #include <vector>
 #include <tuple>
 #include <fstream>
-
+#include <Vec2.h>
 
 
 cv::Mat canny(cv::Mat image) {
@@ -24,7 +24,7 @@ cv::Mat canny(cv::Mat image) {
     cv::imshow("Edges", edges);
     cv::waitKey(0);
 
-    return , height, width;
+    return edges, height, width;
 }
 
 
