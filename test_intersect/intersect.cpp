@@ -38,11 +38,10 @@ int main() {
         return -1;
     }
 
-    canny(image);
-
+    cv::Mat edges, int height, int widht = canny(image);
     //Stroke 
 
-    std::vector<std::tuple<float, float>> stroke;
+    std::vector<Vec2> stroke;
     float x, y;
 
     // Lire les deux colonnes
@@ -52,16 +51,23 @@ int main() {
 
     file.close(); // Fermer le fichier
 
-    //Gradient 
-    cv::Mat gradient = d2_gradient(image);
+    //Ribs 
+    std::vector<Vec2> ribs;
 
-    //Ribs
-    std::vector<syd::tuple<int, int>> ribs;
-
-    for (int i =0; i<=stroke.size(); i += 4){
+    for (int i = 0; i < stroke.size(); i+=5) {
         
-    }
+        Vec2 extremity = stroke[i];
+        do {
 
-    return 0;
+            extremity = d2_grad(extremity,stroke);
+            uchar pixelvalue = edges.at<uchar>(extremity.get_y(), extremity.get_x());
+
+
+        } while (pixelvalue != 255);
+        
+        ribs.push_back(extremity);
+    }
+    
+    return ribs;
 
 }
