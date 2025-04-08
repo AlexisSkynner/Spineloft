@@ -29,7 +29,17 @@
 ### 13/03/2025 
 - (Alexis) : apprentissage de C++ terminé : passage au code des ribs avec Alex
 
-### 18/03/2025
+### 18/03/2025 WEEK 4
 - (Groupe entier) : Entretient avec l'encadrant pour faire un point sur l'avancée du projet
 - (Alexis + Alex) : Implémentation de la fonction d2 en C++. Le debug est encore à réaliser
 - (Dorian + Timothée) : Premier programme Python pour tester les différentes fonctionnalités offertes par l'API Blender et prototype d'IHM
+
+### 25/03/2024 WEEK 5
+- (Groupe entier) : Entretient avec l'encadrant pour faire un point sur l'avancée du projet
+- (Alexis) : Implémentation du détourrage d'image avec canny
+- (Alex) : Débuggage réussi de la fonction d2
+- (Dorian) : Implantation Blender du programme permettant de générer le volume grâce aux extrémités des ribs
+
+### 30/03/2025 :
+- (Alexis) Début d'implémentation de intersect 
+- (Alex, Dorian, Alexis) : concertation sur les returns et arguments des fonctions pour un mise en commun possible des codes

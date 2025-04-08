@@ -1,0 +1,4 @@
+/home/skynner/Desktop/GIT-Artishow/3d-modeling/test_intersect/CMakeFiles/intersect.dir
+/home/skynner/Desktop/GIT-Artishow/3d-modeling/test_intersect/CMakeFiles/canvy.dir
+/home/skynner/Desktop/GIT-Artishow/3d-modeling/test_intersect/CMakeFiles/edit_cache.dir
+/home/skynner/Desktop/GIT-Artishow/3d-modeling/test_intersect/CMakeFiles/rebuild_cache.dir
