@@ -129,43 +129,6 @@ intersect/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/intersect.dir/build.make CMakeFiles/intersect.dir/build
 .PHONY : intersect/fast
 
-#=============================================================================
-# Target rules for targets named canvy
-
-# Build rule for target.
-canvy: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 canvy
-.PHONY : canvy
-
-# fast build rule for target.
-canvy/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/canvy.dir/build.make CMakeFiles/canvy.dir/build
-.PHONY : canvy/fast
-
-canvy.o: canvy.cpp.o
-.PHONY : canvy.o
-
-# target to build an object file
-canvy.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/canvy.dir/build.make CMakeFiles/canvy.dir/canvy.cpp.o
-.PHONY : canvy.cpp.o
-
-canvy.i: canvy.cpp.i
-.PHONY : canvy.i
-
-# target to preprocess a source file
-canvy.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/canvy.dir/build.make CMakeFiles/canvy.dir/canvy.cpp.i
-.PHONY : canvy.cpp.i
-
-canvy.s: canvy.cpp.s
-.PHONY : canvy.s
-
-# target to generate assembly for a file
-canvy.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/canvy.dir/build.make CMakeFiles/canvy.dir/canvy.cpp.s
-.PHONY : canvy.cpp.s
-
 intersect.o: intersect.cpp.o
 .PHONY : intersect.o
 
@@ -198,11 +161,7 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... canvy"
 	@echo "... intersect"
-	@echo "... canvy.o"
-	@echo "... canvy.i"
-	@echo "... canvy.s"
 	@echo "... intersect.o"
 	@echo "... intersect.i"
 	@echo "... intersect.s"
