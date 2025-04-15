@@ -4,7 +4,7 @@
 #include <vector>
 #include <tuple>
 #include <fstream>
-#include <Vec2.h>
+#include "Vec2.h"
 
 
 cv::Mat canny(cv::Mat image) {
@@ -24,7 +24,7 @@ cv::Mat canny(cv::Mat image) {
     cv::imshow("Edges", edges);
     cv::waitKey(0);
 
-    return edges, height, width;
+    return edges;
 }
 
 
@@ -38,11 +38,18 @@ int main() {
         return -1;
     }
 
-    cv::Mat edges, int height, int widht = canny(image);
+    cv::Mat edges = canny(image);
+
     //Stroke 
 
     std::vector<Vec2> stroke;
     float x, y;
+
+    std::ifstream file("points.txt");
+    if (!file.is_open()) {
+        std::cerr << "Error: Could not open the file!" << std::endl;
+        return -1;
+    }
 
     // Lire les deux colonnes
     while (file >> x >> y) {
@@ -56,18 +63,23 @@ int main() {
 
     for (int i = 0; i < stroke.size(); i+=5) {
         
+        uchar pixelvalue;
         Vec2 extremity = stroke[i];
         do {
 
             extremity = d2_grad(extremity,stroke);
-            uchar pixelvalue = edges.at<uchar>(extremity.get_y(), extremity.get_x());
+            pixelvalue = edges.at<uchar>(extremity.get_y(), extremity.get_x());
+
+            if ( x == edges.cols or y == edges.rows) {
+                std::cout << "Out of bounds" << std::endl;
+                extremity = stroke[i];
+                break;
+            }
 
 
         } while (pixelvalue != 255);
         
-        ribs.push_back(extremity);
+        ribs.emplace_back(extremity);
     }
-    
-    return ribs;
 
 }
