@@ -88,7 +88,7 @@ rebuild_cache/fast: rebuild_cache
 # The main all target
 all: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/alexonceanu/Documents/Cours/Cours_Telecom/Artishow!/3d-modeling/test_d2gradient/CMakeFiles /Users/alexonceanu/Documents/Cours/Cours_Telecom/Artishow!/3d-modeling/test_d2gradient//CMakeFiles/progress.marks
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 -o3 all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/alexonceanu/Documents/Cours/Cours_Telecom/Artishow!/3d-modeling/test_d2gradient/CMakeFiles 0
 	./SpineLoft < stroke.txt
 .PHONY : all
@@ -130,6 +130,30 @@ SpineLoft/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/SpineLoft.dir/build.make CMakeFiles/SpineLoft.dir/build
 .PHONY : SpineLoft/fast
 
+Users/alexonceanu/Documents/Cours/Cours_Telecom/Artishow!/3d-modeling/d2.o: Users/alexonceanu/Documents/Cours/Cours_Telecom/Artishow!/3d-modeling/d2.cpp.o
+.PHONY : Users/alexonceanu/Documents/Cours/Cours_Telecom/Artishow!/3d-modeling/d2.o
+
+# target to build an object file
+Users/alexonceanu/Documents/Cours/Cours_Telecom/Artishow!/3d-modeling/d2.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SpineLoft.dir/build.make CMakeFiles/SpineLoft.dir/Users/alexonceanu/Documents/Cours/Cours_Telecom/Artishow!/3d-modeling/d2.cpp.o
+.PHONY : Users/alexonceanu/Documents/Cours/Cours_Telecom/Artishow!/3d-modeling/d2.cpp.o
+
+Users/alexonceanu/Documents/Cours/Cours_Telecom/Artishow!/3d-modeling/d2.i: Users/alexonceanu/Documents/Cours/Cours_Telecom/Artishow!/3d-modeling/d2.cpp.i
+.PHONY : Users/alexonceanu/Documents/Cours/Cours_Telecom/Artishow!/3d-modeling/d2.i
+
+# target to preprocess a source file
+Users/alexonceanu/Documents/Cours/Cours_Telecom/Artishow!/3d-modeling/d2.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SpineLoft.dir/build.make CMakeFiles/SpineLoft.dir/Users/alexonceanu/Documents/Cours/Cours_Telecom/Artishow!/3d-modeling/d2.cpp.i
+.PHONY : Users/alexonceanu/Documents/Cours/Cours_Telecom/Artishow!/3d-modeling/d2.cpp.i
+
+Users/alexonceanu/Documents/Cours/Cours_Telecom/Artishow!/3d-modeling/d2.s: Users/alexonceanu/Documents/Cours/Cours_Telecom/Artishow!/3d-modeling/d2.cpp.s
+.PHONY : Users/alexonceanu/Documents/Cours/Cours_Telecom/Artishow!/3d-modeling/d2.s
+
+# target to generate assembly for a file
+Users/alexonceanu/Documents/Cours/Cours_Telecom/Artishow!/3d-modeling/d2.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SpineLoft.dir/build.make CMakeFiles/SpineLoft.dir/Users/alexonceanu/Documents/Cours/Cours_Telecom/Artishow!/3d-modeling/d2.cpp.s
+.PHONY : Users/alexonceanu/Documents/Cours/Cours_Telecom/Artishow!/3d-modeling/d2.cpp.s
+
 main.o: main.cpp.o
 .PHONY : main.o
 
@@ -163,6 +187,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... SpineLoft"
+	@echo "... Users/alexonceanu/Documents/Cours/Cours_Telecom/Artishow!/3d-modeling/d2.o"
+	@echo "... Users/alexonceanu/Documents/Cours/Cours_Telecom/Artishow!/3d-modeling/d2.i"
+	@echo "... Users/alexonceanu/Documents/Cours/Cours_Telecom/Artishow!/3d-modeling/d2.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
