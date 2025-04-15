@@ -2,8 +2,11 @@
 #include <vector>
 #include <cmath>
 
+#include "../d2.hpp"
+
 #include <opencv2/opencv.hpp>
 
+/*
 class Vec2
 {
 private:
@@ -42,6 +45,7 @@ public:
         return Vec2(x == 0.0 ? 1.0 : x / std::abs(x), y == 0.0 ? 1.0 : y / std::abs(y));
     }
 };
+*/
 
 bool is_float_zero(float x)
 {
@@ -136,7 +140,7 @@ float integrate(T &f, float a, float b)
     return ans;
 }
 
-float d2(Vec2 x, std::vector<Vec2> stroke)
+float d2a(Vec2 x, std::vector<Vec2> stroke)
 {
     float A = 0.;
     float sumOfIntegrals = 0.;
@@ -191,49 +195,49 @@ float d2bis(Vec2 x, std::vector<Vec2> stroke)
 
 
 
-float clamp(float x, float minVal, float maxVal)
-{
-    if(x < minVal) return minVal;
-    if(x > maxVal) return maxVal;
-    return x;
-}
+// float clamp(float x, float minVal, float maxVal)
+// {
+//     if(x < minVal) return minVal;
+//     if(x > maxVal) return maxVal;
+//     return x;
+// }
 
-float mix(float a, float b, float t)
-{
-    return a * (1.0 - t) + b * t;
-}
+// float mix(float a, float b, float t)
+// {
+//     return a * (1.0 - t) + b * t;
+// }
 
-float sdfSegment(Vec2 p, Vec2 a, Vec2 b)
-{
-    Vec2 ba = b - a;
-    Vec2 pa = p - a;
-    float h = clamp(pa.dot(ba) / ba.length2(), 0.0, 1.0);
-    return (pa - ba * h).length();
-}
+// float sdfSegment(Vec2 p, Vec2 a, Vec2 b)
+// {
+//     Vec2 ba = b - a;
+//     Vec2 pa = p - a;
+//     float h = clamp(pa.dot(ba) / ba.length2(), 0.0, 1.0);
+//     return (pa - ba * h).length();
+// }
 
-float smin(float a, float b, float k)
-{
-    float h = clamp(0.5 + 0.5 * (a - b) / k, 0.0, 1.0);
-    return mix(a, b, h) - k * h * (1.0 - h);
-}
+// float smin(float a, float b, float k)
+// {
+//     float h = clamp(0.5 + 0.5 * (a - b) / k, 0.0, 1.0);
+//     return mix(a, b, h) - k * h * (1.0 - h);
+// }
 
-float d2smin(Vec2 x, std::vector<Vec2> stroke)
-{
-    const float k = 32.0;
-    float locMin = 9876543210.0;
-    float d;
-    for (auto p_i = stroke.begin(); p_i != stroke.end() - 1; p_i++)
-    {
-        d = sdfSegment(x, *p_i, *(p_i + 1));
-        locMin = smin(locMin, d, k);
-    }
-    if(isnan(locMin))
-    {
-        std::cout << "NAN" << std::endl;
-        return 0;
-    }
-    return locMin;
-}
+// float d2smin(Vec2 x, std::vector<Vec2> stroke)
+// {
+//     const float k = 32.0;
+//     float locMin = 9876543210.0;
+//     float d;
+//     for (auto p_i = stroke.begin(); p_i != stroke.end() - 1; p_i++)
+//     {
+//         d = sdfSegment(x, *p_i, *(p_i + 1));
+//         locMin = smin(locMin, d, k);
+//     }
+//     if(isnan(locMin))
+//     {
+//         std::cout << "NAN" << std::endl;
+//         return 0;
+//     }
+//     return locMin;
+// }
 
 // The MIT License
 // Copyright © 2018 Inigo Quilez
@@ -331,28 +335,30 @@ int main(int argc, char **argv)
 
             const int amp = 1000000;
 
-            int sineOfGradLength = static_cast<int>(255 * powf(sin(grad.length() * amp), 10.0));
+            // int sineOfGradLength = static_cast<int>(255 * powf(sin(grad.length() * amp), 10.0));
+            int sineOfGradLength = static_cast<int>(clamp(200 - grad.length() + 50 * sin(grad.length() * amp), 0.0, 255.0));
 
-            pixel[0] = std::min(255, static_cast<int>(fabs(grad.get_x()) * amp));
+            // pixel[0] = std::min(255, static_cast<int>(fabs(grad.get_x()) * amp));
             pixel[0] = 0;
             pixel[1] = std::min(255, sineOfGradLength);
             pixel[2] = 0;
-            pixel[2] = std::min(255, static_cast<int>(fabs(grad.get_y()) * amp));
+            // pixel[2] = std::min(255, static_cast<int>(fabs(grad.get_y()) * amp));
 
-            std::cout << grad.get_x() << " " << grad.get_y() << "  ";
+            // std::cout << grad.get_x() << " " << grad.get_y() << "  ";
 
 #elif 0
 // _____________________________________V2 : smoothmin des SDF de chaque segment______________________________________
 
             float d = d2smin(Vec2(x, y), stroke);
             
-            pixel[0] = std::max(0, std::min(255, static_cast<int>(200 - d + 50 * sin(d))));// + 50 + 50 * sin(d)));
-            pixel[1] = 0;
-            pixel[2] = 0;
+            // pixel[0] = static_cast<int>(clamp(200 - d + 50 * sin(d), 0.0, 255.0));// + 50 + 50 * sin(d)));
+            pixel[0] = d;
+            pixel[1] = d;
+            pixel[2] = d;
 
             // pixel[1] = std::min(255, static_cast<int>(50 + 50 * sin(3.14159 * d)));
             // pixel[2] = std::min(255, static_cast<int>(50 + 50 * sin(3.14159 * d)));
-#elif 1
+#elif 0
 // _____________________________________V3 : passe-bas d'un sdBézier______________________________________
 
             Vec2 p = Vec2(x / 128.0 - 1.0, y / 128.0 - 1.0);
@@ -377,6 +383,12 @@ int main(int argc, char **argv)
             float d = (d1 + d2 + d3 + d4 + d5 + d6 + d7 + d8 + d9) / 9.0;
             d *= 128.0;
 
+            pixel[0] = static_cast<int>(clamp(200 - d + 50 * sin(d), 0.0, 255.0));// + 50 + 50 * sin(d)));
+            pixel[1] = 0;
+            pixel[2] = 0;
+#elif 1
+            float d = 255.0 * d2grad(Vec2(x, y), stroke).length();
+            
             pixel[0] = static_cast<int>(clamp(200 - d + 50 * sin(d), 0.0, 255.0));// + 50 + 50 * sin(d)));
             pixel[1] = 0;
             pixel[2] = 0;

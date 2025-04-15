@@ -85,12 +85,12 @@ clean: CMakeFiles/SpineLoft.dir/clean
 CMakeFiles/SpineLoft.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/SpineLoft.dir/build.make CMakeFiles/SpineLoft.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/SpineLoft.dir/build.make CMakeFiles/SpineLoft.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/alexonceanu/Documents/Cours/Cours_Telecom/Artishow!/3d-modeling/test_d2gradient/CMakeFiles --progress-num=1,2 "Built target SpineLoft"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/alexonceanu/Documents/Cours/Cours_Telecom/Artishow!/3d-modeling/test_d2gradient/CMakeFiles --progress-num=1,2,3 "Built target SpineLoft"
 .PHONY : CMakeFiles/SpineLoft.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/SpineLoft.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/alexonceanu/Documents/Cours/Cours_Telecom/Artishow!/3d-modeling/test_d2gradient/CMakeFiles 2
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/alexonceanu/Documents/Cours/Cours_Telecom/Artishow!/3d-modeling/test_d2gradient/CMakeFiles 3
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/SpineLoft.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/alexonceanu/Documents/Cours/Cours_Telecom/Artishow!/3d-modeling/test_d2gradient/CMakeFiles 0
 .PHONY : CMakeFiles/SpineLoft.dir/rule
@@ -102,7 +102,7 @@ SpineLoft: CMakeFiles/SpineLoft.dir/rule
 # codegen rule for target.
 CMakeFiles/SpineLoft.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/SpineLoft.dir/build.make CMakeFiles/SpineLoft.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/alexonceanu/Documents/Cours/Cours_Telecom/Artishow!/3d-modeling/test_d2gradient/CMakeFiles --progress-num=1,2 "Finished codegen for target SpineLoft"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/alexonceanu/Documents/Cours/Cours_Telecom/Artishow!/3d-modeling/test_d2gradient/CMakeFiles --progress-num=1,2,3 "Finished codegen for target SpineLoft"
 .PHONY : CMakeFiles/SpineLoft.dir/codegen
 
 # clean rule for target.
