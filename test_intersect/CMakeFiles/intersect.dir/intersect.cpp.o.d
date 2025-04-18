@@ -336,4 +336,4 @@ CMakeFiles/intersect.dir/intersect.cpp.o: \
  /usr/include/c++/14/x86_64-redhat-linux/bits/basic_file.h \
  /usr/include/c++/14/x86_64-redhat-linux/bits/c++io.h \
  /usr/include/c++/14/bits/fstream.tcc \
- /home/skynner/Desktop/GIT-Artishow/3d-modeling/test_intersect/Vec2.h
+ /home/skynner/Desktop/GIT-Artishow/3d-modeling/test_intersect/external.hpp

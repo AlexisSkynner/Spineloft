@@ -8,6 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
+  "/home/skynner/Desktop/GIT-Artishow/3d-modeling/test_intersect/d2.cpp" "CMakeFiles/intersect.dir/d2.cpp.o" "gcc" "CMakeFiles/intersect.dir/d2.cpp.o.d"
   "/home/skynner/Desktop/GIT-Artishow/3d-modeling/test_intersect/intersect.cpp" "CMakeFiles/intersect.dir/intersect.cpp.o" "gcc" "CMakeFiles/intersect.dir/intersect.cpp.o.d"
   )
 

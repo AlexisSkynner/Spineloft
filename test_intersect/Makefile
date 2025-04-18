@@ -129,6 +129,30 @@ intersect/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/intersect.dir/build.make CMakeFiles/intersect.dir/build
 .PHONY : intersect/fast
 
+d2.o: d2.cpp.o
+.PHONY : d2.o
+
+# target to build an object file
+d2.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/intersect.dir/build.make CMakeFiles/intersect.dir/d2.cpp.o
+.PHONY : d2.cpp.o
+
+d2.i: d2.cpp.i
+.PHONY : d2.i
+
+# target to preprocess a source file
+d2.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/intersect.dir/build.make CMakeFiles/intersect.dir/d2.cpp.i
+.PHONY : d2.cpp.i
+
+d2.s: d2.cpp.s
+.PHONY : d2.s
+
+# target to generate assembly for a file
+d2.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/intersect.dir/build.make CMakeFiles/intersect.dir/d2.cpp.s
+.PHONY : d2.cpp.s
+
 intersect.o: intersect.cpp.o
 .PHONY : intersect.o
 
@@ -162,6 +186,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... intersect"
+	@echo "... d2.o"
+	@echo "... d2.i"
+	@echo "... d2.s"
 	@echo "... intersect.o"
 	@echo "... intersect.i"
 	@echo "... intersect.s"

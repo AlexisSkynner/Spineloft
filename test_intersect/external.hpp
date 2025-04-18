@@ -19,6 +19,7 @@ public:
     Vec2 operator-(const Vec2 p);
     Vec2 operator*(const double a);
     Vec2 operator/(const double a);
+    Vec2 toint();
 
     float length();
     float length2();

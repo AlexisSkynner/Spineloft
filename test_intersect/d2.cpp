@@ -1,7 +1,8 @@
 #include <vector>
 #include <cmath>
+#include <stdexcept>
 
-#include "d2.hpp"
+#include "external.hpp"
 
 float Vec2::length()
 {
@@ -29,6 +30,9 @@ Vec2 Vec2::operator-(const Vec2 p) { return Vec2(x - p.x, y - p.y); }
 Vec2 Vec2::operator*(const double a) { return Vec2(x * a, y * a); }
 Vec2 Vec2::operator/(const double a) { return Vec2(x / a, y / a); }
 
+Vec2 Vec2::toint() {
+    return Vec2(int(std::round(x)), int(std::round(y)));
+}
 
 float clamp(float x, float minVal, float maxVal)
 {
@@ -66,7 +70,7 @@ float d2(Vec2 x, std::vector<Vec2> stroke)
         d = sdfSegment(x, *p_i, *(p_i + 1));
         locMin = smin(locMin, d, k);
     }
-    if(isnan(locMin))
+    if(std::isnan(locMin))
     {
         throw std::runtime_error("d2 renvoie nan");
         return 0;

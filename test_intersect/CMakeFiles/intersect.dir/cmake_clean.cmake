@@ -1,4 +1,6 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/intersect.dir/d2.cpp.o"
+  "CMakeFiles/intersect.dir/d2.cpp.o.d"
   "CMakeFiles/intersect.dir/intersect.cpp.o"
   "CMakeFiles/intersect.dir/intersect.cpp.o.d"
   "intersect"
