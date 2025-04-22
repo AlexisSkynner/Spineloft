@@ -387,11 +387,12 @@ int main(int argc, char **argv)
             pixel[1] = 0;
             pixel[2] = 0;
 #elif 1
-            float d = 255.0 * d2grad(Vec2(x, y), stroke).length();
+            // Vec2 d = d2grad(Vec2(x, y), stroke);
+            float d = d2(Vec2(x, y), stroke);
             
-            pixel[0] = static_cast<int>(clamp(200 - d + 50 * sin(d), 0.0, 255.0));// + 50 + 50 * sin(d)));
-            pixel[1] = 0;
-            pixel[2] = 0;
+            pixel[0] = 0;//static_cast<int>(clamp(255.0 * abs(d.dot(Vec2(1.0, 0.0))), 0.0, 255.0));// + 50 + 50 * sin(d)));
+            pixel[1] = static_cast<int>(clamp(200 - d + 50 * sin(d), 0.0, 255.0));
+            // pixel[2] = static_cast<int>(clamp(255.0 * abs(d.dot(Vec2(0.0, 1.0))), 0.0, 255.0));
 #endif
             img.at<cv::Vec3b>(cv::Point(x, y)) = pixel;
         }
