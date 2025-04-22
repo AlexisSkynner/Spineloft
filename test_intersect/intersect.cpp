@@ -16,7 +16,7 @@ cv::Mat canny(cv::Mat image) {
 
     // Détection des contours avec Canny
     cv::Mat edges;
-    cv::Canny(resizedImage, edges, 200, 200);
+    cv::Canny(resizedImage, edges, 300, 200);
 
     int height = edges.rows;
     int width = edges.cols;
@@ -39,7 +39,16 @@ int main() {
     }
     std::cerr << "Image charged" << std::endl;
 
+    // Processing par Canny pour les edges
     cv::Mat edges = canny(image);
+
+    // Créer un noyau de dilatation 3x3
+    cv::Mat kernel = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(3, 3));
+
+    // Dilater les contours
+    cv::Mat edgesdilated;
+    cv::dilate(edges, edgesdilated, kernel);
+    std::cerr << "Dilate done" << std::endl;
 
     //Stroke 
 
@@ -61,19 +70,17 @@ int main() {
     file.close(); // Fermer le fichier
     std::cerr << "File closed" << std::endl;
 
-
     //Ribs 
     std::vector<Vec2> ribs;
     cv::Mat imagetest;
-    edges.copyTo(imagetest);
+    edgesdilated.copyTo(imagetest);
 
-    for (int i = 0; i < stroke.size(); i+=5) {
+    for (int i = 0; i < stroke.size(); i+=3) {
         std::cerr << "Etude du vecteur" << i << std::endl;
 
         uchar pixelvalue;
         
         Vec2 extremity = stroke[i];
-        std::cerr << "Stoke : " << extremity.get_x() << " " << extremity.get_y() << std::endl;
         imagetest.at<uchar>(extremity.get_y(), extremity.get_x()) = 150;
 
         const double alpha = 2.0;
@@ -82,19 +89,18 @@ int main() {
 
             Vec2 gradient = d2grad(extremity,stroke);
             extremity = (extremity + gradient * alpha).toint();
-            pixelvalue = edges.at<uchar>(extremity.get_y(), extremity.get_x());
 
-            imagetest.at<uchar>(extremity.get_y(), extremity.get_x()) = 150;
-
-
-            cv::imshow("Pixel courant", imagetest);
-            cv::waitKey(0);
-
-            if ( extremity.get_x() == edges.cols or extremity.get_y() == edges.rows) {
+            if ( extremity.get_x() < 0 or extremity.get_x() >= edgesdilated.cols or extremity.get_y() < 0 or  extremity.get_y() >= edgesdilated.rows) {
                 std::cout << "Out of bounds" << std::endl;
                 extremity = stroke[i];
                 break;
             }
+
+            pixelvalue = edgesdilated.at<uchar>(extremity.get_y(), extremity.get_x());
+            imagetest.at<uchar>(extremity.get_y(), extremity.get_x()) = 150;
+
+            cv::imshow("Pixel courant", imagetest);
+            cv::waitKey(0);
 
         } while (pixelvalue != 255);
         
