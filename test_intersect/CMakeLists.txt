@@ -5,8 +5,7 @@ project(test_intersect)
 find_package(OpenCV REQUIRED)
 
 # Ajouter le fichier source
-add_executable(intersect intersect.cpp)
-
+add_executable(intersect intersect.cpp d2.cpp)
 
 # Lier OpenCV à l'exécutable
 target_link_libraries(intersect ${OpenCV_LIBS})
