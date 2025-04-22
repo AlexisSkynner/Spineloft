@@ -2,7 +2,7 @@
 #include <vector>
 #include <cmath>
 
-#include "../d2.hpp"
+#include "../test_intersect/d2.hpp"
 
 #include <opencv2/opencv.hpp>
 

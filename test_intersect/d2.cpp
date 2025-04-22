@@ -80,8 +80,8 @@ float d2(Vec2 x, std::vector<Vec2> stroke)
 
 Vec2 d2grad(Vec2 p, std::vector<Vec2> stroke)
 {
-    Vec2 dx = Vec2(1.0, 0.0);
-    Vec2 dy = Vec2(0.0, 1.0);
+    Vec2 dx = Vec2(5.0, 0.0);
+    Vec2 dy = Vec2(0.0, 5.0);
     Vec2 res = Vec2((d2(p + dx, stroke) - d2(p, stroke)) / dx.length(), (d2(p + dy, stroke) - d2(p, stroke)) / dy.length());
     return res / res.length();
 }
