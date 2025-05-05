@@ -24,6 +24,8 @@
 - (Dorian et Timothée) : ont regardé le fonctionnement de Blender et des plugs-in 
 - (Alexis) : a fait un cours de C++ de OpenCourseWar pour pouvoir coder la suite du projet en C++
 - (Alex) : a fait l'implementation de la fonction distance d2 en C++
+- (Timothée) : début des recherches pour le rapport sur les enjeux sociaux et environnementaux de notre projet
+- (Dorian) : début de la rédaction du rapport
 
 
 ### 13/03/2025 
