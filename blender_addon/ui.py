@@ -65,8 +65,7 @@ def create_volume():
     collection = bpy.context.collection
     collection.objects.link(obj)
 
-def draw_spine():
-    print("ok")
+
     
 
     
