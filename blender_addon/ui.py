@@ -28,7 +28,7 @@ class Operator_DrawSpine(bpy.types.Operator):
 ######################### Panels ############################   
 class Panel_PhotoSketching(bpy.types.Panel):
     """Creates a Panel in the Object properties window"""
-    bl_label = "Photo Sketching"
+    bl_label = "SpineLoft"
     bl_idname = "SPINELOFT_PT_PHOTOSKETCHING"
     bl_space_type = 'PROPERTIES'
     bl_region_type = 'WINDOW'
@@ -37,7 +37,7 @@ class Panel_PhotoSketching(bpy.types.Panel):
         layout = self.layout
 
         row = layout.row()
-        row.label(text="Super Spine Generator 2000", icon='CURVE_PATH')
+        row.label(text="SpineLoft", icon='CURVE_PATH')
         
         
         row = layout.row()
