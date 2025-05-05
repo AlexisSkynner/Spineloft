@@ -3,11 +3,11 @@ import importlib
 import addon_utils
 
 bl_info = {
-    "name": "Spine Generator",
+    "name": "SpineLoft",
     "blender": (2, 90, 0),  # La version de Blender compatible
     "category": "3D View",  # Catégorie sous laquelle l'addon apparaît (peut être View3D, Object, etc.)
     "author": "Télécom Paris",
-    "version": (1, 0),
+    "version": (1, 1),
     "description": "Addon de test.",
     "warning": "",
     "doc_url": "",  # URL vers la documentation si nécessaire
