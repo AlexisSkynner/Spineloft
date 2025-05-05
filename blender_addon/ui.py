@@ -49,29 +49,6 @@ class Panel_PhotoSketching(bpy.types.Panel):
     def execute(self, context):
         return {'FINISHED'}
 
-class Panel_Spinedrawer(bpy.types.Panel):
-    """Creates a Panel in the 3D_VIEW """
-    bl_label = "Mon UI"
-    bl_idname = "SPINELOFT_PT_SPINEDRAWER"
-    bl_space_type = 'VIEW_3D'
-    bl_region_type = 'WINDOW'  
-
-    def draw(self, context):
-        layout = self.layout
-
-        row = layout.row()
-        row.label(text="Super Spine Generator 2000", icon='CURVE_PATH')
-        
-        
-        row = layout.row()
-        row.operator(Operator_DrawSpine.bl_idname)
-
-        row = layout.row()
-        row.operator(Operator_CreateVolume.bl_idname)
-
-    def execute(self, context):
-        return {'FINISHED'}
-
 
 ######################### Functions ############################ 
 def create_volume():
