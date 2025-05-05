@@ -47,10 +47,14 @@
 
 ### 08/04/2025
 - (Dorian + Timothée) : Nouvelle tentative de création de l'UI Blender : usage d'une scène vide avec blocage caméra + blf (texte) + gpu (image) --> Succès
+- Alex : debut de l'élaboration d'un meilleur algorithme pour la fonction d2_grad
 
 ### 15/04/2025
 - (Dorian + Timothée) : Première version prête à l'emploi de l'UI : bouton de loading d'image, de dessin, de fermeture de la fenêtre et de validation. 
+- Alex : deux alternatives à d2grad (avec courbe de bézier quadratique / cubique)
 
 ### 05/05/2025 :
 - (Groupe entier) Réunion pour regarder les codes et avancer/débuguer certains codes
 - (Dorian + Timothée) Finalisation de l'UI : ajout du mode de dessin "main levée" et améliorations visuelles.
+- Alexis : debug intensif de la partie "lofting". Calcul des intersections entre gradient et canny edge (et tout fonctionne !)
+- Alex : meilleure alternative à d2grad (avec smooth min) et debug
