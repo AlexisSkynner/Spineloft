@@ -42,7 +42,7 @@ def rot(shape:Shape,theta:float):  #Rotation d'un vecteur par un angle
  
     return(shape2)
 
-def homo(shape:Shape,h:float):
+def homo(shape:Shape,h:float): #Homotéthie
     shape2=copy.deepcopy(shape)
     vertices=shape2.vertices
 
@@ -51,7 +51,7 @@ def homo(shape:Shape,h:float):
         vertices[i]=tuple(h*np.array( vertices[i] ))
     return(shape2)
 
-def transl(shape:Shape,vect:tuple):
+def transl(shape:Shape,vect:tuple): #Translation
     shape2=copy.deepcopy(shape)
     vertices=shape2.vertices
     
