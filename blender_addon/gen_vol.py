@@ -23,7 +23,7 @@ def angle_between_vectors(u, v):
 def norm(u):
     return(math.sqrt(sum(i**2 for i in u)))
 
-def rot(shape:Shape,theta:float):
+def rot(shape:Shape,theta:float):  #Rotation d'un vecteur par un angle
     c=np.cos(theta)
     s=np.sin(theta)
 
