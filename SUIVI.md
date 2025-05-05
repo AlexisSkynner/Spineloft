@@ -43,3 +43,7 @@
 ### 30/03/2025 :
 - (Alexis) Début d'implémentation de intersect 
 - (Alex, Dorian, Alexis) : concertation sur les returns et arguments des fonctions pour un mise en commun possible des codes
+
+### 05/05/2025 :
+- (Groupe entier) Réunion pour regarder les codes et avancer/débuguer certains codes
+- (Dorian et Timothée) 
