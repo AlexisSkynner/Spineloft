@@ -1,5 +1,7 @@
 def test():
-    nivrau = 2
+
+    nivrau = 1
+
 
 
     return True
