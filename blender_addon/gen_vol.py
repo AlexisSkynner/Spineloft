@@ -194,7 +194,7 @@ def addEdges(finalShape:Shape,startShape:Shape, listPts:list):
             edge=np.array(startShape.edges[j])
             edge[0]=edge[0]+i*nbVertices
             edge[1]=edge[1]+i*nbVertices
-            finalShape.edges.append(tuple(edge))
+            finalShape.edges.append(tuple(edge)). # l'appel de addVertices est donc obligatoire avant l'appel de celle-ci
             
     #Edges et faces de la connection
     for i in range(l-1):
