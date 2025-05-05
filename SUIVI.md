@@ -43,7 +43,14 @@
 ### 30/03/2025 :
 - (Alexis) Début d'implémentation de intersect 
 - (Alex, Dorian, Alexis) : concertation sur les returns et arguments des fonctions pour un mise en commun possible des codes
+- (Dorian + Timothée) : Première tentative de création de l'UI Blender via fenêtre contextuelle + fonction intégrée à l'API "bpy" : échec car l'API ne permet pas de créer des boutons personnalisées dans une fenêtre contextuelle personnalisée
+
+### 08/04/2025
+- (Dorian + Timothée) : Nouvelle tentative de création de l'UI Blender : usage d'une scène vide avec blocage caméra + blf (texte) + gpu (image) --> Succès
+
+### 15/04/2025
+- (Dorian + Timothée) : Première version prête à l'emploi de l'UI : bouton de loading d'image, de dessin, de fermeture de la fenêtre et de validation. 
 
 ### 05/05/2025 :
 - (Groupe entier) Réunion pour regarder les codes et avancer/débuguer certains codes
-- (Dorian et Timothée) 
+- (Dorian + Timothée) Finalisation de l'UI : ajout du mode de dessin "main levée" et améliorations visuelles.
