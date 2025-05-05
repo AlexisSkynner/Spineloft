@@ -46,18 +46,24 @@
 - (Alex, Dorian, Alexis) : concertation sur les returns et arguments des fonctions pour un mise en commun possible des codes
 - (Dorian + Timothée) : Première tentative de création de l'UI Blender via fenêtre contextuelle + fonction intégrée à l'API "bpy" : échec car l'API ne permet pas de créer des boutons personnalisées dans une fenêtre contextuelle personnalisée
 
-### 08/04/2025
+### 08/04/2025 :
 - (Dorian + Timothée) : Nouvelle tentative de création de l'UI Blender : usage d'une scène vide avec blocage caméra + blf (texte) + gpu (image) --> Succès
-- Alex : debut de l'élaboration d'un meilleur algorithme pour la fonction d2_grad
+- (Alex) : debut de l'élaboration d'un meilleur algorithme pour la fonction d2_grad
 
-### 15/04/2025
+### 15/04/2025 :
 - (Dorian + Timothée) : Première version prête à l'emploi de l'UI : bouton de loading d'image, de dessin, de fermeture de la fenêtre et de validation. 
-- Alex : deux alternatives à d2grad (avec courbe de bézier quadratique / cubique)
+- (Alex) : deux alternatives à d2grad (avec courbe de bézier quadratique / cubique)
+
+### 18/04/2025 :
+- (Alexis) : implémentation du calcul des gradients successifs pour intersecter 
+
+### 22/04/2025 :
+- (Alexis) : implémentation du choix basique des départs des stings (gauche et droite) et algo fonctionnel pour les ribs de droite avec gradient.
 
 ### 05/05/2025 :
 - (Groupe entier) Réunion pour regarder les codes et avancer/débuguer certains codes
 - (Dorian + Timothée) Finalisation de l'UI : ajout du mode de dessin "main levée" et améliorations visuelles.
-- Alexis : debug intensif de la partie "lofting". Calcul des intersections entre gradient et canny edge (et tout fonctionne !)
-- Alex : meilleure alternative à d2grad (avec smooth min) et debug
+- (Alexis) : debug intensif de la partie "lofting". Choix plus pertinent des points gauche et droite de départ. Calcul des intersections entre gradient et canny edge pour les ribs gauche et droites (et tout fonctionne !)
+- (Alex) : meilleure alternative à d2grad (avec smooth min) et debug
 - (Timothée) : début des recherches pour le rapport sur les enjeux sociaux et environnementaux de notre projet
 - (Dorian) : début de la rédaction du rapport
