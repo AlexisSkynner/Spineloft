@@ -42,6 +42,10 @@ def register():
         if "gen_vol" in locals():
             importlib.reload(gen_vol)
 
+        from . import custom_editor 
+        if "custom_editor" in locals():
+            importlib.reload(custom_editor)
+
         
 
     except: #Si ça marche pas, on désactive le module.

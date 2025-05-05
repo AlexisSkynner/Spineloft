@@ -1,5 +1,7 @@
 import bpy
 from . import gen_vol
+from . import custom_editor
+import time
 
 ######################### Operators ############################
 class Operator_CreateVolume(bpy.types.Operator):
@@ -16,31 +18,18 @@ class Operator_DrawSpine(bpy.types.Operator):
     bl_idname = "operator.drawspine"  # L'ID unique de l'opérateur
     bl_label = "Draw spine"
     
-    text = bpy.props.StringProperty(name= "Enter Name", default= "")
-    scale = bpy.props.FloatVectorProperty(name= "Scale:", default= (1,1,1))
+         
+    def invoke(self, context, event):
+        custom_editor.createWindow()
+        return {'RUNNING_MODAL'}
     
-    
-
-    def execute(self, context):
-        bpy.ops.screen.userpref_show('INVOKE_DEFAULT')
-        area = bpy.context.window_manager.windows[-1].screen.areas[0]
-        area.type = "IMAGE_EDITOR"
-        area.header_text_set("Draw a spine")
-
-        new_img = bpy.data.images.new(name="Test_Image", width=1024, height=1024)
-
-        image_editor = area.spaces.active  
-        image_editor.mode = 'PAINT'
-        image_editor.image = bpy.data.images["Test_Image"]
-
-        return {'FINISHED'}
 
     
 ######################### Panels ############################   
 class Panel_PhotoSketching(bpy.types.Panel):
     """Creates a Panel in the Object properties window"""
     bl_label = "Photo Sketching"
-    bl_idname = "panel.photosketching"
+    bl_idname = "SPINELOFT_PT_PHOTOSKETCHING"
     bl_space_type = 'PROPERTIES'
     bl_region_type = 'WINDOW'
 
@@ -61,11 +50,11 @@ class Panel_PhotoSketching(bpy.types.Panel):
         return {'FINISHED'}
 
 class Panel_Spinedrawer(bpy.types.Panel):
-    """Creates a Panel in the Object properties window"""
-    bl_label = "Spine Drawer"
-    bl_idname = "panel.spinedrawer"
-    bl_space_type = 'IMAGE_EDITOR'
-    bl_region_type = 'TOOLS'
+    """Creates a Panel in the 3D_VIEW """
+    bl_label = "Mon UI"
+    bl_idname = "SPINELOFT_PT_SPINEDRAWER"
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'WINDOW'  
 
     def draw(self, context):
         layout = self.layout

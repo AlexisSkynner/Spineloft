@@ -2,6 +2,7 @@ import copy
 import math
 import matplotlib.pyplot as plt
 import numpy as np
+import bpy
 
 
 #Forme à copier
@@ -143,13 +144,13 @@ shapeCircle=copy.deepcopy(Shape(A,B,C))
 
 
 
-shapeStart = shapeHeart
+shapeStart = shapeCircle
 
 
 
 
 #Contour donné dans sens horraire
-listPts=[ (1,1,0), (1,3,0), (4,4,0), (4,3,0), (2,2,0), (2,1,0)] #Liste des points de la forme, triés dans le sens horraire
+listPts=[ [(1,1,0),(2,1,0)] , [(1,3,0),(2,2,0)], [(4,4,0), (4,3,0)]] #Liste des points de la forme, triés dans le sens horraire
 
 #On affiche les contours
 #plt.plot([u[0] for u in listPts], [u[1] for u in listPts], 'o:b', linestyle='None')
@@ -170,9 +171,9 @@ def addVertices(startShape:Shape,listPts:list):
     listAngl=[]
     listDist=[]
     for i in range(l):
-        listMid.append(middle(listPts[i],listPts[-i-1]))
-        listAngl.append(angle_between_vectors(np.array(listPts[i])-np.array(listPts[-i-1]) , (1,0,0) ))
-        listDist.append(norm(np.array(listPts[-i-1])-np.array(listPts[i])))
+        listMid.append(middle(listPts[i][0],listPts[i][1]))
+        listAngl.append(angle_between_vectors(np.array(listPts[i][0])-np.array(listPts[i][1]) , (1,0,0) ))
+        listDist.append(norm(np.array(listPts[i][0])-np.array(listPts[i][1])))
 
     #On trace la forme finale
     finalShape=Shape([],[],[])
@@ -183,7 +184,7 @@ def addVertices(startShape:Shape,listPts:list):
     return(finalShape)
 
 def addEdges(finalShape:Shape,startShape:Shape, listPts:list):
-    l=len(listPts)//2
+    l=len(listPts)
     nbEdges=len(startShape.edges)
     nbVertices=len(startShape.vertices)
 
@@ -205,7 +206,7 @@ def addEdges(finalShape:Shape,startShape:Shape, listPts:list):
     return(finalShape)
 
 def addFaces(finalShape:Shape,startShape:Shape, listPts:list):
-    l=len(listPts)//2
+    l=len(listPts)
     nbEdges=len(startShape.edges)
     nbVertices=len(startShape.vertices)
 
@@ -233,9 +234,13 @@ def addFaces(finalShape:Shape,startShape:Shape, listPts:list):
 
 
 
-finalShape=addVertices(shapeStart,listPts)
-finalShape=addEdges(finalShape,shapeStart, listPts)
-finalShape=addFaces(finalShape,shapeStart, listPts)
+
 
 def giveMeTheMesh():
+
+    finalShape=addVertices(shapeStart,listPts)
+    finalShape=addEdges(finalShape,shapeStart, listPts)
+    finalShape=addFaces(finalShape,shapeStart, listPts)
+
     return(finalShape.vertices,finalShape.edges,finalShape.faces)
+
