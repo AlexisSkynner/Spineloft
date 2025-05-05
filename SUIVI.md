@@ -24,8 +24,7 @@
 - (Dorian et Timothée) : ont regardé le fonctionnement de Blender et des plugs-in 
 - (Alexis) : a fait un cours de C++ de OpenCourseWar pour pouvoir coder la suite du projet en C++
 - (Alex) : a fait l'implementation de la fonction distance d2 en C++
-- (Timothée) : début des recherches pour le rapport sur les enjeux sociaux et environnementaux de notre projet
-- (Dorian) : début de la rédaction du rapport
+
 
 
 ### 13/03/2025 
@@ -60,3 +59,5 @@
 - (Dorian + Timothée) Finalisation de l'UI : ajout du mode de dessin "main levée" et améliorations visuelles.
 - Alexis : debug intensif de la partie "lofting". Calcul des intersections entre gradient et canny edge (et tout fonctionne !)
 - Alex : meilleure alternative à d2grad (avec smooth min) et debug
+- (Timothée) : début des recherches pour le rapport sur les enjeux sociaux et environnementaux de notre projet
+- (Dorian) : début de la rédaction du rapport
