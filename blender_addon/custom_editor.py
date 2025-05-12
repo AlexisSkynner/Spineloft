@@ -357,19 +357,32 @@ class Operator_UImanager(bpy.types.Operator):
     bl_label = "HUD Bouton"
 
     def modal(self, context, event):
+        global is_open
+        global drawing_mode
+        self.draw_buttons(context,event)
+        self.draw_tool(context,event)
+        
+        if not is_open:
+            return{'FINISHED'}
+
+        if drawing_mode=="None":
+            return {'PASS_THROUGH'}
+
+        return {'RUNNING_MODAL'}
+
+
+    def draw_buttons(self,context,event):
         global is_drawing
         global is_open
         global buttons_color
         global list_points
         global drawing_mode
-        global spline
-
         # Buttons
         if self.click_on_button(context,event,0):
             is_open=False
             is_drawing=False
             drawing_mode="None"
-            return{'FINISHED'}
+
             
         if self.click_on_button(context,event,1):
             bpy.ops.wm.open_file_selector(override, 'INVOKE_DEFAULT')
@@ -380,14 +393,12 @@ class Operator_UImanager(bpy.types.Operator):
                 drawing_mode="Line"
             else:
                 drawing_mode="None"
-            return{'RUNNING_MODAL'}
         
         if self.click_on_button(context,event,3):
             if drawing_mode!="Free hand":
                 drawing_mode="Free hand"
             else:
                 drawing_mode="None"
-            return{'RUNNING_MODAL'}
 
         if self.click_on_button(context,event,4):
             is_drawing=False
@@ -397,28 +408,36 @@ class Operator_UImanager(bpy.types.Operator):
         if self.click_on_button(context,event,5):     
             print (list_points)
             is_open=False
-            return{'FINISHED'}
         
         if event.type == 'ESC':
             is_drawing=False
             drawing_mode="None"
-            return{'RUNNING_MODAL'}
                 
         # Is over
         for i in range(6):
+            
+            if self.is_over_button(context,event,i):
+                buttons_color[i]=buttons_color_over[i]
+            else:
+                buttons_color[i]=buttons_color_original[i]
+
             if drawing_mode=="Line":
                 buttons_color[2]=buttons_color_selected[2]
 
             elif drawing_mode=="Free hand":
                 buttons_color[3]=buttons_color_selected[3]
 
-            elif self.is_over_button(context,event,i):
-                buttons_color[i]=buttons_color_over[i]
-            else:
-                buttons_color[i]=buttons_color_original[i]
 
-        # Draw
-            #Line
+
+        override["area"].tag_redraw()
+
+
+    def draw_tool(self,context,event):
+        global is_drawing
+        global list_points
+        global drawing_mode
+        global spline
+        #Line
         if event.type == 'LEFTMOUSE' and event.value == 'PRESS' and drawing_mode=="Line":
             # Récupérer la position du rayon (origine + direction)
             ray_origin, view_vector = get_mouse_3d_location(context, event)
@@ -444,15 +463,16 @@ class Operator_UImanager(bpy.types.Operator):
                 point.co = (location[0], location[1], 0.1,1)  # Position du point
                 
                 list_points.append([location[0], location[1]])
+            
 
 
 
-        if event.type == 'LEFTMOUSE' and event.value == 'PRESS' and drawing_mode=="Free hand":
+        if event.type == 'LEFTMOUSE' and event.value == 'PRESS' and drawing_mode=="Free hand" and is_drawing==False:
             is_drawing=True
 
         if event.type == 'LEFTMOUSE' and event.value == 'RELEASE' and drawing_mode=="Free hand" and is_drawing:
             is_drawing=False
-            drawing_mode="None"
+
         
         if is_drawing:
             # Récupérer la position du rayon (origine + direction)
@@ -466,7 +486,6 @@ class Operator_UImanager(bpy.types.Operator):
                 view_vector
             )
 
-            # Si on touche un objet, on peut ajouter un cube ou autre à l'endroit du clic
             if result:
 
                 if spline.points[0].hide!=True:
@@ -479,14 +498,9 @@ class Operator_UImanager(bpy.types.Operator):
                 point.co = (location[0], location[1], 0.1,1)  # Position du point
                 
                 list_points.append([location[0], location[1]])
+   
 
 
-
-            return {'RUNNING_MODAL'}
-
-        
-        override["area"].tag_redraw()
-        return {'PASS_THROUGH'}
 
     def invoke(self, context, event=None):
         context.window_manager.modal_handler_add(self)
