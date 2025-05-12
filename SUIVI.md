@@ -67,3 +67,6 @@
 - (Alex) : meilleure alternative à d2grad (avec smooth min) et debug
 - (Timothée) : début des recherches pour le rapport sur les enjeux sociaux et environnementaux de notre projet
 - (Dorian) : début de la rédaction du rapport
+
+## 12/05/2025 :
+- (Dorian) : Nettoyage du code dans l'objectif d'implémenter une nouvelle UI servant à modifier les points résultants du programme de création de spine.
