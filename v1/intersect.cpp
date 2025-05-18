@@ -33,7 +33,7 @@ cv::Mat canny(cv::Mat image) {
 
 
 
-int intersect(const char* path, rib* pRibs)
+int intersect(const char* path, int nbPoints, pythonVec2* spine, rib* pRibs)
 {
     cv::Mat image = cv::imread(path, cv::IMREAD_COLOR);
     if (image.empty()) {
@@ -58,20 +58,27 @@ int intersect(const char* path, rib* pRibs)
     std::vector<Vec2> stroke;
     float x, y;
 
-    std::ifstream file("arc_stroke.txt");
-    if (!file.is_open()) {
-        std::cerr << "Error: Could not open the file!" << std::endl;
-        return -1;
-    }
-    std::cerr << "File opened" << std::endl;
-
-    // Lire les deux colonnes
-    while (file >> x >> y) {
-        stroke.emplace_back(x, y);
+    for(int i = 0; i < nbPoints; i++)
+    {
+        stroke.push_back(Vec2(
+            static_cast<float>(spine[i].x), 
+            static_cast<float>(spine[i].y)));
     }
 
-    file.close(); // Fermer le fichier
-    std::cerr << "File closed" << std::endl;
+    // std::ifstream file("arc_stroke.txt");
+    // if (!file.is_open()) {
+    //     std::cerr << "Error: Could not open the file!" << std::endl;
+    //     return -1;
+    // }
+    // std::cerr << "File opened" << std::endl;
+
+    // // Lire les deux colonnes
+    // while (file >> x >> y) {
+    //     stroke.emplace_back(x, y);
+    // }
+
+    // file.close(); // Fermer le fichier
+    // std::cerr << "File closed" << std::endl;
 
     //Ribs 
     std::vector<std::pair<Vec2, Vec2>> ribs;
