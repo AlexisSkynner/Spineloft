@@ -70,3 +70,4 @@
 
 ## 12/05/2025 :
 - (Dorian) : Nettoyage du code dans l'objectif d'implémenter une nouvelle UI servant à modifier les points résultants du programme de création de spine.
+- (Timothée) : Recherche de jeu de tests libre de droits pour tester la V1 quand elle sera prete. Lecture des différentes règles existences pour l'utilisation d'images.
