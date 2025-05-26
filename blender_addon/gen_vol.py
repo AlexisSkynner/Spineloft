@@ -23,7 +23,7 @@ def angle_between_vectors(u, v):
 def norm(u):
     return(math.sqrt(sum(i**2 for i in u)))
 
-def rot(shape:Shape,theta:float):  #Rotation d'un vecteur par un angle
+def rot(shape:Shape,theta:float):
     c=np.cos(theta)
     s=np.sin(theta)
 
@@ -42,7 +42,7 @@ def rot(shape:Shape,theta:float):  #Rotation d'un vecteur par un angle
  
     return(shape2)
 
-def homo(shape:Shape,h:float): #Homotéthie
+def homo(shape:Shape,h:float):
     shape2=copy.deepcopy(shape)
     vertices=shape2.vertices
 
@@ -51,7 +51,7 @@ def homo(shape:Shape,h:float): #Homotéthie
         vertices[i]=tuple(h*np.array( vertices[i] ))
     return(shape2)
 
-def transl(shape:Shape,vect:tuple): #Translation
+def transl(shape:Shape,vect:tuple):
     shape2=copy.deepcopy(shape)
     vertices=shape2.vertices
     
@@ -147,22 +147,6 @@ shapeCircle=copy.deepcopy(Shape(A,B,C))
 shapeStart = shapeCircle
 
 
-
-
-#Contour donné dans sens horraire
-listPts=[ [(1,1,0),(2,1,0)] , [(1,3,0),(2,2,0)], [(4,4,0), (4,3,0)]] #Liste des points de la forme, triés dans le sens horraire
-
-#On affiche les contours
-#plt.plot([u[0] for u in listPts], [u[1] for u in listPts], 'o:b', linestyle='None')
-#plt.show()
-#########################################################################################################################
-
-
-
-    
-
-
-
 def addVertices(startShape:Shape,listPts:list):
     l=len(listPts)
     
@@ -194,7 +178,7 @@ def addEdges(finalShape:Shape,startShape:Shape, listPts:list):
             edge=np.array(startShape.edges[j])
             edge[0]=edge[0]+i*nbVertices
             edge[1]=edge[1]+i*nbVertices
-            finalShape.edges.append(tuple(edge)). # l'appel de addVertices est donc obligatoire avant l'appel de celle-ci
+            finalShape.edges.append(tuple(edge))
             
     #Edges et faces de la connection
     for i in range(l-1):
@@ -236,7 +220,7 @@ def addFaces(finalShape:Shape,startShape:Shape, listPts:list):
 
 
 
-def giveMeTheMesh():
+def giveMeTheMesh(listPts):
 
     finalShape=addVertices(shapeStart,listPts)
     finalShape=addEdges(finalShape,shapeStart, listPts)

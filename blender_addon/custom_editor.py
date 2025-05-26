@@ -2,6 +2,7 @@ import bpy
 import functools
 import bpy_extras
 from bpy_extras import view3d_utils
+from . import gen_vol
 import mathutils
 import blf
 import gpu
@@ -22,6 +23,9 @@ image=None
 handle=None
 tex_image=0
 drawing_mode="None"
+part=0
+old_scene=None
+path=None
 
 ###########################################################################################################################################
 def createWindow():
@@ -53,6 +57,7 @@ def createWindow():
 
 
     ############## Affichage de la scène concernée ###########
+    global old_scene
     old_scene=bpy.context.scene
     
     for window in bpy.context.window_manager.windows:
@@ -122,11 +127,14 @@ def createWindow():
     curve_data.dimensions = '3D'
     curve_data.bevel_depth = 0.005
 
-    
     create_spline(curve_data)
-    
+    ###############################################################################################################
+
+    ### Start then UI ###################################################################################################################
     global is_open
     global handle
+    global part
+    part=0
     is_open=True
     bpy.app.timers.register(functools.partial(scene_manager,old_scene))
     handle = bpy.types.SpaceView3D.draw_handler_add(draw_buttons, (None,override), 'WINDOW', 'POST_PIXEL')
@@ -241,115 +249,148 @@ buttons_color=[red_color,gray_color, gray_color,gray_color,gray_color,green_colo
 
 # Dessin du bouton (rectangle simple)
 def draw_buttons(a,b):
+    global part
 
     # Fonts
     path_to_font_emoji=str(Path(__file__).parent / "font" / "NotoEmoji-Bold.ttf")
     font_emoji = blf.load(path_to_font_emoji)
 
-    #Button 0
-    x, y, w, h = button_rect()
-    shader = gpu.shader.from_builtin('2D_UNIFORM_COLOR')
-    coords = [(x, y), (x + w, y), (x + w, y + h), (x, y + h)]
-    batch = batch_for_shader(shader, 'TRI_FAN', {"pos": coords})
-    gpu.state.blend_set('ALPHA')
-    shader.bind()
-    shader.uniform_float("color", buttons_color[0])  
-    batch.draw(shader)
-    gpu.state.blend_set('NONE')
+    if part==0:
+        #Button 0
+        x, y, w, h = button_rect()
+        shader = gpu.shader.from_builtin('2D_UNIFORM_COLOR')
+        coords = [(x, y), (x + w, y), (x + w, y + h), (x, y + h)]
+        batch = batch_for_shader(shader, 'TRI_FAN', {"pos": coords})
+        gpu.state.blend_set('ALPHA')
+        shader.bind()
+        shader.uniform_float("color", buttons_color[0])  
+        batch.draw(shader)
+        gpu.state.blend_set('NONE')
 
-    blf.position(font_emoji, x+w/5, y+w/3, 0)
-    blf.size(font_emoji, int(w/2),72)
-    blf.color(font_emoji, 1.0, 1.0, 1.0, 1.0)
-    blf.draw(font_emoji, "✖︎")
+        blf.position(font_emoji, x+w/5, y+w/3, 0)
+        blf.size(font_emoji, int(w/2),72)
+        blf.color(font_emoji, 1.0, 1.0, 1.0, 1.0)
+        blf.draw(font_emoji, "✖︎")
 
-    #Button 1
-    y-=w
-    shader = gpu.shader.from_builtin('2D_UNIFORM_COLOR')
-    coords = [(x, y), (x + w, y), (x + w, y + h), (x, y + h)]
-    batch = batch_for_shader(shader, 'TRI_FAN', {"pos": coords})
-    gpu.state.blend_set('ALPHA')
-    shader.bind()
-    shader.uniform_float("color", buttons_color[1])  
-    batch.draw(shader)
-    gpu.state.blend_set('NONE')
+        #Button 1
+        y-=w
+        shader = gpu.shader.from_builtin('2D_UNIFORM_COLOR')
+        coords = [(x, y), (x + w, y), (x + w, y + h), (x, y + h)]
+        batch = batch_for_shader(shader, 'TRI_FAN', {"pos": coords})
+        gpu.state.blend_set('ALPHA')
+        shader.bind()
+        shader.uniform_float("color", buttons_color[1])  
+        batch.draw(shader)
+        gpu.state.blend_set('NONE')
 
-    
-    blf.position(font_emoji, x+w/5, y+w/3, 0)
-    blf.size(font_emoji, int(w/2),72)
-    blf.color(font_emoji, 1.0, 1.0, 1.0, 1.0)
-    blf.draw(font_emoji, "📁")
+        
+        blf.position(font_emoji, x+w/5, y+w/3, 0)
+        blf.size(font_emoji, int(w/2),72)
+        blf.color(font_emoji, 1.0, 1.0, 1.0, 1.0)
+        blf.draw(font_emoji, "📁")
 
-    #Button 2
-    y-=w
-    shader = gpu.shader.from_builtin('2D_UNIFORM_COLOR')
-    coords = [(x, y), (x + w, y), (x + w, y + h), (x, y + h)]
-    batch = batch_for_shader(shader, 'TRI_FAN', {"pos": coords})
-    gpu.state.blend_set('ALPHA')
-    shader.bind()
-    shader.uniform_float("color", buttons_color[2])  
-    batch.draw(shader)
-    gpu.state.blend_set('NONE')
+        #Button 2
+        y-=w
+        shader = gpu.shader.from_builtin('2D_UNIFORM_COLOR')
+        coords = [(x, y), (x + w, y), (x + w, y + h), (x, y + h)]
+        batch = batch_for_shader(shader, 'TRI_FAN', {"pos": coords})
+        gpu.state.blend_set('ALPHA')
+        shader.bind()
+        shader.uniform_float("color", buttons_color[2])  
+        batch.draw(shader)
+        gpu.state.blend_set('NONE')
 
-    blf.position(font_emoji, x+w/5, y+w/3, 0)
-    blf.size(font_emoji, int(w/2),72)
-    blf.color(font_emoji, 1.0, 1.0, 1.0, 1.0)
-    blf.draw(font_emoji, "📏")
+        blf.position(font_emoji, x+w/5, y+w/3, 0)
+        blf.size(font_emoji, int(w/2),72)
+        blf.color(font_emoji, 1.0, 1.0, 1.0, 1.0)
+        blf.draw(font_emoji, "📏")
 
-    #Button 3
-    y-=w
-    shader = gpu.shader.from_builtin('2D_UNIFORM_COLOR')
-    coords = [(x, y), (x + w, y), (x + w, y + h), (x, y + h)]
-    batch = batch_for_shader(shader, 'TRI_FAN', {"pos": coords})
-    gpu.state.blend_set('ALPHA')
-    shader.bind()
-    shader.uniform_float("color", buttons_color[3])  
-    batch.draw(shader)
-    gpu.state.blend_set('NONE')
+        #Button 3
+        y-=w
+        shader = gpu.shader.from_builtin('2D_UNIFORM_COLOR')
+        coords = [(x, y), (x + w, y), (x + w, y + h), (x, y + h)]
+        batch = batch_for_shader(shader, 'TRI_FAN', {"pos": coords})
+        gpu.state.blend_set('ALPHA')
+        shader.bind()
+        shader.uniform_float("color", buttons_color[3])  
+        batch.draw(shader)
+        gpu.state.blend_set('NONE')
 
-    blf.position(font_emoji, x+w/5, y+w/3, 0)
-    blf.size(font_emoji, int(w/2),72)
-    blf.color(font_emoji, 1.0, 1.0, 1.0, 1.0)
-    blf.draw(font_emoji, "✒︎")
+        blf.position(font_emoji, x+w/5, y+w/3, 0)
+        blf.size(font_emoji, int(w/2),72)
+        blf.color(font_emoji, 1.0, 1.0, 1.0, 1.0)
+        blf.draw(font_emoji, "✒︎")
 
-    #Button 4
-    y-=w
-    shader = gpu.shader.from_builtin('2D_UNIFORM_COLOR')
-    coords = [(x, y), (x + w, y), (x + w, y + h), (x, y + h)]
-    batch = batch_for_shader(shader, 'TRI_FAN', {"pos": coords})
-    gpu.state.blend_set('ALPHA')
-    shader.bind()
-    shader.uniform_float("color", buttons_color[4])  
-    batch.draw(shader)
-    gpu.state.blend_set('NONE')
+        #Button 4
+        y-=w
+        shader = gpu.shader.from_builtin('2D_UNIFORM_COLOR')
+        coords = [(x, y), (x + w, y), (x + w, y + h), (x, y + h)]
+        batch = batch_for_shader(shader, 'TRI_FAN', {"pos": coords})
+        gpu.state.blend_set('ALPHA')
+        shader.bind()
+        shader.uniform_float("color", buttons_color[4])  
+        batch.draw(shader)
+        gpu.state.blend_set('NONE')
 
-    blf.position(font_emoji, x+w/5, y+w/3, 0)
-    blf.size(font_emoji, int(w/2),72)
-    blf.color(font_emoji, 1.0, 1.0, 1.0, 1.0)
-    blf.draw(font_emoji, "🧹")
+        blf.position(font_emoji, x+w/5, y+w/3, 0)
+        blf.size(font_emoji, int(w/2),72)
+        blf.color(font_emoji, 1.0, 1.0, 1.0, 1.0)
+        blf.draw(font_emoji, "🧹")
 
-    #Button 5
-    y-=w
-    shader = gpu.shader.from_builtin('2D_UNIFORM_COLOR')
-    coords = [(x, y), (x + w, y), (x + w, y + h), (x, y + h)]
-    batch = batch_for_shader(shader, 'TRI_FAN', {"pos": coords})
-    gpu.state.blend_set('ALPHA')
-    shader.bind()
-    shader.uniform_float("color", buttons_color[5])  
-    batch.draw(shader)
-    gpu.state.blend_set('NONE')
+        #Button 5
+        y-=w
+        shader = gpu.shader.from_builtin('2D_UNIFORM_COLOR')
+        coords = [(x, y), (x + w, y), (x + w, y + h), (x, y + h)]
+        batch = batch_for_shader(shader, 'TRI_FAN', {"pos": coords})
+        gpu.state.blend_set('ALPHA')
+        shader.bind()
+        shader.uniform_float("color", buttons_color[5])  
+        batch.draw(shader)
+        gpu.state.blend_set('NONE')
 
-    blf.position(font_emoji, x+w/5, y+w/3, 0)
-    blf.size(font_emoji, int(w/2),72)
-    blf.color(font_emoji, 1.0, 1.0, 1.0, 1.0)
-    blf.draw(font_emoji, "✔︎")
+        blf.position(font_emoji, x+w/5, y+w/3, 0)
+        blf.size(font_emoji, int(w/2),72)
+        blf.color(font_emoji, 1.0, 1.0, 1.0, 1.0)
+        blf.draw(font_emoji, "✔︎")
 
-    # Drawing mode
-    blf.position(0, w/5, w/5, 0)
-    blf.size(0, int(w/5),72)
-    blf.color(0, 1.0, 1.0, 1.0, 1.0)
-    blf.draw(0, "Drawing mode = " + drawing_mode)
+        # Drawing mode
+        blf.position(0, w/5, w/5, 0)
+        blf.size(0, int(w/5),72)
+        blf.color(0, 1.0, 1.0, 1.0, 1.0)
+        blf.draw(0, "Drawing mode = " + drawing_mode)
 
+    elif part==1:
+        #Button 0
+        x, y, w, h = button_rect()
+        shader = gpu.shader.from_builtin('2D_UNIFORM_COLOR')
+        coords = [(x, y), (x + w, y), (x + w, y + h), (x, y + h)]
+        batch = batch_for_shader(shader, 'TRI_FAN', {"pos": coords})
+        gpu.state.blend_set('ALPHA')
+        shader.bind()
+        shader.uniform_float("color", buttons_color[0])  
+        batch.draw(shader)
+        gpu.state.blend_set('NONE')
 
+        blf.position(font_emoji, x+w/5, y+w/3, 0)
+        blf.size(font_emoji, int(w/2),72)
+        blf.color(font_emoji, 1.0, 1.0, 1.0, 1.0)
+        blf.draw(font_emoji, "✖︎")
+
+        #Button 1
+        y-=w
+        shader = gpu.shader.from_builtin('2D_UNIFORM_COLOR')
+        coords = [(x, y), (x + w, y), (x + w, y + h), (x, y + h)]
+        batch = batch_for_shader(shader, 'TRI_FAN', {"pos": coords})
+        gpu.state.blend_set('ALPHA')
+        shader.bind()
+        shader.uniform_float("color", buttons_color[5])  
+        batch.draw(shader)
+        gpu.state.blend_set('NONE')
+
+        blf.position(font_emoji, x+w/5, y+w/3, 0)
+        blf.size(font_emoji, int(w/2),72)
+        blf.color(font_emoji, 1.0, 1.0, 1.0, 1.0)
+        blf.draw(font_emoji, "✔︎")
 
 # Affichage de l'UI et gestion des inputs
 class Operator_UImanager(bpy.types.Operator):
@@ -359,8 +400,13 @@ class Operator_UImanager(bpy.types.Operator):
     def modal(self, context, event):
         global is_open
         global drawing_mode
-        self.draw_buttons(context,event)
-        self.draw_tool(context,event)
+
+        if part==0:
+            self.part1_button_manager(context,event)
+            self.part1_tool_manager(context,event)
+        
+        elif part ==1:
+            self.part2_button_manager(context,event)
         
         if not is_open:
             return{'FINISHED'}
@@ -371,12 +417,13 @@ class Operator_UImanager(bpy.types.Operator):
         return {'RUNNING_MODAL'}
 
 
-    def draw_buttons(self,context,event):
+    def part1_button_manager(self,context,event):
         global is_drawing
         global is_open
         global buttons_color
         global list_points
         global drawing_mode
+        global part
         # Buttons
         if self.click_on_button(context,event,0):
             is_open=False
@@ -407,7 +454,22 @@ class Operator_UImanager(bpy.types.Operator):
 
         if self.click_on_button(context,event,5):     
             print (list_points)
-            is_open=False
+            is_drawing=False
+            drawing_mode="None"
+            
+            #Récupérer les contours
+            edges_list=[ [(1,1,0),(2,1,0)] , [(1,3,0),(2,2,0)], [(4,4,0), (4,3,0)]] #Liste des points de la forme, triés dans le sens horraire
+            # Remplacer par fonction C
+
+            #Création de la zone de data liée au volume
+            crcl = bpy.data.meshes.new('circle')
+            mesh=gen_vol.giveMeTheMesh(edges_list)
+            crcl.from_pydata(mesh[0],mesh[1],mesh[2])
+            
+            #Ajoute l'objet dans la collection actuelle 
+            obj = bpy.data.objects.new('Circle', crcl)
+            old_scene.collection.objects.link(obj)
+                #part=1
         
         if event.type == 'ESC':
             is_drawing=False
@@ -431,8 +493,18 @@ class Operator_UImanager(bpy.types.Operator):
 
         override["area"].tag_redraw()
 
+    def part2_button_manager(self,context,event):
+        global is_open
+        if self.click_on_button(context,event,0):
+            is_open=False
 
-    def draw_tool(self,context,event):
+        if self.click_on_button(context,event,1):
+            is_open=False
+
+
+
+
+    def part1_tool_manager(self,context,event):
         global is_drawing
         global list_points
         global drawing_mode
@@ -570,9 +642,11 @@ class Operator_SetBackgroundImage(bpy.types.Operator):
     filepath: bpy.props.StringProperty(subtype="FILE_PATH")
     global tex_image
     global plane
+    
 
     def execute(self, context):
-        self.report({'INFO'}, f"Fichier choisi : {self.filepath}")
+        global path
+        path=self.filepath
         image = bpy.data.images.load(self.filepath)
         tex_image.image=image
 

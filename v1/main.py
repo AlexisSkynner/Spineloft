@@ -35,7 +35,7 @@ def fillSpine(spineSize, spine):
             spine[i].y = int(y_center - radius * math.sin(angle))
 
 bufSize = 1000
-C = ffi.dlopen("./libSpineLoft.dylib") # remplacer par .dll ou .so ou .dylib selon l'OS
+C = ffi.dlopen("./libSpineLoft.dll") # remplacer par .dll ou .so ou .dylib selon l'OS
 
 buf = ffi.new("rib[]", 2 * bufSize + 1)
 
