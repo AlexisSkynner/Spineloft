@@ -48,7 +48,7 @@
 
 ### 08/04/2025 :
 - (Dorian + Timothée) : Nouvelle tentative de création de l'UI Blender : usage d'une scène vide avec blocage caméra + blf (texte) + gpu (image) --> Succès
-- (Alex) : debut de l'élaboration d'un meilleur algorithme pour la fonction d2_grad
+- (Alex) : début de l'élaboration d'un meilleur algorithme pour la fonction d2_grad
 
 ### 15/04/2025 :
 - (Dorian + Timothée) : Première version prête à l'emploi de l'UI : bouton de loading d'image, de dessin, de fermeture de la fenêtre et de validation. 
@@ -70,10 +70,10 @@
 
 ## 12/05/2025 :
 - (Dorian) : Nettoyage du code dans l'objectif d'implémenter une nouvelle UI servant à modifier les points résultants du programme de création de spine.
-- (Timothée) : Recherche de jeu de tests libre de droits pour tester la V1 quand elle sera prete. Lecture des différentes règles existences pour l'utilisation d'images.
+- (Timothée) : Recherche de jeu de tests libre de droits pour tester la V1 quand elle sera prête. Lecture des différentes règles existences pour l'utilisation d'images.
 
 ## 26/05/2025 :
-- (Dorian & Alex) : Tentative de jonction des deux parties du projet (UI Blender en Python et SpineLoft en C) : échec car l'addon Blender avait été développé dans une version obselète
+- (Dorian & Alex) : Tentative de jonction des deux parties du projet (UI Blender en Python et SpineLoft en C) : échec car l'addon Blender avait été développé dans une version obsolète
 
 ## 01/06/2025 :
-- (Dorian) : Mise à jour de l'addon afin d'être compatible avec la version actuelle de Blender (4.3).
+- (Dorian) : Mise à jour de l'addon afin d'être compatible avec la version actuelle de Blender (4.4).
