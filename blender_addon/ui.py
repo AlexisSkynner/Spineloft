@@ -33,8 +33,7 @@ class Panel_PhotoSketching(bpy.types.Panel):
         row = layout.row()
         row.operator(Operator_DrawSpine.bl_idname)
 
-        row = layout.row()
-        row.operator(Operator_CreateVolume.bl_idname)
+
 
     def execute(self, context):
         return {'FINISHED'}

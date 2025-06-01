@@ -26,6 +26,8 @@ drawing_mode="None"
 part=0
 old_scene=None
 path=None
+image_width=0
+image_height=0
 
 ###########################################################################################################################################
 def createWindow():
@@ -60,26 +62,22 @@ def createWindow():
     global old_scene
     old_scene=bpy.context.scene
     
-    for window in bpy.context.window_manager.windows:
-        for area in window.screen.areas:
-            if area.type == 'VIEW_3D':
-                for region in area.regions:
-                    if region.type == 'WINDOW':
-                        global override
-                        override = {
-                            'window': window,
-                            'screen': window.screen,
-                            'area': area,
-                            'region': region,
-                        }
+    area = next(area for area in bpy.context.screen.areas if area.type == 'VIEW_3D')
+    region = next(region for region in area.regions if region.type == 'WINDOW')
+    space = next(space for space in area.spaces if space.type == 'VIEW_3D')
 
-                        bpy.ops.view3d.view_selected(override)
-                        break
-                break
+    global override
+    override = {
+        'window': bpy.context.window,
+        'screen': bpy.context.screen,
+        'area': area,
+        'region': region,
+        'scene': bpy.data.scenes[name],
+        'space_data': space,
+    }
 
 
     bpy.context.window.scene = bpy.data.scenes[name]
-    space = area.spaces[-1]
     save_overlay_state(space)
     space.lock_camera = True  # Verrouiller la caméra dans la vue
     space.overlay.show_axis_x = False  
@@ -97,7 +95,9 @@ def createWindow():
     
 
     #### Image de reference ##################################################################""
-    bpy.ops.mesh.primitive_plane_add(override,size=1, enter_editmode=False, align='WORLD', location=(0, 0, 0))
+    
+    with bpy.context.temp_override(window=override["window"],area=override["area"],region=override["region"]):
+        bpy.ops.mesh.primitive_plane_add(size=1, enter_editmode=False, align='WORLD', location=(0, 0, 0))
     global plane
     plane = bpy.context.active_object
     plane.name = "ImagePlane"
@@ -130,7 +130,7 @@ def createWindow():
     create_spline(curve_data)
     ###############################################################################################################
 
-    ### Start then UI ###################################################################################################################
+    ### Start the UI ###################################################################################################################
     global is_open
     global handle
     global part
@@ -138,7 +138,8 @@ def createWindow():
     is_open=True
     bpy.app.timers.register(functools.partial(scene_manager,old_scene))
     handle = bpy.types.SpaceView3D.draw_handler_add(draw_buttons, (None,override), 'WINDOW', 'POST_PIXEL')
-    bpy.ops.view3d.ui_manager(override,'INVOKE_DEFAULT')
+    with bpy.context.temp_override(window=override["window"],area=override["area"],region=override["region"]):
+        bpy.ops.view3d.ui_manager('INVOKE_DEFAULT')
     return
 ###########################################################################################################################################
 
@@ -258,7 +259,7 @@ def draw_buttons(a,b):
     if part==0:
         #Button 0
         x, y, w, h = button_rect()
-        shader = gpu.shader.from_builtin('2D_UNIFORM_COLOR')
+        shader = gpu.shader.from_builtin('UNIFORM_COLOR')
         coords = [(x, y), (x + w, y), (x + w, y + h), (x, y + h)]
         batch = batch_for_shader(shader, 'TRI_FAN', {"pos": coords})
         gpu.state.blend_set('ALPHA')
@@ -268,13 +269,13 @@ def draw_buttons(a,b):
         gpu.state.blend_set('NONE')
 
         blf.position(font_emoji, x+w/5, y+w/3, 0)
-        blf.size(font_emoji, int(w/2),72)
+        blf.size(font_emoji, w/2)
         blf.color(font_emoji, 1.0, 1.0, 1.0, 1.0)
         blf.draw(font_emoji, "✖︎")
 
         #Button 1
         y-=w
-        shader = gpu.shader.from_builtin('2D_UNIFORM_COLOR')
+        shader = gpu.shader.from_builtin('UNIFORM_COLOR')
         coords = [(x, y), (x + w, y), (x + w, y + h), (x, y + h)]
         batch = batch_for_shader(shader, 'TRI_FAN', {"pos": coords})
         gpu.state.blend_set('ALPHA')
@@ -285,13 +286,13 @@ def draw_buttons(a,b):
 
         
         blf.position(font_emoji, x+w/5, y+w/3, 0)
-        blf.size(font_emoji, int(w/2),72)
+        blf.size(font_emoji, w/2)
         blf.color(font_emoji, 1.0, 1.0, 1.0, 1.0)
         blf.draw(font_emoji, "📁")
 
         #Button 2
         y-=w
-        shader = gpu.shader.from_builtin('2D_UNIFORM_COLOR')
+        shader = gpu.shader.from_builtin('UNIFORM_COLOR')
         coords = [(x, y), (x + w, y), (x + w, y + h), (x, y + h)]
         batch = batch_for_shader(shader, 'TRI_FAN', {"pos": coords})
         gpu.state.blend_set('ALPHA')
@@ -301,13 +302,13 @@ def draw_buttons(a,b):
         gpu.state.blend_set('NONE')
 
         blf.position(font_emoji, x+w/5, y+w/3, 0)
-        blf.size(font_emoji, int(w/2),72)
+        blf.size(font_emoji, w/2)
         blf.color(font_emoji, 1.0, 1.0, 1.0, 1.0)
         blf.draw(font_emoji, "📏")
 
         #Button 3
         y-=w
-        shader = gpu.shader.from_builtin('2D_UNIFORM_COLOR')
+        shader = gpu.shader.from_builtin('UNIFORM_COLOR')
         coords = [(x, y), (x + w, y), (x + w, y + h), (x, y + h)]
         batch = batch_for_shader(shader, 'TRI_FAN', {"pos": coords})
         gpu.state.blend_set('ALPHA')
@@ -317,13 +318,13 @@ def draw_buttons(a,b):
         gpu.state.blend_set('NONE')
 
         blf.position(font_emoji, x+w/5, y+w/3, 0)
-        blf.size(font_emoji, int(w/2),72)
+        blf.size(font_emoji, w/2)
         blf.color(font_emoji, 1.0, 1.0, 1.0, 1.0)
         blf.draw(font_emoji, "✒︎")
 
         #Button 4
         y-=w
-        shader = gpu.shader.from_builtin('2D_UNIFORM_COLOR')
+        shader = gpu.shader.from_builtin('UNIFORM_COLOR')
         coords = [(x, y), (x + w, y), (x + w, y + h), (x, y + h)]
         batch = batch_for_shader(shader, 'TRI_FAN', {"pos": coords})
         gpu.state.blend_set('ALPHA')
@@ -333,13 +334,13 @@ def draw_buttons(a,b):
         gpu.state.blend_set('NONE')
 
         blf.position(font_emoji, x+w/5, y+w/3, 0)
-        blf.size(font_emoji, int(w/2),72)
+        blf.size(font_emoji, w/2)
         blf.color(font_emoji, 1.0, 1.0, 1.0, 1.0)
         blf.draw(font_emoji, "🧹")
 
         #Button 5
         y-=w
-        shader = gpu.shader.from_builtin('2D_UNIFORM_COLOR')
+        shader = gpu.shader.from_builtin('UNIFORM_COLOR')
         coords = [(x, y), (x + w, y), (x + w, y + h), (x, y + h)]
         batch = batch_for_shader(shader, 'TRI_FAN', {"pos": coords})
         gpu.state.blend_set('ALPHA')
@@ -349,7 +350,7 @@ def draw_buttons(a,b):
         gpu.state.blend_set('NONE')
 
         blf.position(font_emoji, x+w/5, y+w/3, 0)
-        blf.size(font_emoji, int(w/2),72)
+        blf.size(font_emoji, w/2)
         blf.color(font_emoji, 1.0, 1.0, 1.0, 1.0)
         blf.draw(font_emoji, "✔︎")
 
@@ -362,7 +363,7 @@ def draw_buttons(a,b):
     elif part==1:
         #Button 0
         x, y, w, h = button_rect()
-        shader = gpu.shader.from_builtin('2D_UNIFORM_COLOR')
+        shader = gpu.shader.from_builtin('UNIFORM_COLOR')
         coords = [(x, y), (x + w, y), (x + w, y + h), (x, y + h)]
         batch = batch_for_shader(shader, 'TRI_FAN', {"pos": coords})
         gpu.state.blend_set('ALPHA')
@@ -372,13 +373,13 @@ def draw_buttons(a,b):
         gpu.state.blend_set('NONE')
 
         blf.position(font_emoji, x+w/5, y+w/3, 0)
-        blf.size(font_emoji, int(w/2),72)
+        blf.size(font_emoji, w/2)
         blf.color(font_emoji, 1.0, 1.0, 1.0, 1.0)
         blf.draw(font_emoji, "✖︎")
 
         #Button 1
         y-=w
-        shader = gpu.shader.from_builtin('2D_UNIFORM_COLOR')
+        shader = gpu.shader.from_builtin('UNIFORM_COLOR')
         coords = [(x, y), (x + w, y), (x + w, y + h), (x, y + h)]
         batch = batch_for_shader(shader, 'TRI_FAN', {"pos": coords})
         gpu.state.blend_set('ALPHA')
@@ -388,7 +389,7 @@ def draw_buttons(a,b):
         gpu.state.blend_set('NONE')
 
         blf.position(font_emoji, x+w/5, y+w/3, 0)
-        blf.size(font_emoji, int(w/2),72)
+        blf.size(font_emoji, w/2)
         blf.color(font_emoji, 1.0, 1.0, 1.0, 1.0)
         blf.draw(font_emoji, "✔︎")
 
@@ -432,7 +433,8 @@ class Operator_UImanager(bpy.types.Operator):
 
             
         if self.click_on_button(context,event,1):
-            bpy.ops.wm.open_file_selector(override, 'INVOKE_DEFAULT')
+            with bpy.context.temp_override(window=override["window"],area=override["area"],region=override["region"]):
+                bpy.ops.wm.open_file_selector('INVOKE_DEFAULT')
 
 
         if self.click_on_button(context,event,2):
@@ -457,9 +459,13 @@ class Operator_UImanager(bpy.types.Operator):
             is_drawing=False
             drawing_mode="None"
             
-            #Récupérer les contours
+            #Récupérer les contours ########################################
             edges_list=[ [(1,1,0),(2,1,0)] , [(1,3,0),(2,2,0)], [(4,4,0), (4,3,0)]] #Liste des points de la forme, triés dans le sens horraire
-            # Remplacer par fonction C
+            ###### Remplacer par fonction C 
+            # Le chemin vers l'image est stocké dans la fonction path
+            # La liste des points 
+            # image_width, image_height
+            ################################################################
 
             #Création de la zone de data liée au volume
             crcl = bpy.data.meshes.new('circle')
@@ -469,6 +475,7 @@ class Operator_UImanager(bpy.types.Operator):
             #Ajoute l'objet dans la collection actuelle 
             obj = bpy.data.objects.new('Circle', crcl)
             old_scene.collection.objects.link(obj)
+            is_open=False
                 #part=1
         
         if event.type == 'ESC':
@@ -646,6 +653,8 @@ class Operator_SetBackgroundImage(bpy.types.Operator):
 
     def execute(self, context):
         global path
+        global image_width
+        global image_height
         path=self.filepath
         image = bpy.data.images.load(self.filepath)
         tex_image.image=image
@@ -655,6 +664,9 @@ class Operator_SetBackgroundImage(bpy.types.Operator):
         width=size[0]/size[i]
         height=size[1]/size[i]
         plane.scale = (width,height,1)
+
+        image_width=size[0]
+        image_height=size[1]
         return {'FINISHED'}
 
     def invoke(self, context, event):
