@@ -71,3 +71,9 @@
 ## 12/05/2025 :
 - (Dorian) : Nettoyage du code dans l'objectif d'implémenter une nouvelle UI servant à modifier les points résultants du programme de création de spine.
 - (Timothée) : Recherche de jeu de tests libre de droits pour tester la V1 quand elle sera prete. Lecture des différentes règles existences pour l'utilisation d'images.
+
+## 26/05/2025 :
+- (Dorian & Alex) : Tentative de jonction des deux parties du projet (UI Blender en Python et SpineLoft en C) : échec car l'addon Blender avait été développé dans une version obselète
+
+## 01/06/2025 :
+- (Dorian) : Mise à jour de l'addon afin d'être compatible avec la version actuelle de Blender (4.3).
