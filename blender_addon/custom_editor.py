@@ -356,7 +356,7 @@ def draw_buttons(a,b):
 
         # Drawing mode
         blf.position(0, w/5, w/5, 0)
-        blf.size(0, int(w/5),72)
+        blf.size(0, w/5)
         blf.color(0, 1.0, 1.0, 1.0, 1.0)
         blf.draw(0, "Drawing mode = " + drawing_mode)
 
