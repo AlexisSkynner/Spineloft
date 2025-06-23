@@ -1,7 +1,6 @@
-from PIL import Image
+from . import PIL
 import math
-from . import d2 
-
+from . import d2
 def get_x(v):
     return v[0]
 
@@ -11,7 +10,7 @@ def get_y(v):
 def contour_detection(path_image): 
 
     # Charge l'image en niveaux de gris
-    img = Image.open(path_image).convert("L")
+    img = PIL.Image.open(path_image).convert("L")
     if img is None:
         print("Error: Could not open or find the image!")
         return -1
@@ -20,7 +19,7 @@ def contour_detection(path_image):
     pixels = img.load()
 
     # Crée une nouvelle image pour les contours
-    edges = Image.new("L", (width, height))
+    edges = PIL.Image.new("L", (width, height))
     edge_pixels = edges.load()
 
     # Détection simple : différence entre pixels voisins
