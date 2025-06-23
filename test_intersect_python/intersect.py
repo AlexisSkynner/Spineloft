@@ -1,12 +1,6 @@
 from PIL import Image
 import math
-from . import d2 
-
-def get_x(v):
-    return v[0]
-
-def get_y(v):
-    return v[1]
+import d2grad 
 
 def contour_detection(path_image): 
 
@@ -34,10 +28,25 @@ def contour_detection(path_image):
 
             # Seuil de détection des bords réglables 
             edge_pixels[x, y] = 255 if gradient > 30 else 0
+
     return edges
 
-def intersect(path_image : str, stroke : list) -> list:
+
+
+def intersect(path_image, path_stroke, pRibs):
+
     edges = contour_detection(path_image) 
+
+    stroke = []
+    try:
+        with open(path_stroke, "r") as f:
+            for line in f:
+                x_str, y_str = line.strip().split()
+                stroke.append(float(x_str), float(y_str))
+
+    except Exception as e:
+        print("Error reading stroke:", e)
+        return -1
 
     width, height = edges.size
     pixels = edges.load()
@@ -51,7 +60,7 @@ def intersect(path_image : str, stroke : list) -> list:
 
         #Init of the two first points close to stroke point for determining the left and right point of the rib
 
-        middle = ((stroke[i][0] + stroke[i + 1][0]) / 2.0, (stroke[i][1] + stroke[i + 1][1]) / 2.0)
+        middle = (stroke[i] + stroke[i + 1]) / 2.0
 
         dx = stroke[i + 1][0] - middle[0]
         dy = middle[1] - stroke[i + 1][1]
@@ -68,7 +77,7 @@ def intersect(path_image : str, stroke : list) -> list:
 
         # Walk right
         while True:
-            grad = d2.d2grad(right_ext, stroke)
+            grad = d2grad(right_ext, stroke)
             right_ext = right_ext + grad * alpha
             pix = (int(right_ext[0]),int(right_ext[1]))
 
@@ -81,7 +90,7 @@ def intersect(path_image : str, stroke : list) -> list:
 
         # Walk left
         while True:
-            grad = d2.d2grad(left_ext, stroke)
+            grad = d2grad(left_ext, stroke)
             left_ext = left_ext + grad * alpha
             pix = (int(left_ext[0]),int(left_ext[1]))
 
@@ -94,12 +103,10 @@ def intersect(path_image : str, stroke : list) -> list:
 
         ribs.append((right_ext.toint(), left_ext.toint()))
 
-    return ribs
+    for i, (r, l) in enumerate(ribs):
+        pRibs[i] = {
+            'x1': r[0], 'y1': r[1],
+            'x2': l[0], 'y2': l[1]
+        }
 
-    # for i, (r, l) in enumerate(ribs):
-    #     pRibs[i] = {
-    #         'x1': r[0], 'y1': r[1],
-    #         'x2': l[0], 'y2': l[1]
-    #     }
-
-    # return len(ribs)
+    return len(ribs)
