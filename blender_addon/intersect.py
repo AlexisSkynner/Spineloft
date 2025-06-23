@@ -57,14 +57,14 @@ def intersect(path_image : str, stroke : list) -> list:
         dy = middle[1] - stroke[i + 1][1]
 
         # Right
-        rx = middle[0] + dx * math.cos(math.pi/2) + dy * math.sin(math.pi/2)
-        ry = middle[1] + dx * math.sin(math.pi/2) - dy * math.cos(math.pi/2)
-        right_ext = ((rx - middle[0]) * correction + middle[0], (ry - middle[1]) * correction + middle[1])
+        rx = dx * math.cos(math.pi/2) + dy * math.sin(math.pi/2)
+        ry = dx * math.sin(math.pi/2) - dy * math.cos(math.pi/2)
+        right_ext = (rx * correction + middle[0], ry * correction + middle[1])
 
         # Left
-        lx = middle[0] + dx * math.cos(-math.pi/2) + dy * math.sin(-math.pi/2)
-        ly = middle[1] + dx * math.sin(-math.pi/2) - dy * math.cos(-math.pi/2)
-        left_ext = ((lx - middle[0]) * correction + middle[0], (ly - middle[1]) * correction + middle[1])
+        lx = dx * math.cos(-math.pi/2) + dy * math.sin(-math.pi/2)
+        ly = dx * math.sin(-math.pi/2) - dy * math.cos(-math.pi/2)
+        left_ext = (lx * correction + middle[0], ly * correction + middle[1])
 
         # Walk right
         while True:

@@ -36,6 +36,9 @@ def d2(x : tuple, stroke : list) -> float:
 
 def d2grad(x : tuple, stroke : list) -> tuple:
     dx = 5.0
-    here = d2(x, stroke)
-    res = (d2((x[0] + dx, x[1]), stroke) - here) / dx, (d2((x[0], x[1] + dx), stroke) - here) / dx
-    return res / length(res)
+    d2here : float = d2(x, stroke)
+    right : tuple = (x[0] + dx, x[1])
+    down : tuple = (x[0], x[1] + dx)
+    res : tuple = ((d2(right, stroke) - d2here) / dx, (d2(down, stroke) - d2here) / dx)
+    l : float = length(res)
+    return (res[0] / l, res[1] / l)
