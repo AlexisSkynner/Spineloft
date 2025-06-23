@@ -503,7 +503,8 @@ class Operator_UImanager(bpy.types.Operator):
                 xd2 = (x2 / image_width - 0.5)   * ratio_x
                 yd2 = -(y2 / image_height - 0.5) * ratio_y
 
-                edges_list.append([(xd1, yd1, 0), (xd2, yd2, 0)])
+                edges_list.append((xd1, yd1, 0))
+                edges_list.append((xd2, yd2, 0))
 
             #Création de la zone de data liée au volume
             crcl = bpy.data.meshes.new('circle')

@@ -211,7 +211,7 @@ def giveMeTheMesh(listPts):
     
     newList=[]
     for i in range(len(listPts)//2):
-        newList.append([listPts[2*i]+[0],listPts[2*i+1]+[0]])
+        newList.append([listPts[2*i],listPts[2*i+1]])
     
     finalShape=addVertices(shapeStart,newList)
     finalShape=addEdges(finalShape,shapeStart, newList)

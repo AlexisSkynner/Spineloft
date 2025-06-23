@@ -92,7 +92,10 @@ def intersect(path_image : str, stroke : list) -> list:
             if pixels[pix[0], pix[1]] == 255:
                 break
 
-        ribs.append(((int(right_ext[0]),int(right_ext[1])),(int(left_ext[0]),int(left_ext[1]))))
+        ans_x : tuple = (int(right_ext[0]),int(right_ext[1]))
+        ans_y : tuple = (int(left_ext[0]),int(left_ext[1]))
+        ans : tuple = (ans_x, ans_y)
+        ribs.append(ans)
 
     return ribs
 
