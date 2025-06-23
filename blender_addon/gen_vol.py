@@ -15,8 +15,13 @@ def cos_sin_between_vectors(u, v):
     vect_product = u[0]*v[1]-u[1]*v[0]
     norm_u = math.sqrt(sum(i**2 for i in u))
     norm_v = math.sqrt(sum(i**2 for i in v))
-    cos_theta = dot_product / (norm_u * norm_v)
-    sin_theta = vect_product / (norm_u * norm_v)
+
+    if norm_u*norm_v==0:
+        cos_theta=1
+        sin_theta=0
+    else:
+        cos_theta = dot_product / (norm_u * norm_v)
+        sin_theta = vect_product / (norm_u * norm_v)
     return (cos_theta,sin_theta)
 
 
@@ -125,13 +130,19 @@ shapeCircle=copy.deepcopy(homo(Shape(A,B,C),0.25))
 A=[(-0.5,0,-0.5),(0.5,0,-0.5),(0.5,0,0.5),(-0.5,0,0.5)]
 B=[(0,3)]+[(i,i+1) for i in range (3)]
 C=[]
-
 shapeSquare=copy.deepcopy(Shape(A,B,C))
 
+#rib
+A=[(-0.5,0,0),(0.5,0,0)]
+B=[(0,1)]
+C=[]
+shapeRib=copy.deepcopy(Shape(A,B,C))
 
 
 
-shapeStart = shapeCircle
+
+
+shapeStart = shapeRib
 
 
 def addVertices(startShape:Shape,listPts:list):
@@ -167,10 +178,10 @@ def addEdges(finalShape:Shape,startShape:Shape, listPts:list):
             edge1=edge[1]+i*nbVertices
             finalShape.edges.append((edge0,edge1))
             
-    #Edges et faces de la connection
-    for i in range(l-1):
-        for j in range(nbVertices):
-            finalShape.edges.append( ( nbVertices*i+j , nbVertices*(i+1)+j ) )
+    # #Edges et faces de la connection
+    # for i in range(l-1):
+    #     for j in range(nbVertices):
+    #         finalShape.edges.append( ( nbVertices*i+j , nbVertices*(i+1)+j ) )
 
 
 
@@ -215,7 +226,7 @@ def giveMeTheMesh(listPts):
     
     finalShape=addVertices(shapeStart,newList)
     finalShape=addEdges(finalShape,shapeStart, newList)
-    finalShape=addFaces(finalShape,shapeStart, newList)
+    # finalShape=addFaces(finalShape,shapeStart, newList)
     
 
     return(finalShape.vertices,finalShape.edges,finalShape.faces)

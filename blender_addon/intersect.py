@@ -30,8 +30,8 @@ def contour_detection(width : int, height : int, pixels : list):
         for x in range(1, width - 1):
 
             # Gradient approximatif (Sobel simplifié)
-            gx = abs(pixels[(x + 1) + y * width] - pixels[(x - 1) + y * width])
-            gy = abs(pixels[x + (y + 1) * width] - pixels[x + (y - 1) * width])
+            gx = abs(pixels[y*width+x+1] - pixels[y*width+x-1])
+            gy = abs(pixels[(y+1)*width+x] - pixels[(y-1)*width+x])
             gradient = gx + gy
 
             # Seuil de détection des bords réglables 
@@ -74,7 +74,7 @@ def intersect(width : int, height : int, img : list, stroke : list) -> list:
                 print("Out of bounds")
                 break
 
-            if pixels[pix[0], pix[1]] == 255:
+            if pixels[pix[0] + width* pix[1]] == 255:
                 break
 
         # Walk left
@@ -87,7 +87,7 @@ def intersect(width : int, height : int, img : list, stroke : list) -> list:
                 print("Out of bounds (left)")
                 break
 
-            if pixels[pix[0], pix[1]] == 255:
+            if pixels[pix[0]+ width* pix[1]] == 255:
                 break
 
         ans_x : tuple = (int(right_ext[0]),int(right_ext[1]))

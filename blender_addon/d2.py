@@ -19,6 +19,10 @@ def mix(a : float, b : float, t : float) -> float:
 def sdfSegment(p : tuple, a : tuple, b : tuple) -> float:
     ba = b[0] - a[0], b[1] - a[1]
     pa = p[0] - a[0], p[1] - a[1]
+
+    if dot(ba,ba)==0:
+        return(length((p[0]-a[0],p[1]-a[1])))
+
     h = clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0)
     return length((pa[0] - ba[0] * h, pa[1] - ba[1] * h))
 
