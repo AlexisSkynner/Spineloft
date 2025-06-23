@@ -2,6 +2,7 @@ from PIL import Image
 import math
 import d2grad 
 
+
 def contour_detection(path_image): 
 
     # Charge l'image en niveaux de gris
@@ -33,20 +34,9 @@ def contour_detection(path_image):
 
 
 
-def intersect(path_image, path_stroke, pRibs):
+def intersect(path_image, stroke, pRibs):
 
     edges = contour_detection(path_image) 
-
-    stroke = []
-    try:
-        with open(path_stroke, "r") as f:
-            for line in f:
-                x_str, y_str = line.strip().split()
-                stroke.append(float(x_str), float(y_str))
-
-    except Exception as e:
-        print("Error reading stroke:", e)
-        return -1
 
     width, height = edges.size
     pixels = edges.load()
