@@ -1,9 +1,15 @@
 from PIL import Image
+from PIL import ImageFilter
 import math
 
-def contour_detection(path_image): 
+import os
+print("Chemin absolu attendu :", os.path.abspath("girafe.jpg"))
+
+def contour_detection(path_image):
     # Charge l'image en niveaux de gris
     img = Image.open(path_image).convert("L")
+    img = img.filter(ImageFilter.GaussianBlur(radius=7))  # Ajuste le radius selon ton image
+    img.show()
     if img is None:
         print("Error: Could not open or find the image!")
         return -1
@@ -21,11 +27,13 @@ def contour_detection(path_image):
             gx = abs(pixels[x + 1, y] - pixels[x - 1, y])
             gy = abs(pixels[x, y + 1] - pixels[x, y - 1])
             gradient = gx + gy
-            edge_pixels[x, y] = 255 if gradient > 30 else 0
+            edge_pixels[x, y] = 255 if gradient > 7 else 0
 
     return edges
 
 # Appel avec affichage
-edges = contour_detection("image.jpg")
+img = Image.open("/Users/timotheefevrier/Desktop/3d-modeling/test_intersect_python/girafe.jpg")
+img.show()
+edges = contour_detection("/Users/timotheefevrier/Desktop/3d-modeling/test_intersect_python/girafe.jpg")
 if isinstance(edges, Image.Image):
     edges.show()
