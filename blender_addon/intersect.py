@@ -59,17 +59,17 @@ def intersect(path_image : str, stroke : list) -> list:
         # Right
         rx = middle[0] + dx * math.cos(math.pi/2) + dy * math.sin(math.pi/2)
         ry = middle[1] + dx * math.sin(math.pi/2) - dy * math.cos(math.pi/2)
-        right_ext = ((rx, ry) - middle) * correction + middle
+        right_ext = ((rx - middle[0]) * correction + middle[0], (ry - middle[1]) * correction + middle[1])
 
         # Left
         lx = middle[0] + dx * math.cos(-math.pi/2) + dy * math.sin(-math.pi/2)
         ly = middle[1] + dx * math.sin(-math.pi/2) - dy * math.cos(-math.pi/2)
-        left_ext = ((lx, ly) - middle) * correction + middle
+        left_ext = ((lx - middle[0]) * correction + middle[0], (ly - middle[1]) * correction + middle[1])
 
         # Walk right
         while True:
             grad = d2.d2grad(right_ext, stroke)
-            right_ext = right_ext + grad * alpha
+            right_ext = (right_ext[0] + grad[0] * alpha,right_ext[1] + grad[1] * alpha) 
             pix = (int(right_ext[0]),int(right_ext[1]))
 
             if not (0 <= pix[0] < width and 0 <= pix[1] < height):
@@ -82,7 +82,7 @@ def intersect(path_image : str, stroke : list) -> list:
         # Walk left
         while True:
             grad = d2.d2grad(left_ext, stroke)
-            left_ext = left_ext + grad * alpha
+            left_ext = (left_ext[0] + grad[0] * alpha, left_ext[1] + grad[1] * alpha)
             pix = (int(left_ext[0]),int(left_ext[1]))
 
             if not (0 <= pix[0] < width and 0 <= pix[1] < height):
@@ -92,7 +92,7 @@ def intersect(path_image : str, stroke : list) -> list:
             if pixels[pix[0], pix[1]] == 255:
                 break
 
-        ribs.append((right_ext.toint(), left_ext.toint()))
+        ribs.append((int(right_ext[0]),int(right_ext[1])),(int(left_ext[0]),int(left_ext[1])))
 
     return ribs
 
