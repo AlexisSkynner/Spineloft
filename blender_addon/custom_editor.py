@@ -11,23 +11,6 @@ from pathlib import Path
 import numpy as np
 from . import intersect
 
-# from cffi import FFI
-
-# ffi = FFI()
-
-# # Déclaration de la fonction C exposée
-# ffi.cdef("""
-#     typedef struct {
-#         float x_start, y_start;
-#         float x_end, y_end;
-#     } rib;
-
-#     typedef struct {
-#         int x, y;
-#     } pythonVec2;
-
-#     int intersect(const char* path, int nbPoints, pythonVec2* spine, rib* pRibs);
-# """)
 
 
 name="tp.fr.spineloft.customviewerscene"
@@ -45,7 +28,6 @@ tex_image=0
 drawing_mode="None"
 part=0
 old_scene=None
-path=None
 image_width=0
 image_height=0
 
@@ -487,7 +469,14 @@ class Operator_UImanager(bpy.types.Operator):
             ratio_x = min(1, image_width / image_height)
             ratio_y = min(1, image_height / image_width)
 
-            ribs = intersect.intersect(path, [(p[0] / ratio_x + 0.5, 0.5 - p[1] / ratio_y) for p in list_points])
+            img = []
+            for i in range(0, image_width * image_height, 4):
+                print(i)
+                r = image.pixels[i]
+                g = image.pixels[i + 1]
+                b = image.pixels[i + 2]
+                img.append(int(255 * (r * r + g * g + b * b) / 195075))
+            ribs = intersect.intersect(image_width, image_height, img, [(p[0] / ratio_x + 0.5, 0.5 - p[1] / ratio_y) for p in list_points])
 
             edges_list = []
             for i in range(len(ribs)):
@@ -691,10 +680,9 @@ class Operator_SetBackgroundImage(bpy.types.Operator):
     
 
     def execute(self, context):
-        global path
+        global image
         global image_width
         global image_height
-        path=self.filepath
         image = bpy.data.images.load(self.filepath)
         tex_image.image=image
 

@@ -1,4 +1,3 @@
-from PIL import Image
 import math
 from . import d2 
 
@@ -8,44 +7,43 @@ def get_x(v):
 def get_y(v):
     return v[1]
 
-def contour_detection(path_image): 
+def contour_detection(width : int, height : int, pixels : list): 
 
-    # Charge l'image en niveaux de gris
-    img = Image.open(path_image).convert("L")
-    if img is None:
-        print("Error: Could not open or find the image!")
-        return -1
+    # # Charge l'image en niveaux de gris
+    # img = Image.open(path_image).convert("L")
+    # if img is None:
+    #     print("Error: Could not open or find the image!")
+    #     return -1
 
-    width, height = img.size
-    pixels = img.load()
+    # width, height = img.size
+    # pixels = img.load()
 
     # Crée une nouvelle image pour les contours
-    edges = Image.new("L", (width, height))
-    edge_pixels = edges.load()
+    # edges = Image.new("L", (width, height))
+    # edge_pixels = edges.load()
+
+    threshold = 30
+    edges = [0] * width * height
 
     # Détection simple : différence entre pixels voisins
     for y in range(1, height - 1):
         for x in range(1, width - 1):
 
             # Gradient approximatif (Sobel simplifié)
-            gx = abs(pixels[x + 1, y] - pixels[x - 1, y])
-            gy = abs(pixels[x, y + 1] - pixels[x, y - 1])
+            gx = abs(pixels[(x + 1) + y * width] - pixels[(x - 1) + y * width])
+            gy = abs(pixels[x + (y + 1) * width] - pixels[x + (y - 1) * width])
             gradient = gx + gy
 
             # Seuil de détection des bords réglables 
-            edge_pixels[x, y] = 255 if gradient > 30 else 0
+            edges[x + y * width] = 255 if gradient > threshold else 0
     return edges
 
-def intersect(path_image : str, stroke : list) -> list:
-    edges = contour_detection(path_image) 
-
-    width, height = edges.size
-    pixels = edges.load()
+def intersect(width : int, height : int, img : list, stroke : list) -> list:
+    pixels = contour_detection(width, height, img) 
 
     ribs = []
     alpha = 2.0
     correction = 10.0
-
 
     for i in range(0, len(stroke) - 1, 3):
 
