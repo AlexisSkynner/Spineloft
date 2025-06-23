@@ -469,14 +469,18 @@ class Operator_UImanager(bpy.types.Operator):
             ratio_x = min(1, image_width / image_height)
             ratio_y = min(1, image_height / image_width)
 
-            img = []
-            for i in range(0, image_width * image_height, 4):
-                print(i)
+            img = [0]*image_height*image_width
+            for i in range(0, 4*image_width * image_height, 4):
                 r = image.pixels[i]
                 g = image.pixels[i + 1]
                 b = image.pixels[i + 2]
-                img.append(int(255 * (r * r + g * g + b * b) / 195075))
+                img[i//4]=int((r*0.2989+g*0.587+b*0.114)*255)
+
+            print("a")
+            
             ribs = intersect.intersect(image_width, image_height, img, [(p[0] / ratio_x + 0.5, 0.5 - p[1] / ratio_y) for p in list_points])
+
+            print("b")
 
             edges_list = []
             for i in range(len(ribs)):
@@ -494,6 +498,8 @@ class Operator_UImanager(bpy.types.Operator):
 
                 edges_list.append((xd1, yd1, 0))
                 edges_list.append((xd2, yd2, 0))
+
+            print("c")
 
             #Création de la zone de data liée au volume
             crcl = bpy.data.meshes.new('circle')
