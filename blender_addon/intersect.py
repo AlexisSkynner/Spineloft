@@ -1,7 +1,6 @@
 from PIL import Image
 import math
-import d2grad 
-
+from . import d2 
 
 def contour_detection(path_image): 
 
@@ -29,13 +28,9 @@ def contour_detection(path_image):
 
             # Seuil de détection des bords réglables 
             edge_pixels[x, y] = 255 if gradient > 30 else 0
-
     return edges
 
-
-
-def intersect(path_image, stroke, pRibs):
-
+def intersect(path_image : str, stroke : list) -> list:
     edges = contour_detection(path_image) 
 
     width, height = edges.size
@@ -67,7 +62,7 @@ def intersect(path_image, stroke, pRibs):
 
         # Walk right
         while True:
-            grad = d2grad(right_ext, stroke)
+            grad = d2.d2grad(right_ext, stroke)
             right_ext = right_ext + grad * alpha
             pix = (int(right_ext[0]),int(right_ext[1]))
 
@@ -80,7 +75,7 @@ def intersect(path_image, stroke, pRibs):
 
         # Walk left
         while True:
-            grad = d2grad(left_ext, stroke)
+            grad = d2.d2grad(left_ext, stroke)
             left_ext = left_ext + grad * alpha
             pix = (int(left_ext[0]),int(left_ext[1]))
 
@@ -93,10 +88,12 @@ def intersect(path_image, stroke, pRibs):
 
         ribs.append((right_ext.toint(), left_ext.toint()))
 
-    for i, (r, l) in enumerate(ribs):
-        pRibs[i] = {
-            'x1': r[0], 'y1': r[1],
-            'x2': l[0], 'y2': l[1]
-        }
+    return ribs
 
-    return len(ribs)
+    # for i, (r, l) in enumerate(ribs):
+    #     pRibs[i] = {
+    #         'x1': r[0], 'y1': r[1],
+    #         'x2': l[0], 'y2': l[1]
+    #     }
+
+    # return len(ribs)

@@ -9,6 +9,26 @@ import gpu
 from gpu_extras.batch import batch_for_shader
 from pathlib import Path
 import numpy as np
+from . import intersect
+
+# from cffi import FFI
+
+# ffi = FFI()
+
+# # Déclaration de la fonction C exposée
+# ffi.cdef("""
+#     typedef struct {
+#         float x_start, y_start;
+#         float x_end, y_end;
+#     } rib;
+
+#     typedef struct {
+#         int x, y;
+#     } pythonVec2;
+
+#     int intersect(const char* path, int nbPoints, pythonVec2* spine, rib* pRibs);
+# """)
+
 
 name="tp.fr.spineloft.customviewerscene"
 curve_data=0
@@ -459,13 +479,31 @@ class Operator_UImanager(bpy.types.Operator):
             is_drawing=False
             drawing_mode="None"
             
-            #Récupérer les contours ########################################
-            edges_list=[ [(1,1,0),(2,1,0)] , [(1,3,0),(2,2,0)], [(4,4,0), (4,3,0)]] #Liste des points de la forme, triés dans le sens horraire
-            ###### Remplacer par fonction C 
-            # Le chemin vers l'image est stocké dans la fonction path
-            # La liste des points 
-            # image_width, image_height
+            # Récupérer les contours ########################################
+            # edges_list=[ [(1,1,0),(2,1,0)] , [(1,3,0),(2,2,0)], [(4,4,0), (4,3,0)]] #Liste des points de la forme, 
+            # list_points = [[1,1],[2,1],[3,4]]
+            # triés dans le sens horraire
             ################################################################
+            ratio_x = min(1, image_width / image_height)
+            ratio_y = min(1, image_height / image_width)
+
+            ribs = intersect.intersect(path, [(p[0] / ratio_x + 0.5, 0.5 - p[1] / ratio_y) for p in list_points])
+
+            edges_list = []
+            for i in range(len(ribs)):
+                # a verifier le [i][0][0] pour le format de retour de intersect
+                x1 = ribs[i][0][0]
+                y1 = ribs[i][0][1]
+
+                x2 = ribs[i][1][0]
+                y2 = ribs[i][1][1]
+
+                xd1 = (x1 / image_width - 0.5)   * ratio_x
+                yd1 = -(y1 / image_height - 0.5) * ratio_y
+                xd2 = (x2 / image_width - 0.5)   * ratio_x
+                yd2 = -(y2 / image_height - 0.5) * ratio_y
+
+                edges_list.append([(xd1, yd1, 0), (xd2, yd2, 0)])
 
             #Création de la zone de data liée au volume
             crcl = bpy.data.meshes.new('circle')
