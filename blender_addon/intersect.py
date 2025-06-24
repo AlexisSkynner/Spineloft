@@ -13,7 +13,23 @@ def generate_points(p1 : tuple, p2 : tuple , nb_points : int, d : int, stroke : 
     for i in range(nb_points):
         stroke.append(p1[0] + direction[0] * d * (i + 1), p1[1] + direction[1] * d * (i + 1))
 
-def contour_detection(width : int, height : int, pixels : list): 
+def point_in_poly(x: int, y: int, poly: list[tuple]) -> bool:
+    """
+    Teste si un point (x, y) est dans un polygone `poly` (liste de points fermée)
+    """
+    inside = False
+    n = len(poly)
+    j = n - 1
+    for i in range(n):
+        xi, yi = poly[i]
+        xj, yj = poly[j]
+        if ((yi > y) != (yj > y)) and \
+           (x < (xj - xi) * (y - yi) / (yj - yi + 1e-9) + xi):
+            inside = not inside
+        j = i
+    return inside
+
+def contour_detection(width : int, height : int, pixels : list, ignore_zones: list[list[tuple]]): 
 
     threshold = 30
     edges = [0] * width * height
@@ -21,6 +37,11 @@ def contour_detection(width : int, height : int, pixels : list):
     # Détection simple : différence entre pixels voisins
     for y in range(1, height - 1):
         for x in range(1, width - 1):
+
+            # Vérifie si (x, y) est dans une des zones à ignorer
+            ignore = any(point_in_poly(x, y, zone) for zone in ignore_zones)
+            if ignore:
+                continue
 
             # Gradient approximatif (Sobel simplifié)
             gx = abs(pixels[y*width+x+1] - pixels[y*width+x-1])
@@ -31,8 +52,8 @@ def contour_detection(width : int, height : int, pixels : list):
             edges[x + y * width] = 255 if gradient > threshold else 0
     return edges
 
-def intersect(width : int, height : int, img : list, stroke : list) -> list:
-    pixels = contour_detection(width, height, img) 
+def intersect(width : int, height : int, img : list, stroke : list, ignore_zones: list[list[tuple]]) -> list:
+    pixels = contour_detection(width, height, img, ignore_zones) 
 
     ribs = []
     alpha = 2.0
@@ -52,7 +73,7 @@ def intersect(width : int, height : int, img : list, stroke : list) -> list:
                 nb_points += 1
                 d /= 2
             
-            generate_points(stroke[i],stroke[i+1],nb_points, d, stroke_arranged)
+            generate_points(stroke[i],stroke[i+1],nb_points, d, stroke_arranged, )
         stroke_arranged.append(stroke[len(stroke)-1])
     else :
         stroke_arranged = stroke
