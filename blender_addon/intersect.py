@@ -1,6 +1,18 @@
 import math
 from . import d2 
 
+def distance(x,y):
+    return (x[0]-y[0])**2 +  (x[1]-y[1])**2
+
+def generate_points(p1 : tuple, p2 : tuple , nb_points : int, d : int, stroke : list):
+
+    total_length = math.sqrt(distance(p2, p1))
+
+    direction = ((p2[0] - p1[0]) / total_length, (p2[1] - p1[1]) / total_length)
+
+    for i in range(nb_points):
+        stroke.append(p1[0] + direction[0] * d * (i + 1), p1[1] + direction[1] * d * (i + 1))
+
 def contour_detection(width : int, height : int, pixels : list): 
 
     threshold = 30
@@ -25,15 +37,35 @@ def intersect(width : int, height : int, img : list, stroke : list) -> list:
     ribs = []
     alpha = 2.0
     correction = 10.0
+    dmax = 10 
 
-    for i in range(0, len(stroke) - 1, 3):
+    if type == 0 : 
+        stroke_arranged = []
+        for i in range(0, len(stroke) - 1):
+            if i !=0:
+                stroke_arranged.append(stroke[i])
+
+            d = distance(stroke[i], stroke[i+1])
+            nb_points = 0 
+
+            while d >dmax :
+                nb_points += 1
+                d /= 2
+            
+            generate_points(stroke[i],stroke[i+1],nb_points, d, stroke_arranged)
+        stroke_arranged.append(stroke[len(stroke)-1])
+    else :
+        stroke_arranged = stroke
+
+    for i in range(1, len(stroke_arranged) - 1):
 
         #Init of the two first points close to stroke point for determining the left and right point of the rib
+        p1 = stroke_arranged[i]
+        p2 = stroke_arranged[i + 1]
+        middle = ((p1[0] + p2[0]) / 2.0, (p1[1] + p2[1]) / 2.0)
 
-        middle = ((stroke[i][0] + stroke[i + 1][0]) / 2.0, (stroke[i][1] + stroke[i + 1][1]) / 2.0)
-
-        dx = stroke[i + 1][0] - middle[0]
-        dy = middle[1] - stroke[i + 1][1]
+        dx = p2[0] - middle[0]
+        dy = middle[1] - p2[1]
 
         # Right
         rx = dx * math.cos(math.pi/2) + dy * math.sin(math.pi/2)
