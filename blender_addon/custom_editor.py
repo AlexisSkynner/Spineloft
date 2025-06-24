@@ -8,8 +8,9 @@ import blf
 import gpu
 from gpu_extras.batch import batch_for_shader
 from pathlib import Path
-import numpy as np
+import matplotlib.pyplot as plt
 from . import intersect
+import math
 
 
 
@@ -478,11 +479,11 @@ class Operator_UImanager(bpy.types.Operator):
                 image_dest[i//4]=int((r*0.2989+g*0.587+b*0.114)*255)
 
 
-
+            list_points_denormalized=[((p[0]+0.5) * ratio_x * image_width, (0.5 - p[1]) * ratio_y * image_height) for p in list_points]
+            print(list_points_denormalized)
             
-            ribs = intersect.intersect(image_width, image_height, image_dest, [(p[0] / ratio_x + 0.5, 0.5 - p[1] / ratio_y) for p in list_points])
-
-
+            ribs = intersect.intersect(image_width, image_height, image_dest, list_points_denormalized)
+            print(ribs)
 
             edges_list = []
             for i in range(len(ribs)):
@@ -501,7 +502,7 @@ class Operator_UImanager(bpy.types.Operator):
                 edges_list.append((x1, y1, 0))
                 edges_list.append((x2, y2, 0))
 
-            print(edges_list)
+            
 
             #Création de la zone de data liée au volume
             crcl = bpy.data.meshes.new('circle')
@@ -695,9 +696,13 @@ class Operator_SetBackgroundImage(bpy.types.Operator):
         tex_image.image=image
 
         size=image.size
-        i=np.argmax(size)
-        width=size[0]/size[i]
-        height=size[1]/size[i]
+        if size[0]>=size[1]:
+            max_size=size[0]
+        else:
+            max_size=size[1]
+
+        width=size[0]/max_size
+        height=size[1]/max_size
         plane.scale = (width,height,1)
 
         image_width=size[0]

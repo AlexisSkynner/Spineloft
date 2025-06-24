@@ -22,7 +22,7 @@ def contour_detection(width : int, height : int, pixels : list):
     # edges = Image.new("L", (width, height))
     # edge_pixels = edges.load()
 
-    threshold = 30
+    threshold = 40
     edges = [0] * width * height
 
     # Détection simple : différence entre pixels voisins
@@ -63,7 +63,7 @@ def intersect(width : int, height : int, img : list, stroke : list) -> list:
         lx = dx * math.cos(-math.pi/2) + dy * math.sin(-math.pi/2)
         ly = dx * math.sin(-math.pi/2) - dy * math.cos(-math.pi/2)
         left_ext = (lx * correction + middle[0], ly * correction + middle[1])
-
+        
         # Walk right
         while True:
             grad = d2.d2grad(right_ext, stroke)
