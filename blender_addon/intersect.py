@@ -1,26 +1,7 @@
 import math
 from . import d2 
 
-def get_x(v):
-    return v[0]
-
-def get_y(v):
-    return v[1]
-
 def contour_detection(width : int, height : int, pixels : list): 
-
-    # # Charge l'image en niveaux de gris
-    # img = Image.open(path_image).convert("L")
-    # if img is None:
-    #     print("Error: Could not open or find the image!")
-    #     return -1
-
-    # width, height = img.size
-    # pixels = img.load()
-
-    # Crée une nouvelle image pour les contours
-    # edges = Image.new("L", (width, height))
-    # edge_pixels = edges.load()
 
     threshold = 30
     edges = [0] * width * height
@@ -64,6 +45,10 @@ def intersect(width : int, height : int, img : list, stroke : list) -> list:
         ly = dx * math.sin(-math.pi/2) - dy * math.cos(-math.pi/2)
         left_ext = (lx * correction + middle[0], ly * correction + middle[1])
 
+        #Out of bounds indicator 
+        r = 0 
+        l = 0 
+
         # Walk right
         while True:
             grad = d2.d2grad(right_ext, stroke)
@@ -72,6 +57,7 @@ def intersect(width : int, height : int, img : list, stroke : list) -> list:
 
             if not (0 <= pix[0] < width and 0 <= pix[1] < height):
                 print("Out of bounds")
+                r = 1
                 break
 
             if pixels[pix[0] + width* pix[1]] == 255:
@@ -85,22 +71,16 @@ def intersect(width : int, height : int, img : list, stroke : list) -> list:
 
             if not (0 <= pix[0] < width and 0 <= pix[1] < height):
                 print("Out of bounds (left)")
+                l = 1
                 break
 
             if pixels[pix[0]+ width* pix[1]] == 255:
                 break
-
-        ans_x : tuple = (int(right_ext[0]),int(right_ext[1]))
-        ans_y : tuple = (int(left_ext[0]),int(left_ext[1]))
-        ans : tuple = (ans_x, ans_y)
-        ribs.append(ans)
+        
+        if l==0 and r==0 :
+            ans_x : tuple = (int(right_ext[0]),int(right_ext[1]))
+            ans_y : tuple = (int(left_ext[0]),int(left_ext[1]))
+            ans : tuple = (ans_x, ans_y)
+            ribs.append(ans)
 
     return ribs
-
-    # for i, (r, l) in enumerate(ribs):
-    #     pRibs[i] = {
-    #         'x1': r[0], 'y1': r[1],
-    #         'x2': l[0], 'y2': l[1]
-    #     }
-
-    # return len(ribs)
