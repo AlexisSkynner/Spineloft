@@ -45,7 +45,7 @@ def contour_detection(path_image, ignore_zones: list[list[tuple]]):
             # Vérifie si (x, y) est dans une des zones à ignorer
             ignore = any(point_in_poly(x, y, zone) for zone in ignore_zones)
             if ignore:
-                edges[x + y * width] = 0
+                edge_pixels[x, y] = 0
                 continue
 
 
