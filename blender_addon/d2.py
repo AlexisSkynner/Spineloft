@@ -51,15 +51,40 @@ def d2grad(x : tuple, stroke : list, sqrtA : float) -> tuple:
 def getSqrtA(stroke : list) -> float:
     return sqrt(sum([length((stroke[i][0] - stroke[i - 1][0], stroke[i][1] - stroke[i - 1][1])) for i in range(1, len(stroke))]))
 
-def equilibreRibs(threshold : float, ribs : list):
-    for i in range(1, len(ribs) - 1):
-        (beg_x, beg_y), (end_x, end_y) = ribs[i]
-        l = length((end_x - beg_x, end_y - beg_y))
-        if l> threshold:
-            lbef = length((ribs[i - 1][1][0] - ribs[i - 1][0][0], ribs[i - 1][1][1] - ribs[i - 1][0][1]))
-            laft = length((ribs[i + 1][1][0] - ribs[i + 1][0][0], ribs[i + 1][1][1] - ribs[i + 1][0][1]))
-            lnew = (lbef + laft) / 2
-            ribs[i] = (ribs[i][0], (beg_x + lnew * (end_x - beg_x) / l, beg_y + lnew * (end_y - beg_y) / l))
+def optimizeOneRib(ribs : list, threshold : float, lengths : list, i : int):
+    (beg_x, beg_y), (end_x, end_y) = ribs[i]
+
+    if i <= 0: lmin = lengths[1]
+    elif i >= len(ribs) - 1: lmin = lengths[len(ribs) - 2]
+    else: lmin = min(lengths[i - 1], lengths[i + 1])
+    
+    if lengths[i] > threshold * lmin:
+        if i == 0: lmoy = lengths[1]
+        elif i == len(ribs) - 1: lmoy = lengths[len(ribs) - 2]
+        else: lmoy = (lengths[i + 1] + lengths[i - 1]) / 2
+
+        unitDiff = ((end_x - beg_x) / lengths[i], (end_y - beg_y) / lengths[i])
+        ribs[i] = (ribs[i][0], (beg_x + lmoy * unitDiff[0], beg_y + lmoy * unitDiff[1]))
+
+def optimizeRibs(ribs : list, threshold : float = 1.25, nbIterations : int = 3):
+    lengths = [length((end_x - beg_x, end_y - beg_y)) for ((beg_x, beg_y), (end_x, end_y)) in ribs]
+    
+    for _ in range(nbIterations):
+        # odd ribs
+        for i in range(1, len(ribs) - 1, 2):
+            optimizeOneRib(ribs, threshold, lengths, i)
+
+        # even ribs
+        for i in range(2, len(ribs) - 1, 2):
+            optimizeOneRib(ribs, threshold, lengths, i)
+
+        # first rib
+        optimizeOneRib(ribs, threshold, lengths, 0)
+
+        # last rib
+        optimizeOneRib(ribs, threshold, lengths, len(ribs) - 1)
+            
+# optimizeRibs([((1, 2), (2, 3)), ((1, 2), (2, 3)), ((8, 2), (2, 10)), ((1, 2), (2, 3)), ((1, 2), (2, 3))])
 
 # from math import sin, cos
 # from PIL import Image
