@@ -467,6 +467,5 @@ def redistribute_stroke(stroke : list) -> list:
             currVec = (stroke[j][0] - stroke[i][0], stroke[j][1] - stroke[i][1])
             if d2.length(currVec) > threshold:
                 ans.append(stroke[i])
-                i = j
                 break
-    ans.append(stroke[-1])
+        i = j
