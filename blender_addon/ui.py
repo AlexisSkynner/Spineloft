@@ -13,13 +13,12 @@ class Operator_DrawSpine(bpy.types.Operator):
         custom_editor.createWindow()
         return {'RUNNING_MODAL'}
     
-
     
 ######################### Panels ############################   
-class Panel_PhotoSketching(bpy.types.Panel):
-    """Creates a Panel in the Object properties window"""
-    bl_label = "SpineLoft"
-    bl_idname = "SPINELOFT_PT_PHOTOSKETCHING"
+ 
+class Panel_SpineLoftOld(bpy.types.Panel):
+    bl_label = "SpineLoftOld"
+    bl_idname = "SPINELOFT_PT_SPINELOFTOLD"
     bl_space_type = 'PROPERTIES'
     bl_region_type = 'WINDOW'
 
@@ -38,3 +37,5 @@ class Panel_PhotoSketching(bpy.types.Panel):
     def execute(self, context):
         return {'FINISHED'}
    
+
+

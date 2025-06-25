@@ -480,10 +480,8 @@ class Operator_UImanager(bpy.types.Operator):
 
 
             list_points_denormalized=[((p[0]+0.5) * ratio_x * image_width, (0.5 - p[1]) * ratio_y * image_height) for p in list_points]
-            print(list_points_denormalized)
             
             ribs = intersect.intersect(image_width, image_height, image_dest, list_points_denormalized)
-            print(ribs)
 
             edges_list = []
             for i in range(len(ribs)):

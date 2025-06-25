@@ -124,7 +124,7 @@ A=[(math.cos(2*math.pi*k/20), 0, math.sin(2*math.pi*k/20)) for k in range(20)] #
 B=[(0,19)]+[(i,i+1) for i in range(19)]
 C=[]
 
-shapeCircle=copy.deepcopy(homo(Shape(A,B,C),0.25))
+shapeCircle=copy.deepcopy(homo(Shape(A,B,C),0.5))
 
 #Square
 A=[(-0.5,0,-0.5),(0.5,0,-0.5),(0.5,0,0.5),(-0.5,0,0.5)]
@@ -178,7 +178,7 @@ def addEdges(finalShape:Shape,startShape:Shape, listPts:list):
             edge1=edge[1]+i*nbVertices
             finalShape.edges.append((edge0,edge1))
             
-    # #Edges et faces de la connection
+    #Edges  de la connection
     # for i in range(l-1):
     #     for j in range(nbVertices):
     #         finalShape.edges.append( ( nbVertices*i+j , nbVertices*(i+1)+j ) )
@@ -206,10 +206,10 @@ def addFaces(finalShape:Shape,startShape:Shape, listPts:list):
     lastFace=[]  
     for i in range(nbVertices):
         firstFace.append(i)
-        #lastFace.append(nbVertices*(l-1)+i) 
+        lastFace.append(nbVertices*(l-1)+i) 
 
     finalShape.faces.append(tuple(firstFace))
-    #finalShape.faces.append(tuple(lastFace))
+    finalShape.faces.append(tuple(lastFace))
     
     return(finalShape)
 
@@ -226,7 +226,7 @@ def giveMeTheMesh(listPts):
     
     finalShape=addVertices(shapeStart,newList)
     finalShape=addEdges(finalShape,shapeStart, newList)
-    # finalShape=addFaces(finalShape,shapeStart, newList)
+    #finalShape=addFaces(finalShape,shapeStart, newList)
     
 
     return(finalShape.vertices,finalShape.edges,finalShape.faces)
