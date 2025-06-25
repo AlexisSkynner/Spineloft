@@ -13,7 +13,7 @@ def generate_points(p1, p2, nb_points, d, stroke):
     direction = ((p2[0] - p1[0]) / total_length, (p2[1] - p1[1]) / total_length)
 
     for i in range(nb_points):
-        stroke.append(p1[0] + direction[0] * d * (i + 1), p1[1] + direction[1] * d * (i + 1))
+        stroke.append((p1[0] + direction[0] * d * (i + 1), p1[1] + direction[1] * d * (i + 1)))
 
 def contour_detection(path_image): 
     img = Image.open(path_image).convert("L")
@@ -60,9 +60,9 @@ def intersect(path_image, path_stroke, type):
     pixels = edges.load()
 
     ribs = []
-    alpha = 2.0
-    correction = 10.0
-    dmax = 10 
+    alpha = 0.7
+    correction = 0.5
+    dmax = 30
 
     if type == 0 : 
         stroke_arranged = []
@@ -142,4 +142,4 @@ def intersect(path_image, path_stroke, type):
 
     return len(ribs)
 
-intersect("image.jpg","arc_stroke.txt",1)
+intersect("image.jpg","arc_stroke.txt",0)

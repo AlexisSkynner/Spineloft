@@ -11,7 +11,7 @@ def generate_points(p1 : tuple, p2 : tuple , nb_points : int, d : int, stroke : 
     direction = ((p2[0] - p1[0]) / total_length, (p2[1] - p1[1]) / total_length)
 
     for i in range(nb_points):
-        stroke.append(p1[0] + direction[0] * d * (i + 1), p1[1] + direction[1] * d * (i + 1))
+        stroke.append((p1[0] + direction[0] * d * (i + 1), p1[1] + direction[1] * d * (i + 1)))
 
 def point_in_poly(x: int, y: int, poly: list[tuple]) -> bool:
     """
