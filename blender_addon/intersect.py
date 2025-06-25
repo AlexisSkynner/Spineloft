@@ -57,9 +57,9 @@ def intersect(width : int, height : int, img : list, stroke : list, ignore_zones
 
     SqrtA = d2.getSqrtA(stroke)
     ribs = []
-    alpha = 2.0
-    correction = 10.0
-    dmax = 10 
+    alpha = 0.7
+    correction = 0.5
+    dmax = 30 
 
     if type == 0 : 
         stroke_arranged = []
