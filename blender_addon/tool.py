@@ -5,6 +5,7 @@ import math
 from bpy_extras import view3d_utils
 from . import intersect
 from . import gen_vol
+from . import d2
 
 path = None
 spline = None
@@ -163,7 +164,7 @@ class Operator_Clear_Spine(bpy.types.Operator):
         step=1
         delete_curve()
         return {'FINISHED'}
-    
+
 class Operator_Generate_Volume(bpy.types.Operator):
     """Generate your 3D volume."""
     bl_idname = "wm.gen_vol"
@@ -181,9 +182,10 @@ class Operator_Generate_Volume(bpy.types.Operator):
             image_dest[i//4]=int((r*0.2989+g*0.587+b*0.114)*255)
 
 
-        list_points_denormalized=[((p[0]+0.5) * ratio_x * image_width, (0.5 - p[1]) * ratio_y * image_height) for p in list_points]
-        
-        ribs = intersect.intersect(image_width, image_height, image_dest, list_points_denormalized)
+        new_stroke = redistribute_stroke(list_points)
+        list_points_denormalized=[((p[0]+0.5) * ratio_x * image_width, (0.5 - p[1]) * ratio_y * image_height) for p in new_stroke]
+    
+        ribs = intersect.intersect(image_width, image_height, image_dest, list_points_denormalized, [], 1)
 
         edges_list = []
         for i in range(len(ribs)):
@@ -327,7 +329,7 @@ def unregister():
     bpy.utils.unregister_class(Operator_Draw_FH)
     bpy.utils.unregister_class(Operator_Draw_SL)
     bpy.utils.unregister_class(Operator_Clear_Spine)
-    bpy.utils.register_class(Operator_Generate_Volume)
+    bpy.utils.unregister_class(Operator_Generate_Volume)
 
 
 
@@ -455,3 +457,16 @@ def add_stroke_point(pos):
     point.co = (pos[0], pos[1], 0.01,1)  # Position du point
     
     list_points.append([pos[0], pos[1]])
+
+def redistribute_stroke(stroke : list) -> list:
+    ans = []
+    threshold = 1e-3
+    i = 0
+    while i < len(stroke) - 1:
+        for j in range(i + 1, len(stroke)):
+            currVec = (stroke[j][0] - stroke[i][0], stroke[j][1] - stroke[i][1])
+            if d2.length(currVec) > threshold:
+                ans.append(stroke[i])
+                i = j
+                break
+    ans.append(stroke[-1])
