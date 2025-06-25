@@ -45,6 +45,14 @@ def register():
         from . import custom_editor 
         if "custom_editor" in locals():
             importlib.reload(custom_editor)
+        
+        from . import tool 
+        if "tool" in locals():
+            importlib.reload(tool)
+
+        from . import intersect 
+        if "intersect" in locals():
+            importlib.reload(intersect)
 
         
 

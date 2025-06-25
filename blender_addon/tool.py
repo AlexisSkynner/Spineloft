@@ -171,8 +171,7 @@ class Operator_Generate_Volume(bpy.types.Operator):
     bl_label = "Generate 3D Volume"
     
     def invoke(self, context, event):
-        ratio_x = min(1, image_width / image_height)
-        ratio_y = min(1, image_height / image_width)
+        ratio = max (image_width,image_height)
 
         image_dest=[0]*image_height*image_width
         for i in range(0,image_width*image_height*4,4):
@@ -183,10 +182,16 @@ class Operator_Generate_Volume(bpy.types.Operator):
 
 
         new_stroke = redistribute_stroke(list_points)
-        list_points_denormalized=[((p[0]+0.5) * ratio_x * image_width, (0.5 - p[1]) * ratio_y * image_height) for p in new_stroke]
-    
-        ribs = intersect.intersect(image_width, image_height, image_dest, list_points_denormalized, [], 1)
+        list_points_denormalized=[(p[0]*ratio+image_width/2, -(p[1]*ratio-image_height/2)) for p in new_stroke]
 
+        print(list_points_denormalized)
+        print(image_height)
+        print(image_width)
+        print(ratio)
+
+        ribs = intersect.intersect(image_width, image_height, image_dest, list_points_denormalized, [], 1)
+        
+        
         edges_list = []
         for i in range(len(ribs)):
             # a verifier le [i][0][0] pour le format de retour de intersect
@@ -196,13 +201,13 @@ class Operator_Generate_Volume(bpy.types.Operator):
             x2 = ribs[i][1][0]
             y2 = ribs[i][1][1]
 
-            xd1 = (x1 / image_width - 0.5)   * ratio_x
-            yd1 = -(y1 / image_height - 0.5) * ratio_y
-            xd2 = (x2 / image_width - 0.5)   * ratio_x
-            yd2 = -(y2 / image_height - 0.5) * ratio_y
+            xd1 = (x1 - image_width/2)/ratio 
+            yd1 = (image_height/2-y1) /ratio
+            xd2 = (x2 - image_width/2)/ratio 
+            yd2 = (image_height/2-y2) /ratio
 
-            edges_list.append((x1, y1, 0))
-            edges_list.append((x2, y2, 0))
+            edges_list.append((xd1, yd1, 0))
+            edges_list.append((xd2, yd2, 0))
 
         
 
@@ -469,3 +474,4 @@ def redistribute_stroke(stroke : list) -> list:
                 ans.append(stroke[i])
                 break
         i = j
+    return(ans)
