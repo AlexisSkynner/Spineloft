@@ -69,8 +69,8 @@ def contour_detection(width : int, height : int, pixels : list, ignore_zones: li
                 continue
 
             # Gradient approximatif (Sobel simplifié)
-            gx = abs(blurred[y*width+x+1] - blurred[y*width+x-1])
-            gy = abs(blurred[(y+1)*width+x] - blurred[(y-1)*width+x])
+            gx = abs(pixels[(height-1-y)*width+x+1] - pixels[y*width+x-1])
+            gy = abs(pixels[(height-1-(y+1))*width+x] - pixels[(y-1)*width+x])
             gradient = gx + gy
 
             # Seuil de détection des bords réglables 
@@ -82,8 +82,8 @@ def intersect(width : int, height : int, img : list, stroke : list, ignore_zones
 
     SqrtA = d2.getSqrtA(stroke)
     ribs = []
-    alpha = 0.7
-    correction = 0.5
+    alpha = 0.5
+    correction = 0.7
     dmax = 30 
 
     if type == 0 : 
@@ -139,7 +139,7 @@ def intersect(width : int, height : int, img : list, stroke : list, ignore_zones
                 r = 1
                 break
 
-            if pixels[pix[0] + width* pix[1]] == 255:
+            if pixels[pix[0] + width* (height-1-pix[1])] == 255:
                 break
 
         # Walk left
@@ -153,7 +153,7 @@ def intersect(width : int, height : int, img : list, stroke : list, ignore_zones
                 l = 1
                 break
 
-            if pixels[pix[0]+ width* pix[1]] == 255:
+            if pixels[pix[0]+ width* (height-1-pix[1])] == 255:
                 break
         
         if l==0 and r==0 :
@@ -161,5 +161,6 @@ def intersect(width : int, height : int, img : list, stroke : list, ignore_zones
             ans_y : tuple = (int(left_ext[0]),int(left_ext[1]))
             ans : tuple = (ans_x, ans_y)
             ribs.append(ans)
-
+    
+    #d2.optimizeRibs(ribs)
     return ribs
