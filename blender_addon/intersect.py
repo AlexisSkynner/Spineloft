@@ -29,8 +29,33 @@ def point_in_poly(x: int, y: int, poly: list[tuple]) -> bool:
         j = i
     return inside
 
-def contour_detection(width : int, height : int, pixels : list, ignore_zones: list[list[tuple]]): 
+def apply_box_blur(img: list, radius: int = 1) -> list:
+    """
+    Applique un flou simple (box blur) à une image en niveaux de gris sans dépendance externe.
+    `radius` détermine la taille de la fenêtre : 1 = 3x3, 2 = 5x5, etc.
+    """
+    width, height = img.size
 
+    # Crée une nouvelle image pour les résultats
+    output = [0] * width * height
+
+    for y in range(height):
+        for x in range(width):
+            total = 0
+            count = 0
+            for dy in range(-radius, radius + 1):
+                for dx in range(-radius, radius + 1):
+                    nx, ny = x + dx, y + dy
+                    if 0 <= nx < width and 0 <= ny < height:
+                        total += img[nx + (height - 1 - ny) * width]
+                        count += 1
+            average = total // count
+            output[x + (height - 1 - y) * width] = average
+
+    return output
+
+def contour_detection(width : int, height : int, pixels : list, ignore_zones: list[list[tuple]], blur_radius=3): 
+    blurred = apply_box_blur(pixels, blur_radius)
     threshold = 40
     edges = [0] * width * height
 
@@ -44,8 +69,8 @@ def contour_detection(width : int, height : int, pixels : list, ignore_zones: li
                 continue
 
             # Gradient approximatif (Sobel simplifié)
-            gx = abs(pixels[y*width+x+1] - pixels[y*width+x-1])
-            gy = abs(pixels[(y+1)*width+x] - pixels[(y-1)*width+x])
+            gx = abs(blurred[y*width+x+1] - blurred[y*width+x-1])
+            gy = abs(blurred[(y+1)*width+x] - blurred[(y-1)*width+x])
             gradient = gx + gy
 
             # Seuil de détection des bords réglables 

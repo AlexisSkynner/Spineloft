@@ -86,21 +86,21 @@ def optimizeRibs(ribs : list, threshold : float = 1.25, nbIterations : int = 3):
             
 # optimizeRibs([((1, 2), (2, 3)), ((1, 2), (2, 3)), ((8, 2), (2, 10)), ((1, 2), (2, 3)), ((1, 2), (2, 3))])
 
-# from math import sin, cos
-# from PIL import Image
+from math import sin, cos
+from PIL import Image
 
-# def testd2():
-#     stroke = [(400 + 300 * cos(theta * 3.14159 / 180), 400 + 300 * sin(theta * 3.14159 / 180)) for theta in range(0, 300, 20)]
-#     # stroke = [(x, 400) for x in range(200, 600, 50)]
-#     img = Image.new(mode="RGB", size=(800, 800))
-#     pixels = img.load()
+def testd2():
+    stroke = [(400 + 300 * cos(theta * 3.14159 / 180), 400 + 300 * sin(theta * 3.14159 / 180)) for theta in range(0, 300, 20)]
+    # stroke = [(x, 400) for x in range(200, 600, 50)]
+    img = Image.new(mode="RGB", size=(800, 800))
+    pixels = img.load()
 
-#     sqrtA = getSqrtA(stroke)
+    sqrtA = getSqrtA(stroke)
 
-#     for y in range(800):
-#         for x in range(800):
-#             pixels[x, y] = (int(255 * abs(sin(0.2 * d2grad((x, y), stroke, sqrtA)[0]))), 0, 0)
+    for y in range(800):
+        for x in range(800):
+            pixels[x, y] = (int(255 * abs(sin(0.2 * d2((x, y), stroke, sqrtA)))), 0, 0)
 
-#     img.show()
+    img.show()
 
-# testd2()
+testd2()
