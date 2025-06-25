@@ -1,26 +1,35 @@
 import math
 from . import d2 
 
-def get_x(v):
-    return v[0]
+def distance(x,y):
+    return (x[0]-y[0])**2 +  (x[1]-y[1])**2
 
-def get_y(v):
-    return v[1]
+def generate_points(p1 : tuple, p2 : tuple , nb_points : int, d : int, stroke : list):
 
-def contour_detection(width : int, height : int, pixels : list): 
+    total_length = math.sqrt(distance(p2, p1))
 
-    # # Charge l'image en niveaux de gris
-    # img = Image.open(path_image).convert("L")
-    # if img is None:
-    #     print("Error: Could not open or find the image!")
-    #     return -1
+    direction = ((p2[0] - p1[0]) / total_length, (p2[1] - p1[1]) / total_length)
 
-    # width, height = img.size
-    # pixels = img.load()
+    for i in range(nb_points):
+        stroke.append(p1[0] + direction[0] * d * (i + 1), p1[1] + direction[1] * d * (i + 1))
 
-    # Crée une nouvelle image pour les contours
-    # edges = Image.new("L", (width, height))
-    # edge_pixels = edges.load()
+def point_in_poly(x: int, y: int, poly: list[tuple]) -> bool:
+    """
+    Teste si un point (x, y) est dans un polygone `poly` (liste de points fermée)
+    """
+    inside = False
+    n = len(poly)
+    j = n - 1
+    for i in range(n):
+        xi, yi = poly[i]
+        xj, yj = poly[j]
+        if ((yi > y) != (yj > y)) and \
+           (x < (xj - xi) * (y - yi) / (yj - yi + 1e-9) + xi):
+            inside = not inside
+        j = i
+    return inside
+
+def contour_detection(width : int, height : int, pixels : list, ignore_zones: list[list[tuple]]): 
 
     threshold = 40
     edges = [0] * width * height
@@ -28,6 +37,11 @@ def contour_detection(width : int, height : int, pixels : list):
     # Détection simple : différence entre pixels voisins
     for y in range(1, height - 1):
         for x in range(1, width - 1):
+
+            # Vérifie si (x, y) est dans une des zones à ignorer
+            ignore = any(point_in_poly(x, y, zone) for zone in ignore_zones)
+            if ignore:
+                continue
 
             # Gradient approximatif (Sobel simplifié)
             gx = abs(pixels[y*width+x+1] - pixels[y*width+x-1])
@@ -38,21 +52,41 @@ def contour_detection(width : int, height : int, pixels : list):
             edges[x + y * width] = 255 if gradient > threshold else 0
     return edges
 
-def intersect(width : int, height : int, img : list, stroke : list) -> list:
-    pixels = contour_detection(width, height, img) 
+def intersect(width : int, height : int, img : list, stroke : list, ignore_zones: list[list[tuple]]) -> list:
+    pixels = contour_detection(width, height, img, ignore_zones) 
 
     ribs = []
     alpha = 2.0
     correction = 10.0
+    dmax = 10 
 
-    for i in range(0, len(stroke) - 1, 3):
+    if type == 0 : 
+        stroke_arranged = []
+        for i in range(0, len(stroke) - 1):
+            if i !=0:
+                stroke_arranged.append(stroke[i])
+
+            d = distance(stroke[i], stroke[i+1])
+            nb_points = 0 
+
+            while d >dmax :
+                nb_points += 1
+                d /= 2
+            
+            generate_points(stroke[i],stroke[i+1],nb_points, d, stroke_arranged, )
+        stroke_arranged.append(stroke[len(stroke)-1])
+    else :
+        stroke_arranged = stroke
+
+    for i in range(1, len(stroke_arranged) - 1):
 
         #Init of the two first points close to stroke point for determining the left and right point of the rib
+        p1 = stroke_arranged[i]
+        p2 = stroke_arranged[i + 1]
+        middle = ((p1[0] + p2[0]) / 2.0, (p1[1] + p2[1]) / 2.0)
 
-        middle = ((stroke[i][0] + stroke[i + 1][0]) / 2.0, (stroke[i][1] + stroke[i + 1][1]) / 2.0)
-
-        dx = stroke[i + 1][0] - middle[0]
-        dy = middle[1] - stroke[i + 1][1]
+        dx = p2[0] - middle[0]
+        dy = middle[1] - p2[1]
 
         # Right
         rx = dx * math.cos(math.pi/2) + dy * math.sin(math.pi/2)
@@ -63,7 +97,15 @@ def intersect(width : int, height : int, img : list, stroke : list) -> list:
         lx = dx * math.cos(-math.pi/2) + dy * math.sin(-math.pi/2)
         ly = dx * math.sin(-math.pi/2) - dy * math.cos(-math.pi/2)
         left_ext = (lx * correction + middle[0], ly * correction + middle[1])
+<<<<<<< HEAD
         
+=======
+
+        #Out of bounds indicator 
+        r = 0 
+        l = 0 
+
+>>>>>>> 9afac91145e8daa3063fec75cf5457cb5fc0d71d
         # Walk right
         while True:
             grad = d2.d2grad(right_ext, stroke)
@@ -72,6 +114,7 @@ def intersect(width : int, height : int, img : list, stroke : list) -> list:
 
             if not (0 <= pix[0] < width and 0 <= pix[1] < height):
                 print("Out of bounds")
+                r = 1
                 break
 
             if pixels[pix[0] + width* pix[1]] == 255:
@@ -85,22 +128,16 @@ def intersect(width : int, height : int, img : list, stroke : list) -> list:
 
             if not (0 <= pix[0] < width and 0 <= pix[1] < height):
                 print("Out of bounds (left)")
+                l = 1
                 break
 
             if pixels[pix[0]+ width* pix[1]] == 255:
                 break
-
-        ans_x : tuple = (int(right_ext[0]),int(right_ext[1]))
-        ans_y : tuple = (int(left_ext[0]),int(left_ext[1]))
-        ans : tuple = (ans_x, ans_y)
-        ribs.append(ans)
+        
+        if l==0 and r==0 :
+            ans_x : tuple = (int(right_ext[0]),int(right_ext[1]))
+            ans_y : tuple = (int(left_ext[0]),int(left_ext[1]))
+            ans : tuple = (ans_x, ans_y)
+            ribs.append(ans)
 
     return ribs
-
-    # for i, (r, l) in enumerate(ribs):
-    #     pRibs[i] = {
-    #         'x1': r[0], 'y1': r[1],
-    #         'x2': l[0], 'y2': l[1]
-    #     }
-
-    # return len(ribs)

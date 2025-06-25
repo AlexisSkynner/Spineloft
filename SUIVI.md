@@ -77,3 +77,15 @@
 
 ## 01/06/2025 :
 - (Dorian) : Mise à jour de l'addon afin d'être compatible avec la version actuelle de Blender (4.4).
+
+## 23/06/2025
+- (Travail commun) Mise en commun des codes python (V2) et essais de l'add-on dans sa globalité. 
+- Débuggage, suppression de toutes les librairies pour avoir unn add-on ne nécessitant pas d'installation sur l'ordinateur utilisateur (Pillow, numpy ...).
+- Problème d'optimisation de l'interface et du code qui rend l'utilisation lente. 
+
+# 24/06/2025
+- Intégration du SpineLoft (fonction d2 et d2grad remodelées).
+- Mise en place d'une interface plus optimisée en passant par les outils natifs à Blender.
+- Tests de la V2 : problème de cas de bords pour les ribs (amélioration du code non testée).
+- Amélioration de la détection des bords (blur)
+- Implémentation d'une fonctionnalité intégrant une zone d'exclusion de contours côté utilisateur pour affiner la création des ribs.
