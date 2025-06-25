@@ -69,8 +69,8 @@ def contour_detection(width : int, height : int, pixels : list, ignore_zones: li
                 continue
 
             # Gradient approximatif (Sobel simplifié)
-            gx = abs(pixels[(height-1-y)*width+x+1] - pixels[y*width+x-1])
-            gy = abs(pixels[(height-1-(y+1))*width+x] - pixels[(y-1)*width+x])
+            gx = abs(blurred[(height-1-y)*width+x+1] - blurred[y*width+x-1])
+            gy = abs(blurred[(height-1-(y+1))*width+x] - blurred[(y-1)*width+x])
             gradient = gx + gy
 
             # Seuil de détection des bords réglables 
