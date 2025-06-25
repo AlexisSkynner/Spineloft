@@ -11,7 +11,7 @@ def generate_points(p1 : tuple, p2 : tuple , nb_points : int, d : int, stroke : 
     direction = ((p2[0] - p1[0]) / total_length, (p2[1] - p1[1]) / total_length)
 
     for i in range(nb_points):
-        stroke.append(p1[0] + direction[0] * d * (i + 1), p1[1] + direction[1] * d * (i + 1))
+        stroke.append((p1[0] + direction[0] * d * (i + 1), p1[1] + direction[1] * d * (i + 1)))
 
 def point_in_poly(x: int, y: int, poly: list[tuple]) -> bool:
     """
@@ -52,13 +52,14 @@ def contour_detection(width : int, height : int, pixels : list, ignore_zones: li
             edges[x + y * width] = 255 if gradient > threshold else 0
     return edges
 
-def intersect(width : int, height : int, img : list, stroke : list, ignore_zones: list[list[tuple]]) -> list:
+def intersect(width : int, height : int, img : list, stroke : list, ignore_zones: list[list[tuple]], type : int) -> list:
     pixels = contour_detection(width, height, img, ignore_zones) 
 
+    SqrtA = d2.getSqrtA(stroke)
     ribs = []
-    alpha = 2.0
-    correction = 10.0
-    dmax = 10 
+    alpha = 0.7
+    correction = 0.5
+    dmax = 30 
 
     if type == 0 : 
         stroke_arranged = []
@@ -108,7 +109,7 @@ def intersect(width : int, height : int, img : list, stroke : list, ignore_zones
 >>>>>>> 9afac91145e8daa3063fec75cf5457cb5fc0d71d
         # Walk right
         while True:
-            grad = d2.d2grad(right_ext, stroke)
+            grad = d2.d2grad(right_ext, stroke, SqrtA)
             right_ext = (right_ext[0] + grad[0] * alpha,right_ext[1] + grad[1] * alpha) 
             pix = (int(right_ext[0]),int(right_ext[1]))
 
@@ -122,7 +123,7 @@ def intersect(width : int, height : int, img : list, stroke : list, ignore_zones
 
         # Walk left
         while True:
-            grad = d2.d2grad(left_ext, stroke)
+            grad = d2.d2grad(left_ext, stroke, SqrtA)
             left_ext = (left_ext[0] + grad[0] * alpha, left_ext[1] + grad[1] * alpha)
             pix = (int(left_ext[0]),int(left_ext[1]))
 

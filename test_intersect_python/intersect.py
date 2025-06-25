@@ -1,6 +1,7 @@
-from PIL import Image
+from PIL import Image,ImageDraw
 import math
-from d2 import d2grad
+from d2_v2 import d2grad
+from d2_v2 import getSqrtA
 
 def distance(x,y):
     return (x[0]-y[0])**2 +  (x[1]-y[1])**2
@@ -12,7 +13,7 @@ def generate_points(p1, p2, nb_points, d, stroke):
     direction = ((p2[0] - p1[0]) / total_length, (p2[1] - p1[1]) / total_length)
 
     for i in range(nb_points):
-        stroke.append(p1[0] + direction[0] * d * (i + 1), p1[1] + direction[1] * d * (i + 1))
+        stroke.append((p1[0] + direction[0] * d * (i + 1), p1[1] + direction[1] * d * (i + 1)))
 
 def contour_detection(path_image): 
     img = Image.open(path_image).convert("L")
@@ -42,6 +43,7 @@ def contour_detection(path_image):
 
 def intersect(path_image, path_stroke, type):
     edges = contour_detection(path_image) 
+    
     stroke = []
 
     try:
@@ -52,14 +54,19 @@ def intersect(path_image, path_stroke, type):
     except Exception as e:
         print("Error reading stroke:", e)
         return -1
+    
+
+    SqrtA = getSqrtA(stroke)
 
     width, height = edges.size
     pixels = edges.load()
+    draw = ImageDraw.Draw(edges)
+
 
     ribs = []
-    alpha = 2.0
-    correction = 10.0
-    dmax = 10 
+    alpha = 0.7
+    correction = 0.5
+    dmax = 30
 
     if type == 0 : 
         stroke_arranged = []
@@ -101,7 +108,7 @@ def intersect(path_image, path_stroke, type):
 
         # Walk right
         while True:
-            grad = d2grad(right_ext, stroke)
+            grad = d2grad(right_ext, stroke, SqrtA)
             right_ext = (right_ext[0] + grad[0] * alpha, right_ext[1] + grad[1] * alpha)
             pix = (int(right_ext[0]), int(right_ext[1]))
 
@@ -110,15 +117,15 @@ def intersect(path_image, path_stroke, type):
                 break
 
             # Marque les points visités en gris (128)
-            if pixels[pix[0], pix[1]] != 255:
-                pixels[pix[0], pix[1]] = 128
+            #if pixels[pix[0], pix[1]] != 255:
+                #pixels[pix[0], pix[1]] = 128
 
             if pixels[pix[0], pix[1]] == 255:
                 break
 
         # Walk left
         while True:
-            grad = d2grad(left_ext, stroke)
+            grad = d2grad(left_ext, stroke, SqrtA)
             left_ext = (left_ext[0] + grad[0] * alpha, left_ext[1] + grad[1] * alpha)
             pix = (int(left_ext[0]), int(left_ext[1]))
 
@@ -126,17 +133,18 @@ def intersect(path_image, path_stroke, type):
                 print("Out of bounds (left)")
                 break
 
-            if pixels[pix[0], pix[1]] != 255:
-                pixels[pix[0], pix[1]] = 128
+            #if pixels[pix[0], pix[1]] != 255:
+                #pixels[pix[0], pix[1]] = 128
 
             if pixels[pix[0], pix[1]] == 255:
                 break
 
         ribs.append((right_ext, left_ext))
 
+    for j in range(len(ribs)):
+        draw.line([ribs[j][0], ribs[j][1]], fill=128, width=1)
+
     # Sauvegarde facultative pour visualisation
     edges.save("edges_with_ribs.png")  # tu peux changer le chemin
 
-    return len(ribs)
-
-intersect("image.jpg","arc_stroke.txt")
+intersect("image.jpg","arc_stroke.txt",1)
