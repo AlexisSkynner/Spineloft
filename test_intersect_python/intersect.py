@@ -1,6 +1,7 @@
 from PIL import Image
 import math
-from d2 import d2grad
+from d2_v2 import d2grad
+from d2_v2 import getSqrtA
 
 def distance(x,y):
     return (x[0]-y[0])**2 +  (x[1]-y[1])**2
@@ -53,6 +54,8 @@ def intersect(path_image, path_stroke, type):
         print("Error reading stroke:", e)
         return -1
 
+    SqrtA = getSqrtA(stroke)
+
     width, height = edges.size
     pixels = edges.load()
 
@@ -101,7 +104,7 @@ def intersect(path_image, path_stroke, type):
 
         # Walk right
         while True:
-            grad = d2grad(right_ext, stroke)
+            grad = d2grad(right_ext, stroke, SqrtA)
             right_ext = (right_ext[0] + grad[0] * alpha, right_ext[1] + grad[1] * alpha)
             pix = (int(right_ext[0]), int(right_ext[1]))
 
@@ -118,7 +121,7 @@ def intersect(path_image, path_stroke, type):
 
         # Walk left
         while True:
-            grad = d2grad(left_ext, stroke)
+            grad = d2grad(left_ext, stroke, SqrtA)
             left_ext = (left_ext[0] + grad[0] * alpha, left_ext[1] + grad[1] * alpha)
             pix = (int(left_ext[0]), int(left_ext[1]))
 
@@ -139,4 +142,4 @@ def intersect(path_image, path_stroke, type):
 
     return len(ribs)
 
-intersect("image.jpg","arc_stroke.txt")
+intersect("image.jpg","arc_stroke.txt",1)

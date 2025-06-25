@@ -52,9 +52,10 @@ def contour_detection(width : int, height : int, pixels : list, ignore_zones: li
             edges[x + y * width] = 255 if gradient > threshold else 0
     return edges
 
-def intersect(width : int, height : int, img : list, stroke : list, ignore_zones: list[list[tuple]]) -> list:
+def intersect(width : int, height : int, img : list, stroke : list, ignore_zones: list[list[tuple]], type : int) -> list:
     pixels = contour_detection(width, height, img, ignore_zones) 
 
+    SqrtA = d2.getSqrtA(stroke)
     ribs = []
     alpha = 2.0
     correction = 10.0
@@ -104,7 +105,7 @@ def intersect(width : int, height : int, img : list, stroke : list, ignore_zones
 
         # Walk right
         while True:
-            grad = d2.d2grad(right_ext, stroke)
+            grad = d2.d2grad(right_ext, stroke, SqrtA)
             right_ext = (right_ext[0] + grad[0] * alpha,right_ext[1] + grad[1] * alpha) 
             pix = (int(right_ext[0]),int(right_ext[1]))
 
@@ -118,7 +119,7 @@ def intersect(width : int, height : int, img : list, stroke : list, ignore_zones
 
         # Walk left
         while True:
-            grad = d2.d2grad(left_ext, stroke)
+            grad = d2.d2grad(left_ext, stroke, SqrtA)
             left_ext = (left_ext[0] + grad[0] * alpha, left_ext[1] + grad[1] * alpha)
             pix = (int(left_ext[0]),int(left_ext[1]))
 
