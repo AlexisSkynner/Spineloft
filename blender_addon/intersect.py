@@ -98,15 +98,11 @@ def intersect(width : int, height : int, img : list, stroke : list, ignore_zones
         lx = dx * math.cos(-math.pi/2) + dy * math.sin(-math.pi/2)
         ly = dx * math.sin(-math.pi/2) - dy * math.cos(-math.pi/2)
         left_ext = (lx * correction + middle[0], ly * correction + middle[1])
-<<<<<<< HEAD
-        
-=======
 
         #Out of bounds indicator 
         r = 0 
         l = 0 
 
->>>>>>> 9afac91145e8daa3063fec75cf5457cb5fc0d71d
         # Walk right
         while True:
             grad = d2.d2grad(right_ext, stroke, SqrtA)
