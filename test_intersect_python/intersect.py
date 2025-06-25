@@ -1,4 +1,4 @@
-from PIL import Image
+from PIL import Image,ImageDraw
 import math
 from d2_v2 import d2grad
 from d2_v2 import getSqrtA
@@ -43,6 +43,7 @@ def contour_detection(path_image):
 
 def intersect(path_image, path_stroke, type):
     edges = contour_detection(path_image) 
+    
     stroke = []
 
     try:
@@ -53,11 +54,14 @@ def intersect(path_image, path_stroke, type):
     except Exception as e:
         print("Error reading stroke:", e)
         return -1
+    
 
     SqrtA = getSqrtA(stroke)
 
     width, height = edges.size
     pixels = edges.load()
+    draw = ImageDraw.Draw(edges)
+
 
     ribs = []
     alpha = 0.7
@@ -113,8 +117,8 @@ def intersect(path_image, path_stroke, type):
                 break
 
             # Marque les points visités en gris (128)
-            if pixels[pix[0], pix[1]] != 255:
-                pixels[pix[0], pix[1]] = 128
+            #if pixels[pix[0], pix[1]] != 255:
+                #pixels[pix[0], pix[1]] = 128
 
             if pixels[pix[0], pix[1]] == 255:
                 break
@@ -129,17 +133,18 @@ def intersect(path_image, path_stroke, type):
                 print("Out of bounds (left)")
                 break
 
-            if pixels[pix[0], pix[1]] != 255:
-                pixels[pix[0], pix[1]] = 128
+            #if pixels[pix[0], pix[1]] != 255:
+                #pixels[pix[0], pix[1]] = 128
 
             if pixels[pix[0], pix[1]] == 255:
                 break
 
         ribs.append((right_ext, left_ext))
 
+    for j in range(len(ribs)):
+        draw.line([ribs[j][0], ribs[j][1]], fill=128, width=1)
+
     # Sauvegarde facultative pour visualisation
     edges.save("edges_with_ribs.png")  # tu peux changer le chemin
 
-    return len(ribs)
-
-intersect("image.jpg","arc_stroke.txt",0)
+intersect("image.jpg","arc_stroke.txt",1)
