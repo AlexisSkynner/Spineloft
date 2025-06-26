@@ -44,6 +44,10 @@ def register():
         from . import intersect 
         if "intersect" in locals():
             importlib.reload(intersect)
+        
+        from . import d2 
+        if "d2" in locals():
+            importlib.reload(d2)
 
         
 

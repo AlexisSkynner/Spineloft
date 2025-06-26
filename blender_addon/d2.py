@@ -40,7 +40,7 @@ def d2(X : tuple, stroke : list, sqrtA : float) -> float:
     return sqrtA * integral**(-1./2)
 
 def d2grad(x : tuple, stroke : list, sqrtA : float) -> tuple:
-    dx = 5.0
+    dx = 0.2
     d2here : float = d2(x, stroke, sqrtA)
     right : tuple = (x[0] + dx, x[1])
     down : tuple = (x[0], x[1] + dx)

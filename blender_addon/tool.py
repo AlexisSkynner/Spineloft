@@ -235,8 +235,7 @@ class Operator_Generate_Volume(bpy.types.Operator):
     
     def invoke(self, context, event):
         coords = [tuple(v.co.copy()) for v in ribs.vertices]
-        print("coords=",coords)
-        
+
 
         #Création de la zone de data liée au volume
         crcl = bpy.data.meshes.new('volume_spineloft')
