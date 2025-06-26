@@ -142,3 +142,20 @@ def intersect(width : int, height : int, img : list, stroke : list, ignore_zones
     
     #d2.optimizeRibs(ribs)
     return ribs
+
+
+def point_in_poly(x: int, y: int, poly: list[tuple]) -> bool:
+    """
+    Teste si un point (x, y) est dans un polygone `poly` (liste de points fermée)
+    """
+    inside = False
+    n = len(poly)
+    j = n - 1
+    for i in range(n):
+        xi, yi = poly[i]
+        xj, yj = poly[j]
+        if ((yi > y) != (yj > y)) and \
+           (x < (xj - xi) * (y - yi) / (yj - yi + 1e-9) + xi):
+            inside = not inside
+        j = i
+    return inside

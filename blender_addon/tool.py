@@ -10,10 +10,10 @@ from . import d2
 
 
 path = None
-list_points = [[],[]]
+list_points = [[],[],[]] #Liste des points des 3 curves (stroke, exclusion area et custom shape)
 
-curve_obj= [None,None]
-spline=[None,None]
+curve_obj= [None,None,None] #Pointeurs vers les objets des 3 curves (stroke, exclusion area et custom shape)
+spline=[None,None,None] #Pointeurs vers les spline des 3 curves (stroke, exclusion area et custom shape)
 drawing_mode="None"
 step=0
 
@@ -21,7 +21,7 @@ image_width=0
 image_height=0
 
 ribs=None
-objects=[]
+objects=[0,0,0,0,0]
 
 
 # Opérateur simple que notre outil lancera
@@ -42,8 +42,9 @@ class Operator_Select_Image(bpy.types.Operator):
         try :
             #Supprimer tous les objets créés
             for obj in objects:
-                delete_obj(obj)
-            objects=[]
+                if obj!=0:
+                    delete_obj(obj)
+            objects=[0,0,0,0,0]
             
             step=1
             
@@ -85,8 +86,9 @@ class Operator_Delete_Image(bpy.types.Operator):
 
         #Supprimer tous les objets créés
         for obj in objects:
+            if obj!=0:
                 delete_obj(obj)
-        objects=[]
+        objects=[0,0,0,0,0]
 
 
         return {'FINISHED'}
@@ -131,9 +133,11 @@ class Operator_Draw_FH(bpy.types.Operator):
         global objects
         
         #Supprimer tous les objets créés (sauf image de reference)
-        for i in range(1,len(objects)):
+        delete_obj(objects[1])
+        for i in range(3,len(objects)):
+            if objects[i]!=0:
                 delete_obj(objects[i])
-        objects=objects[:1]
+        objects=[objects[0],0,objects[2],0,0]
 
 
         step=1
@@ -188,9 +192,11 @@ class Operator_Draw_SL(bpy.types.Operator):
         global objects
 
         #Supprimer tous les objets créés (sauf image de reference)
-        for i in range(1,len(objects)):
+        delete_obj(objects[1])
+        for i in range(3,len(objects)):
+            if objects[i]!=0:
                 delete_obj(objects[i])
-        objects=objects[:1]
+        objects=[objects[0],0,objects[2],0,0]
 
         step=1
         drawing_mode = "Straight Lines"
@@ -202,6 +208,7 @@ class Operator_Draw_SL(bpy.types.Operator):
 
         context.window_manager.modal_handler_add(self)
         return {'RUNNING_MODAL'}
+    
 
 class Operator_Clear_Spine(bpy.types.Operator):
     """Clear the spine."""
@@ -212,13 +219,12 @@ class Operator_Clear_Spine(bpy.types.Operator):
         global step
         global objects
         step=1
-        delete_obj(curve_obj[0])
-        objects.remove(curve_obj[0])
 
         #Supprimer tous les objets créés (sauf image de reference)
         for i in range(1,len(objects)):
+            if objects[i]!=0:
                 delete_obj(objects[i])
-        objects=objects[:1]
+        objects=objects[:1]+[0,0,0,0]
 
         return {'FINISHED'}
 
@@ -233,10 +239,12 @@ class Operator_Generate_Ribs(bpy.types.Operator):
         global objects
         ratio = max (image_width,image_height)
 
-        if len(objects)>=3:
-            for i in range(2,len(objects)):
+        
+        for i in range(3,len(objects)):
+            if objects[i]!=0:
                 delete_obj(objects[i])
-            objects=objects[:2]
+                objects[i]=0
+
 
         image_dest=[0]*image_height*image_width
         for i in range(0,image_width*image_height*4,4):
@@ -252,7 +260,14 @@ class Operator_Generate_Ribs(bpy.types.Operator):
         accuracy=bpy.context.scene.accuracy_slider
         init_rib_size=bpy.context.scene.init_rib_size
         rib_step=bpy.context.scene.rib_step
-        ribs = intersect.intersect(image_width, image_height, image_dest, list_points_denormalized, [], accuracy, init_rib_size,rib_step)
+
+        if objects[2]==0:
+            ribs = intersect.intersect(image_width, image_height, image_dest, list_points_denormalized, [], accuracy, init_rib_size,rib_step)
+        else:
+            exclusion_points_denormalized=[(p[0]*ratio+image_width/2, -(p[1]*ratio-image_height/2)) for p in list_points[2]]
+            exclusion_areas=[exclusion_points_denormalized]
+            ribs = intersect.intersect(image_width, image_height, image_dest, list_points_denormalized, exclusion_areas, accuracy, init_rib_size,rib_step)
+        
         
 
         
@@ -284,7 +299,7 @@ class Operator_Generate_Ribs(bpy.types.Operator):
         
         #Ajoute l'objet dans la collection actuelle 
         obj = bpy.data.objects.new('Circle', crcl)
-        objects.append(obj)
+        objects[3]=(obj)
         bpy.context.window.scene.collection.objects.link(obj)
         step=3
         return {'FINISHED'}
@@ -299,10 +314,10 @@ class Operator_Generate_Volume(bpy.types.Operator):
         global objects
         step=1
         
-        #Supprimer tous les objets créés (sauf image de reference)
         for i in range(1,len(objects)):
+            if objects[i]!=0:
                 delete_obj(objects[i])
-        objects=objects[:1]
+        objects=objects[:1]+[0,0,0,0]
 
         coords = [tuple(v.co.copy()) for v in ribs.vertices]
 
@@ -334,7 +349,7 @@ class Operator_Generate_Volume(bpy.types.Operator):
         #Ajoute l'objet dans la collection actuelle 
         obj = bpy.data.objects.new('SpineLoft', crcl)
         bpy.context.window.scene.collection.objects.link(obj)
-        step=0
+        step=1
         return {'FINISHED'}
 
 class Panel_SpineLoft(bpy.types.Panel):
@@ -386,6 +401,49 @@ class Operator_Draw_Custom(bpy.types.Operator):
         context.window_manager.modal_handler_add(self)
         return {'RUNNING_MODAL'}
 
+class Operator_Draw_EA(bpy.types.Operator):
+    """Draw an exclusion area, in which edges will not be detected."""
+    bl_idname = "wm.draw_exclusion_area"
+    bl_label = "Draw Exclusion Area - Freehand"
+    holding=False
+
+    def modal(self, context, event):
+        if event.type == 'LEFTMOUSE' and event.value == 'PRESS':
+            # Récupérer la position du rayon (origine + direction)
+            self.holding=True            
+
+
+
+        if event.type in {'ESC','RIGHTMOUSE', 'MIDDLEMOUSE'} or (event.type == 'LEFTMOUSE' and event.value == 'RELEASE'):
+            self.holding=False
+            return {'FINISHED'}
+        
+        if event.type in {'WHEELUPMOUSE', 'WHEELDOWNMOUSE'}:
+            return {'PASS_THROUGH'}
+
+        if self.holding==True:
+            pos = get_mouse_3d_location(context, event)
+            add_stroke_point(pos,2)
+
+
+        return {'RUNNING_MODAL'}
+
+    def invoke(self, context, event):
+        global objects
+
+        delete_obj(objects[2])
+        for i in range(3,len(objects)):
+            if objects[i]!=0:
+                delete_obj(objects[i])
+        objects=[objects[0],objects[1],0,0,0]
+
+        move_view3d_to((0,0,-1),(0,0,0))
+        bpy.ops.view3d.view_axis(type='TOP')
+        create_curve(2)
+
+        context.window_manager.modal_handler_add(self)
+        return {'RUNNING_MODAL'}
+    
 
 class Panel_Select_Image(bpy.types.Panel):
     bl_label = "Reference Selector (Step 1)"
@@ -436,21 +494,22 @@ class Panel_Draw_Tools(bpy.types.Panel):
         layout = self.layout
         layout.label(text="Draw a spine following your design.")
 
-        split = layout.split(factor=0.9)
+        split = layout.split(factor=0.5)
         col_left = split.column()
         col_right = split.column()
 
-
-        col_left.alignment='LEFT'
-        row_left = col_left.row()
-        row_left.alignment='LEFT'
-        row_left.operator("wm.draw_straight_lines", text="", icon="LINE_DATA")
-        row_left.operator("wm.draw_freehand", text="", icon="GREASEPENCIL")
-        row_left.label(text="Drawing mode : "+drawing_mode)
+        col_left.operator("wm.draw_straight_lines", text="", icon="LINE_DATA")
+        col_right.operator("wm.draw_freehand", text="", icon="GREASEPENCIL")
         
-        col_right.alignment='LEFT'
-        row_right = col_right.row()
-        row_right.operator("wm.clear_spine", text="", icon="TRASH")
+        split = layout.split(factor=0.8)
+        col_left = split.column()
+        col_right = split.column()
+        col_right.alignment='RIGHT'
+        col_left.label(text="Drawing mode : "+drawing_mode)
+        row=col_right.row(align=True)
+        row.alignment='RIGHT'
+        row.operator("wm.draw_exclusion_area", text="", icon="SELECT_SET")
+        row.operator("wm.clear_spine", text="", icon="TRASH")
 
 class Panel_Generate_Ribs(bpy.types.Panel):
     bl_label = "Generate Ribs (Step 3)"
@@ -553,6 +612,7 @@ def register():
     bpy.utils.register_class(Operator_Generate_Volume)
     bpy.utils.register_class(Operator_Delete_Image)
     bpy.utils.register_class(Operator_Draw_Custom)
+    bpy.utils.register_class(Operator_Draw_EA)
 
     register_prop()
 
@@ -572,6 +632,7 @@ def unregister():
     bpy.utils.unregister_class(Operator_Generate_Volume)
     bpy.utils.unregister_class(Operator_Delete_Image)
     bpy.utils.unregister_class(Operator_Draw_Custom)
+    bpy.utils.unregister_class(Operator_Draw_EA)
 
     unregister_prop()
 
@@ -606,7 +667,7 @@ def create_ref_image(image_path):
     empty_img.data = img
 
     # Ajouter à la scène active
-    objects.append(empty_img)
+    objects[0]=(empty_img)
     bpy.context.collection.objects.link(empty_img)
 
     # Positionner l'empty image si besoin
@@ -664,14 +725,22 @@ def create_curve(i):
     spline[i] = curve_data.splines.new(type='POLY')
     if i==0:
         spline[i].use_cyclic_u = False
-    else:
+    elif i!=1:
         spline[i].use_cyclic_u = True
+
     spline[i].points[0].hide=True
 
     
 
     new_curve_obj = bpy.data.objects.new("CurveObj", curve_data)
-    objects.append(new_curve_obj)
+    if i==0:
+        objects[1]=new_curve_obj
+    elif i==1:
+        objects[4]=new_curve_obj
+
+    elif i==2:
+        objects[2]=new_curve_obj
+    
     bpy.context.window.scene.collection.objects.link(new_curve_obj)
     curve_obj[i]=new_curve_obj
 
