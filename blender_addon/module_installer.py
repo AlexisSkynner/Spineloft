@@ -7,7 +7,7 @@ import bpy
 path=bpy.utils.user_resource("SCRIPTS", path="modules")
 sys.path.append(path)
 
-def Error(self, context):
+def printError(self, context):
     self.layout.label(text="Required modules cannot be installed. Try again while running Blender as administrator. Desired path = "+path)
 
 
@@ -22,7 +22,7 @@ except:
         subprocess.check_call([sys.executable, "-m", "pip", "install", "--target", path, "matplotlib", "--upgrade"])
     except:
         ("numpy cannot be installed in "+path+". Try running Blender as administrator.")
-        bpy.context.window_manager.popup_menu(Error, title="Error", icon='ERROR')
+        bpy.context.window_manager.popup_menu(printError, title="Error", icon='ERROR')
 
 
 

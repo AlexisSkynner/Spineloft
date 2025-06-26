@@ -228,7 +228,7 @@ def giveMeTheMesh(listPts,shape):
         finalShape=addEdges(finalShape,shapeRib, newList, shape)
 
     
-    else:
+    if shape==1:
         newList=[]
         for i in range(len(listPts)//2):
             newList.append([listPts[2*i],listPts[2*i+1]])
@@ -236,7 +236,16 @@ def giveMeTheMesh(listPts,shape):
         finalShape=addVertices(shapeCircle,newList)
         finalShape=addEdges(finalShape,shapeCircle, newList,shape)
         finalShape=addFaces(finalShape,shapeCircle, newList)
-        
 
+    if shape==2:
+        newList=[]
+        for i in range(len(listPts)//2):
+            newList.append([listPts[2*i],listPts[2*i+1]])
+        
+        finalShape=addVertices(shapeSquare,newList)
+        finalShape=addEdges(finalShape,shapeSquare, newList,shape)
+        finalShape=addFaces(finalShape,shapeSquare, newList)
+        
+    print(shape)
     return(finalShape.vertices,finalShape.edges,finalShape.faces)
 

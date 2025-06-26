@@ -26,25 +26,16 @@ def register():
 
     try: #On essaie d'installer les différentes librairies
         
-        from . import module_installer
-        if "module_installer" in locals():
-            importlib.reload(module_installer)
         
         from . import register_script
         if "register_script" in locals():
             importlib.reload(register_script)
 
-        from . import ui
-        if "ui" in locals():
-            importlib.reload(ui)
 
         from . import gen_vol 
         if "gen_vol" in locals():
             importlib.reload(gen_vol)
 
-        from . import custom_editor 
-        if "custom_editor" in locals():
-            importlib.reload(custom_editor)
         
         from . import tool 
         if "tool" in locals():
@@ -66,7 +57,6 @@ def register():
 
     else:
         addon_utils.disable('blender_addon', default_set=True)
-        print(addon_utils.check('blender_addon'))
     
 
 

@@ -4,14 +4,6 @@ from . import d2
 def distance(x,y):
     return (x[0]-y[0])**2 +  (x[1]-y[1])**2
 
-def generate_points(p1 : tuple, p2 : tuple , nb_points : int, d : int, stroke : list):
-
-    total_length = math.sqrt(distance(p2, p1))
-
-    direction = ((p2[0] - p1[0]) / total_length, (p2[1] - p1[1]) / total_length)
-
-    for i in range(nb_points):
-        stroke.append((p1[0] + direction[0] * d * (i + 1), p1[1] + direction[1] * d * (i + 1)))
 
 def point_in_poly(x: int, y: int, poly: list[tuple]) -> bool:
     """

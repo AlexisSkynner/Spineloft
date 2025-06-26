@@ -240,7 +240,11 @@ class Operator_Generate_Volume(bpy.types.Operator):
 
         #Création de la zone de data liée au volume
         crcl = bpy.data.meshes.new('volume_spineloft')
-        mesh=gen_vol.giveMeTheMesh(coords,1)
+        if (bpy.context.scene.choose_shape=="Circle"):
+            mesh=gen_vol.giveMeTheMesh(coords,1)
+        else:
+            mesh=gen_vol.giveMeTheMesh(coords,2)
+        
         crcl.from_pydata(mesh[0],mesh[1],mesh[2])
         
         #Ajoute l'objet dans la collection actuelle 
@@ -371,6 +375,9 @@ class Panel_Generate_Volume(bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
         layout.label(text="Generate your volume.")
+
+        row=layout.row()
+        row.prop(context.scene,'choose_shape')
 
         row=layout.row()
         row.operator("wm.gen_vol", text="Generate 3D Volume")
