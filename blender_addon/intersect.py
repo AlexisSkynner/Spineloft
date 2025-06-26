@@ -4,10 +4,7 @@ from . import d2
 def distance(x,y):
     return (x[0]-y[0])**2 +  (x[1]-y[1])**2
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 64a7a6161c4fad7d054e290fca35c0374c20581d
 def point_in_poly(x: int, y: int, poly: list[tuple]) -> bool:
     """
     Teste si un point (x, y) est dans un polygone `poly` (liste de points fermée)
@@ -29,6 +26,7 @@ def apply_box_blur(img: list, width:int, height:int, radius: int = 1) -> list:
     Applique un flou simple (box blur) à une image en niveaux de gris sans dépendance externe.
     `radius` détermine la taille de la fenêtre : 1 = 3x3, 2 = 5x5, etc.
     """
+
 
     # Crée une nouvelle image pour les résultats
     output = [0] * width * height
@@ -86,6 +84,8 @@ def intersect(width : int, height : int, img : list, stroke : list, ignore_zones
         p1 = stroke[i]
         p2 = stroke[i + 1]
         middle = ((p1[0] + p2[0]) / 2.0, (p1[1] + p2[1]) / 2.0)
+
+
 
         dx = p2[0] - middle[0]
         dy = middle[1] - p2[1]
