@@ -3,18 +3,18 @@ from bl_ui.space_toolsystem_common import ToolDef
 import mathutils
 import math
 from bpy_extras import view3d_utils
+import bmesh
 from . import intersect
 from . import gen_vol
 from . import d2
 
 
 path = None
-spline = None
-list_points = []
+list_points = [[],[]]
 
-curve_data = None
-curve_obj=None
-spline = None
+curve_data = [None,None]
+curve_obj=[None,None]
+spline = [None,None]
 drawing_mode="None"
 step=0
 
@@ -57,10 +57,22 @@ class Operator_Select_Image(bpy.types.Operator):
         return {'FINISHED'}
 
     def invoke(self, context, event):
-        
         context.window_manager.fileselect_add(self)  # ouvre la fenêtre de fichier
         return {'RUNNING_MODAL'}
+        
 
+class Operator_Delete_Image(bpy.types.Operator):
+    """Delete the reference picture."""
+    bl_idname = "wm.delete_image"
+    bl_label = "Delete reference"
+
+    def invoke(self, context, event):
+        global path 
+        global step
+        path=None
+        step=0
+        return {'FINISHED'}
+        
 
 class Operator_Draw_FH(bpy.types.Operator):
     """Draw the spine freehand."""
@@ -89,8 +101,7 @@ class Operator_Draw_FH(bpy.types.Operator):
 
         if self.holding==True:
             pos = get_mouse_3d_location(context, event)
-            self.report({'INFO'}, f"Clic en {pos[0]}, {pos[1]}")
-            add_stroke_point(pos)
+            add_stroke_point(pos,0)
 
 
         return {'RUNNING_MODAL'}
@@ -103,7 +114,7 @@ class Operator_Draw_FH(bpy.types.Operator):
         drawing_mode = "Freehand"
         move_view3d_to((0,0,-1),(0,0,0))
         bpy.ops.view3d.view_axis(type='TOP')
-        create_curve()
+        create_curve(0)
 
         context.window_manager.modal_handler_add(self)
         return {'RUNNING_MODAL'}
@@ -123,7 +134,7 @@ class Operator_Draw_SL(bpy.types.Operator):
             pos = get_mouse_3d_location(context, event)
             
             if pos[0]<=0.5 and pos[1]<=0.5 and pos[0]>=-0.5 and pos[1]>=-0.5:
-                add_stroke_point(pos) 
+                add_stroke_point(pos,0) 
             
             else:
                 drawing_mode = "None"
@@ -152,7 +163,7 @@ class Operator_Draw_SL(bpy.types.Operator):
         drawing_mode = "Straight Lines"
         move_view3d_to((0,0,-1),(0,0,0))
         bpy.ops.view3d.view_axis(type='TOP')
-        create_curve()
+        create_curve(0)
 
         context.window_manager.modal_handler_add(self)
         return {'RUNNING_MODAL'}
@@ -165,7 +176,7 @@ class Operator_Clear_Spine(bpy.types.Operator):
     def invoke(self, context, event):
         global step
         step=1
-        delete_curve()
+        delete_curve(0)
         return {'FINISHED'}
 
 class Operator_Generate_Ribs(bpy.types.Operator):
@@ -186,7 +197,7 @@ class Operator_Generate_Ribs(bpy.types.Operator):
             image_dest[i//4]=int((r*0.2989+g*0.587+b*0.114)*255)
 
         nb_ribs=bpy.context.scene.rib_number
-        new_stroke = redistribute_stroke(list_points,nb_ribs)
+        new_stroke = redistribute_stroke(list_points[0],nb_ribs)
         list_points_denormalized=[(p[0]*ratio+image_width/2, -(p[1]*ratio-image_height/2)) for p in new_stroke]
 
         accuracy=bpy.context.scene.accuracy_slider
@@ -241,11 +252,26 @@ class Operator_Generate_Volume(bpy.types.Operator):
         crcl = bpy.data.meshes.new('volume_spineloft')
         if (bpy.context.scene.choose_shape=="Circle"):
             mesh=gen_vol.giveMeTheMesh(coords,1)
-        else:
+        elif(bpy.context.scene.choose_shape=="Square"):
             mesh=gen_vol.giveMeTheMesh(coords,2)
         
+        else:
+            nb_ribs=bpy.context.scene.rib_number
+            new_stroke = redistribute_stroke(list_points[1],nb_ribs)
+            mesh=gen_vol.giveMeTheMesh(coords,3,new_stroke)
+
         crcl.from_pydata(mesh[0],mesh[1],mesh[2])
         
+        bm = bmesh.new()
+        bm.from_mesh(crcl)
+
+        # Recalculer les normales de face
+        bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+
+        # Appliquer les modifications au mesh original
+        bm.to_mesh(crcl)
+        bm.free()
+
         #Ajoute l'objet dans la collection actuelle 
         obj = bpy.data.objects.new('SpineLoft', crcl)
         bpy.context.window.scene.collection.objects.link(obj)
@@ -263,6 +289,45 @@ class Panel_SpineLoft(bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
 
+
+
+class Operator_Draw_Custom(bpy.types.Operator):
+    """Draw the shape freehand."""
+    bl_idname = "wm.draw_custom"
+    bl_label = "Draw Custom Shape- Freehand"
+    holding=False
+
+    def modal(self, context, event):
+        if event.type == 'LEFTMOUSE' and event.value == 'PRESS':
+            # Récupérer la position du rayon (origine + direction)
+            self.holding=True            
+
+
+
+        if event.type in {'ESC','RIGHTMOUSE', 'MIDDLEMOUSE'} or (event.type == 'LEFTMOUSE' and event.value == 'RELEASE'):
+            self.holding=False
+            return {'FINISHED'}
+        
+        if event.type in {'WHEELUPMOUSE', 'WHEELDOWNMOUSE'}:
+            return {'PASS_THROUGH'}
+
+        if self.holding==True:
+            pos = get_mouse_3d_location(context, event)
+            add_stroke_point(pos,1)
+
+
+        return {'RUNNING_MODAL'}
+
+    def invoke(self, context, event):
+
+        move_view3d_to((0,0,-1),(0,0,0))
+        bpy.ops.view3d.view_axis(type='TOP')
+        create_curve(1)
+
+        context.window_manager.modal_handler_add(self)
+        return {'RUNNING_MODAL'}
+
+
 class Panel_Select_Image(bpy.types.Panel):
     bl_label = "Reference Selector (Step 1)"
     bl_idname = "SPINELOFT_PT_SELECTIMAGE"
@@ -278,9 +343,19 @@ class Panel_Select_Image(bpy.types.Panel):
         layout = self.layout
         layout.label(text="Select the reference image to use.")
         
-        row = layout.row(align=True)
+        split = layout.split(factor=0.9)
+
+        col_left = split.column()
+        col_left.alignment='LEFT'
+        row = col_left.row(align=True)
         showed_path=path+"\n\n" if path else " Open a file"
         row.operator("wm.select_image", text=showed_path, icon="FILE_FOLDER")
+
+        col_right=split.column()
+        col_right.alignment='RIGHT'
+        row = col_right.row(align=True)
+        row.operator("wm.delete_image", text="", icon="TRASH")
+
 
 
 class Panel_Draw_Tools(bpy.types.Panel):
@@ -302,7 +377,7 @@ class Panel_Draw_Tools(bpy.types.Panel):
         layout = self.layout
         layout.label(text="Draw a spine following your design.")
 
-        split = layout.split(factor=0.8)
+        split = layout.split(factor=0.9)
         col_left = split.column()
         col_right = split.column()
 
@@ -316,7 +391,6 @@ class Panel_Draw_Tools(bpy.types.Panel):
         
         col_right.alignment='LEFT'
         row_right = col_right.row()
-        row_right.alignment='RIGHT'
         row_right.operator("wm.clear_spine", text="", icon="TRASH")
 
 class Panel_Generate_Ribs(bpy.types.Panel):
@@ -381,6 +455,26 @@ class Panel_Generate_Volume(bpy.types.Panel):
         row=layout.row()
         row.operator("wm.gen_vol", text="Generate 3D Volume")
 
+class Panel_Custome_Shape(bpy.types.Panel):
+    bl_label = "Draw custom shape"
+    bl_idname = "SPINELOFT_PT_CUSTSHAPE"
+    bl_parent_id = "SPINELOFT_PT_GENVOL"
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'UI'
+    bl_context = "objectmode"
+    bl_category="Tool"
+    
+    @classmethod
+    def poll(cls, context):
+        if bpy.context.scene.choose_shape!="Custom":
+            return False
+        return(True)
+
+    def draw(self, context):
+        layout = self.layout
+        layout.label(text="Draw a custom shape to be extruded.")
+        layout.operator("wm.draw_custom", text="Draw a custom shape", icon="GREASEPENCIL")
+        
 
 
 
@@ -390,12 +484,17 @@ def register():
     bpy.utils.register_class(Panel_Draw_Tools)
     bpy.utils.register_class(Panel_Generate_Ribs)
     bpy.utils.register_class(Panel_Generate_Volume)
+    bpy.utils.register_class(Panel_Custome_Shape)
+
     bpy.utils.register_class(Operator_Select_Image)
     bpy.utils.register_class(Operator_Draw_FH)
     bpy.utils.register_class(Operator_Draw_SL)
     bpy.utils.register_class(Operator_Clear_Spine)
     bpy.utils.register_class(Operator_Generate_Ribs)
     bpy.utils.register_class(Operator_Generate_Volume)
+    bpy.utils.register_class(Operator_Delete_Image)
+    bpy.utils.register_class(Operator_Draw_Custom)
+
     register_prop()
 
 def unregister():
@@ -404,12 +503,17 @@ def unregister():
     bpy.utils.unregister_class(Panel_Draw_Tools)
     bpy.utils.unregister_class(Panel_Generate_Ribs)
     bpy.utils.unregister_class(Panel_Generate_Volume)
+    bpy.utils.unregister_class(Panel_Custome_Shape)
+
     bpy.utils.unregister_class(Operator_Select_Image)
     bpy.utils.unregister_class(Operator_Draw_FH)
     bpy.utils.unregister_class(Operator_Draw_SL)
     bpy.utils.unregister_class(Operator_Clear_Spine)
     bpy.utils.unregister_class(Operator_Generate_Ribs)
     bpy.utils.unregister_class(Operator_Generate_Volume)
+    bpy.utils.unregister_class(Operator_Delete_Image)
+    bpy.utils.unregister_class(Operator_Draw_Custom)
+
     unregister_prop()
 
 
@@ -477,67 +581,70 @@ def get_mouse_3d_location(context, event):
     hit_pos = ray_origin + d * ray_direction
     return hit_pos
 
-def create_curve():
+def create_curve(i):
     global curve_data
     global curve_obj 
     global spline
     global list_points
-    list_points=[]
+    list_points[i]=[]
 
     try:
-        bpy.data.objects.remove(curve_obj, do_unlink=True)
-        curve_obj=None
+        bpy.data.objects.remove(curve_obj[i], do_unlink=True)
+        curve_obj[i]=None
     except:
         pass
 
-    if curve_data == None:
-        curve_data = bpy.data.curves.new(name="Spine", type='CURVE')
-        curve_data.dimensions = '3D'
-        curve_data.bevel_depth = 0.005
+    if curve_data[i] == None:
+        curve_data[i] = bpy.data.curves.new(name="Spine", type='CURVE')
+        curve_data[i].dimensions = '3D'
+        curve_data[i].bevel_depth = 0.005
         
-    curve_data.splines.clear()
-    spline = curve_data.splines.new(type='POLY')
-    spline.use_cyclic_u = False
-    spline.points[0].hide=True
+    curve_data[i].splines.clear()
+    spline[i] = curve_data[i].splines.new(type='POLY')
+    if i==0:
+        spline[i].use_cyclic_u = False
+    else:
+        spline[i].use_cyclic_u = True
+    spline[i].points[0].hide=True
 
     
 
-    curve_obj = bpy.data.objects.new("CurveObj", curve_data)
-    bpy.context.window.scene.collection.objects.link(curve_obj)
+    curve_obj[i] = bpy.data.objects.new("CurveObj", curve_data[i])
+    bpy.context.window.scene.collection.objects.link(curve_obj[i])
 
-def delete_curve():
+def delete_curve(i):
     global curve_data
     global curve_obj 
     global spline
     global list_points
-    list_points=[]
+    list_points[i]=[]
 
     try:
-        bpy.data.objects.remove(curve_obj, do_unlink=True)
-        curve_obj=None
-        curve_data.splines.clear()
-        curve_data=None
+        bpy.data.objects.remove(curve_obj[i], do_unlink=True)
+        curve_obj[i]=None
+        curve_data[i].splines.clear()
+        curve_data[i]=None
     except:
         pass
 
 
     
-    curve_obj = bpy.data.objects.new("CurveObj", curve_data)
-    bpy.context.window.scene.collection.objects.link(curve_obj)
+    curve_obj[i] = bpy.data.objects.new("CurveObj", curve_data[i])
+    bpy.context.window.scene.collection.objects.link(curve_obj[i])
 
-def add_stroke_point(pos):
+def add_stroke_point(pos,i):
     global spline
     global list_points
 
-    if spline.points[0].hide==False:
-        spline.points.add(1)
+    if spline[i].points[0].hide==False:
+        spline[i].points.add(1)
     else:
-        spline.points[0].hide=False
+        spline[i].points[0].hide=False
     
-    point = spline.points[-1]
+    point = spline[i].points[-1]
     point.co = (pos[0], pos[1], 0.01,1)  # Position du point
     
-    list_points.append([pos[0], pos[1]])
+    list_points[i].append([pos[0], pos[1]])
 
 def redistribute_stroke(stroke : list, nb : int) -> list:
     # Calcul longueur totale
@@ -596,9 +703,9 @@ def register_prop():
     bpy.types.Scene.init_rib_size = bpy.props.FloatProperty(
         name="Initial rib size",
         description="Choose a size that define the initial length of your ribs.",
-        default=2,
-        min=0.5,
-        max=10
+        default=0.7,
+        min=0.2,
+        max=5
     )
 
     bpy.types.Scene.rib_step = bpy.props.FloatProperty(
@@ -612,7 +719,7 @@ def register_prop():
     bpy.types.Scene.rib_number = bpy.props.IntProperty(
         name="Maximum number of ribs",
         description="Choose the maximum number of ribs",
-        default=20,
+        default=40,
         min=5,
         max=500
     )
@@ -623,6 +730,7 @@ def register_prop():
     items=[
         ("Circle", "Circle", ""),
         ("Square", "Square", ""),
+        ("Custom", "Custom", "")
     ],
     default='Circle'
     )

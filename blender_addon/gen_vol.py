@@ -97,7 +97,6 @@ def transl(shape:Shape,vect:tuple):
     return(shape2)
 
 def middle(p1:tuple,p2:tuple):
-    print("P1=",p1,"fin")
     return ( ( (p1[0]+p2[0])/2 , (p1[1]+p2[1])/2 , (p1[2]+p2[2])/2))
 
 
@@ -218,7 +217,7 @@ def addFaces(finalShape:Shape,startShape:Shape, listPts:list):
 
 
 
-def giveMeTheMesh(listPts,shape):
+def giveMeTheMesh(listPts,shape, listVertices=None):
     if shape==0:
         newList=[]
         for i in range(len(listPts)//2):
@@ -227,8 +226,47 @@ def giveMeTheMesh(listPts,shape):
         finalShape=addVertices(shapeRib,newList)
         finalShape=addEdges(finalShape,shapeRib, newList, shape)
 
-    
-    if shape==1:
+
+    elif shape==2:
+        newList=[]
+        for i in range(len(listPts)//2):
+            newList.append([listPts[2*i],listPts[2*i+1]])
+        
+        finalShape=addVertices(shapeSquare,newList)
+        finalShape=addEdges(finalShape,shapeSquare, newList,shape)
+        finalShape=addFaces(finalShape,shapeSquare, newList)
+
+    elif shape==3 and listVertices!=None:
+        newList=[]
+        for i in range(len(listPts)//2):
+            newList.append([listPts[2*i],listPts[2*i+1]])
+
+        print(listVertices)
+        A=[(p[0],0,p[1]) for p in listVertices] #Il faut une figure qui fait face vers les y (y=0 pour tout point), dont le centre est en 0,0,0, de largeur 1
+        B=[(0,len(A)-1)]+[(i,i+1) for i in range(len(A)-1)]
+        C=[]
+        
+        min_x=A[0][0]
+        max_x=A[0][0]
+        for p in A:
+            x=p[0]
+            if x<min_x:
+                min_x=x
+            if x>max_x:
+                max_x=x
+        
+        width=max_x-min_x
+        if width==0:
+            width=1
+
+        shapeCustom=copy.deepcopy(homo(Shape(A,B,C),1/width))
+
+        finalShape=addVertices(shapeCustom,newList)
+        finalShape=addEdges(finalShape,shapeCustom, newList,shape)
+        finalShape=addFaces(finalShape,shapeCustom, newList)
+
+
+    else: #Cas de base = cercle
         newList=[]
         for i in range(len(listPts)//2):
             newList.append([listPts[2*i],listPts[2*i+1]])
@@ -237,15 +275,5 @@ def giveMeTheMesh(listPts,shape):
         finalShape=addEdges(finalShape,shapeCircle, newList,shape)
         finalShape=addFaces(finalShape,shapeCircle, newList)
 
-    if shape==2:
-        newList=[]
-        for i in range(len(listPts)//2):
-            newList.append([listPts[2*i],listPts[2*i+1]])
-        
-        finalShape=addVertices(shapeSquare,newList)
-        finalShape=addEdges(finalShape,shapeSquare, newList,shape)
-        finalShape=addFaces(finalShape,shapeSquare, newList)
-        
-    print(shape)
     return(finalShape.vertices,finalShape.edges,finalShape.faces)
 
