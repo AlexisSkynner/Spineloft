@@ -1,5 +1,4 @@
 import bpy
-from . import custom_editor
 from . import tool
 
 # Initialisation
