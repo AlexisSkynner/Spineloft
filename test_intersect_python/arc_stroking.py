@@ -10,7 +10,7 @@ start_angle = 3 * math.pi / 4   # ≈ 135°, en haut à gauche
 end_angle = 5 * math.pi / 4     # ≈ 225°, en bas à gauche
 
 # Nombre de points
-num_points = 50
+num_points = 100
 
 with open("arc_stroke.txt", "w") as f:
     for i in range(num_points):

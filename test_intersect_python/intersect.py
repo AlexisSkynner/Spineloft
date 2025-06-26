@@ -15,17 +15,47 @@ def generate_points(p1, p2, nb_points, d, stroke):
     for i in range(nb_points):
         stroke.append((p1[0] + direction[0] * d * (i + 1), p1[1] + direction[1] * d * (i + 1)))
 
+def apply_box_blur(img: Image.Image, radius: int = 1) -> Image.Image:
+    """
+    Applique un flou simple (box blur) à une image en niveaux de gris sans dépendance externe.
+    `radius` détermine la taille de la fenêtre : 1 = 3x3, 2 = 5x5, etc.
+    """
+    width, height = img.size
+    pixels = img.load()
+
+    # Crée une nouvelle image pour les résultats
+    output = Image.new("L", (width, height))
+    output_pixels = output.load()
+
+    for y in range(height):
+        for x in range(width):
+            total = 0
+            count = 0
+            for dy in range(-radius, radius + 1):
+                for dx in range(-radius, radius + 1):
+                    nx, ny = x + dx, y + dy
+                    if 0 <= nx < width and 0 <= ny < height:
+                        total += pixels[nx, ny]
+                        count += 1
+            average = total // count
+            output_pixels[x, y] = average
+
+    return output
+
+
 def contour_detection(path_image): 
     img = Image.open(path_image).convert("L")
     if img is None:
         print("Error: Could not open or find the image!")
         return -1
+    
+    img = apply_box_blur(img,3)
 
     width, height = img.size
     pixels = img.load()
 
-    threshold = 30 
-
+    threshold = 20
+    
     # Crée une nouvelle image pour les contours
     edges = Image.new("L", (width, height))
     edge_pixels = edges.load()
@@ -65,7 +95,7 @@ def intersect(path_image, path_stroke, type):
 
     ribs = []
     alpha = 0.7
-    correction = 0.5
+    correction = 2
     dmax = 30
 
     if type == 0 : 
@@ -117,8 +147,8 @@ def intersect(path_image, path_stroke, type):
                 break
 
             # Marque les points visités en gris (128)
-            #if pixels[pix[0], pix[1]] != 255:
-                #pixels[pix[0], pix[1]] = 128
+            if pixels[pix[0], pix[1]] != 255:
+                pixels[pix[0], pix[1]] = 128
 
             if pixels[pix[0], pix[1]] == 255:
                 break
@@ -133,18 +163,19 @@ def intersect(path_image, path_stroke, type):
                 print("Out of bounds (left)")
                 break
 
-            #if pixels[pix[0], pix[1]] != 255:
-                #pixels[pix[0], pix[1]] = 128
+            if pixels[pix[0], pix[1]] != 255:
+                pixels[pix[0], pix[1]] = 128
 
             if pixels[pix[0], pix[1]] == 255:
                 break
 
         ribs.append((right_ext, left_ext))
+        print(i)
 
-    for j in range(len(ribs)):
-        draw.line([ribs[j][0], ribs[j][1]], fill=128, width=1)
+    #for j in range(len(ribs)):
+       # draw.line([ribs[j][0], ribs[j][1]], fill=128, width=1)
 
     # Sauvegarde facultative pour visualisation
     edges.save("edges_with_ribs.png")  # tu peux changer le chemin
 
-intersect("image.jpg","arc_stroke.txt",1)
+intersect("Tasse.jpg","arc_stroke.txt",1)
