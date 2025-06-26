@@ -12,9 +12,8 @@ from . import d2
 path = None
 list_points = [[],[]]
 
-curve_data = [None,None]
-curve_obj=[None,None]
-spline = [None,None]
+curve_obj= [None,None]
+spline=[None,None]
 drawing_mode="None"
 step=0
 
@@ -22,6 +21,8 @@ image_width=0
 image_height=0
 
 ribs=None
+objects=[]
+
 
 # Opérateur simple que notre outil lancera
 class Operator_Select_Image(bpy.types.Operator):
@@ -37,7 +38,15 @@ class Operator_Select_Image(bpy.types.Operator):
         global image_width
         global image_height
         global pixels
+        global objects
         try :
+            #Supprimer tous les objets créés
+            for obj in objects:
+                delete_obj(obj)
+            objects=[]
+            
+            step=1
+            
             image = bpy.data.images.load(self.filepath)
             path=str(self.filepath)
             pixels=[p for p in image.pixels]
@@ -51,7 +60,8 @@ class Operator_Select_Image(bpy.types.Operator):
             move_view3d_to((0,0,-1),(0,0,0))
             bpy.ops.view3d.view_axis(type='TOP')
             create_ref_image(path)
-            step=1
+
+            
         except:
             path=None
         return {'FINISHED'}
@@ -69,8 +79,16 @@ class Operator_Delete_Image(bpy.types.Operator):
     def invoke(self, context, event):
         global path 
         global step
+        global objects
         path=None
         step=0
+
+        #Supprimer tous les objets créés
+        for obj in objects:
+                delete_obj(obj)
+        objects=[]
+
+
         return {'FINISHED'}
         
 
@@ -110,6 +128,14 @@ class Operator_Draw_FH(bpy.types.Operator):
         global path
         global drawing_mode
         global step
+        global objects
+        
+        #Supprimer tous les objets créés (sauf image de reference)
+        for i in range(1,len(objects)):
+                delete_obj(objects[i])
+        objects=objects[:1]
+
+
         step=1
         drawing_mode = "Freehand"
         move_view3d_to((0,0,-1),(0,0,0))
@@ -159,11 +185,20 @@ class Operator_Draw_SL(bpy.types.Operator):
         global path
         global drawing_mode
         global step
+        global objects
+
+        #Supprimer tous les objets créés (sauf image de reference)
+        for i in range(1,len(objects)):
+                delete_obj(objects[i])
+        objects=objects[:1]
+
         step=1
         drawing_mode = "Straight Lines"
         move_view3d_to((0,0,-1),(0,0,0))
         bpy.ops.view3d.view_axis(type='TOP')
         create_curve(0)
+
+        
 
         context.window_manager.modal_handler_add(self)
         return {'RUNNING_MODAL'}
@@ -175,8 +210,16 @@ class Operator_Clear_Spine(bpy.types.Operator):
     
     def invoke(self, context, event):
         global step
+        global objects
         step=1
-        delete_curve(0)
+        delete_obj(curve_obj[0])
+        objects.remove(curve_obj[0])
+
+        #Supprimer tous les objets créés (sauf image de reference)
+        for i in range(1,len(objects)):
+                delete_obj(objects[i])
+        objects=objects[:1]
+
         return {'FINISHED'}
 
 class Operator_Generate_Ribs(bpy.types.Operator):
@@ -187,7 +230,13 @@ class Operator_Generate_Ribs(bpy.types.Operator):
     def invoke(self, context, event):
         global step
         global ribs
+        global objects
         ratio = max (image_width,image_height)
+
+        if len(objects)>=3:
+            for i in range(2,len(objects)):
+                delete_obj(objects[i])
+            objects=objects[:2]
 
         image_dest=[0]*image_height*image_width
         for i in range(0,image_width*image_height*4,4):
@@ -235,6 +284,7 @@ class Operator_Generate_Ribs(bpy.types.Operator):
         
         #Ajoute l'objet dans la collection actuelle 
         obj = bpy.data.objects.new('Circle', crcl)
+        objects.append(obj)
         bpy.context.window.scene.collection.objects.link(obj)
         step=3
         return {'FINISHED'}
@@ -245,6 +295,15 @@ class Operator_Generate_Volume(bpy.types.Operator):
     bl_label = "Generate 3D Volume"
     
     def invoke(self, context, event):
+        global step
+        global objects
+        step=1
+        
+        #Supprimer tous les objets créés (sauf image de reference)
+        for i in range(1,len(objects)):
+                delete_obj(objects[i])
+        objects=objects[:1]
+
         coords = [tuple(v.co.copy()) for v in ribs.vertices]
 
 
@@ -319,7 +378,7 @@ class Operator_Draw_Custom(bpy.types.Operator):
         return {'RUNNING_MODAL'}
 
     def invoke(self, context, event):
-
+        global objects
         move_view3d_to((0,0,-1),(0,0,0))
         bpy.ops.view3d.view_axis(type='TOP')
         create_curve(1)
@@ -534,6 +593,7 @@ def move_view3d_to(location=(0,0,0), rotation=(0, 0, 0)):
 
 
 def create_ref_image(image_path):
+    global objects
     img = bpy.data.images.load(image_path)
 
     # Créer un empty image dans la scène
@@ -546,6 +606,7 @@ def create_ref_image(image_path):
     empty_img.data = img
 
     # Ajouter à la scène active
+    objects.append(empty_img)
     bpy.context.collection.objects.link(empty_img)
 
     # Positionner l'empty image si besoin
@@ -582,10 +643,10 @@ def get_mouse_3d_location(context, event):
     return hit_pos
 
 def create_curve(i):
-    global curve_data
-    global curve_obj 
+    global curve_obj
     global spline
     global list_points
+    global objects
     list_points[i]=[]
 
     try:
@@ -594,13 +655,13 @@ def create_curve(i):
     except:
         pass
 
-    if curve_data[i] == None:
-        curve_data[i] = bpy.data.curves.new(name="Spine", type='CURVE')
-        curve_data[i].dimensions = '3D'
-        curve_data[i].bevel_depth = 0.005
-        
-    curve_data[i].splines.clear()
-    spline[i] = curve_data[i].splines.new(type='POLY')
+
+    curve_data = bpy.data.curves.new(name="Spine", type='CURVE')
+    curve_data.dimensions = '3D'
+    curve_data.bevel_depth = 0.005 
+    curve_data.splines.clear()
+    
+    spline[i] = curve_data.splines.new(type='POLY')
     if i==0:
         spline[i].use_cyclic_u = False
     else:
@@ -609,28 +670,12 @@ def create_curve(i):
 
     
 
-    curve_obj[i] = bpy.data.objects.new("CurveObj", curve_data[i])
-    bpy.context.window.scene.collection.objects.link(curve_obj[i])
-
-def delete_curve(i):
-    global curve_data
-    global curve_obj 
-    global spline
-    global list_points
-    list_points[i]=[]
-
-    try:
-        bpy.data.objects.remove(curve_obj[i], do_unlink=True)
-        curve_obj[i]=None
-        curve_data[i].splines.clear()
-        curve_data[i]=None
-    except:
-        pass
+    new_curve_obj = bpy.data.objects.new("CurveObj", curve_data)
+    objects.append(new_curve_obj)
+    bpy.context.window.scene.collection.objects.link(new_curve_obj)
+    curve_obj[i]=new_curve_obj
 
 
-    
-    curve_obj[i] = bpy.data.objects.new("CurveObj", curve_data[i])
-    bpy.context.window.scene.collection.objects.link(curve_obj[i])
 
 def add_stroke_point(pos,i):
     global spline
@@ -647,6 +692,9 @@ def add_stroke_point(pos,i):
     list_points[i].append([pos[0], pos[1]])
 
 def redistribute_stroke(stroke : list, nb : int) -> list:
+    if len(stroke)<=1:
+        return(stroke)
+    
     # Calcul longueur totale
     L=d2.getSqrtA(stroke)**2
 
@@ -690,6 +738,26 @@ def redistribute_stroke(stroke : list, nb : int) -> list:
     #     i = j
     # return(ans)
 
+
+def delete_obj(obj):
+    global objects
+    
+    try:
+
+
+        # Deselect all
+        bpy.ops.object.select_all(action='DESELECT')
+
+        # Sélectionner et rendre actif
+        obj.select_set(True)
+        bpy.context.view_layer.objects.active = obj
+
+        # Supprimer l'objet
+        bpy.ops.object.delete()
+
+        
+    except:
+        pass
 
 def register_prop():
     bpy.types.Scene.accuracy_slider = bpy.props.FloatProperty(
