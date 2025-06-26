@@ -97,6 +97,7 @@ def transl(shape:Shape,vect:tuple):
     return(shape2)
 
 def middle(p1:tuple,p2:tuple):
+    print("P1=",p1,"fin")
     return ( ( (p1[0]+p2[0])/2 , (p1[1]+p2[1])/2 , (p1[2]+p2[2])/2))
 
 
@@ -165,7 +166,7 @@ def addVertices(startShape:Shape,listPts:list):
 
     return(finalShape)
 
-def addEdges(finalShape:Shape,startShape:Shape, listPts:list):
+def addEdges(finalShape:Shape,startShape:Shape, listPts:list, shape:int):
     l=len(listPts)
     nbEdges=len(startShape.edges)
     nbVertices=len(startShape.vertices)
@@ -177,13 +178,12 @@ def addEdges(finalShape:Shape,startShape:Shape, listPts:list):
             edge0=edge[0]+i*nbVertices
             edge1=edge[1]+i*nbVertices
             finalShape.edges.append((edge0,edge1))
-            
-    #Edges  de la connection
-    # for i in range(l-1):
-    #     for j in range(nbVertices):
-    #         finalShape.edges.append( ( nbVertices*i+j , nbVertices*(i+1)+j ) )
-
-
+    
+    if shape!=0:       
+        #Edges  de la connection
+        for i in range(l-1):
+            for j in range(nbVertices):
+                finalShape.edges.append( ( nbVertices*i+j , nbVertices*(i+1)+j ) )
 
     return(finalShape)
 
@@ -218,16 +218,25 @@ def addFaces(finalShape:Shape,startShape:Shape, listPts:list):
 
 
 
-def giveMeTheMesh(listPts):
+def giveMeTheMesh(listPts,shape):
+    if shape==0:
+        newList=[]
+        for i in range(len(listPts)//2):
+            newList.append([listPts[2*i],listPts[2*i+1]])
+        
+        finalShape=addVertices(shapeRib,newList)
+        finalShape=addEdges(finalShape,shapeRib, newList, shape)
+
     
-    newList=[]
-    for i in range(len(listPts)//2):
-        newList.append([listPts[2*i],listPts[2*i+1]])
-    
-    finalShape=addVertices(shapeStart,newList)
-    finalShape=addEdges(finalShape,shapeStart, newList)
-    #finalShape=addFaces(finalShape,shapeStart, newList)
-    
+    else:
+        newList=[]
+        for i in range(len(listPts)//2):
+            newList.append([listPts[2*i],listPts[2*i+1]])
+        
+        finalShape=addVertices(shapeCircle,newList)
+        finalShape=addEdges(finalShape,shapeCircle, newList,shape)
+        finalShape=addFaces(finalShape,shapeCircle, newList)
+        
 
     return(finalShape.vertices,finalShape.edges,finalShape.faces)
 

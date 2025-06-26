@@ -29,12 +29,12 @@ def point_in_poly(x: int, y: int, poly: list[tuple]) -> bool:
         j = i
     return inside
 
-def apply_box_blur(img: list, radius: int = 1) -> list:
+def apply_box_blur(img: list, width:int, height:int, radius: int = 1) -> list:
     """
     Applique un flou simple (box blur) à une image en niveaux de gris sans dépendance externe.
     `radius` détermine la taille de la fenêtre : 1 = 3x3, 2 = 5x5, etc.
     """
-    width, height = img.size
+
 
     # Crée une nouvelle image pour les résultats
     output = [0] * width * height
@@ -54,9 +54,8 @@ def apply_box_blur(img: list, radius: int = 1) -> list:
 
     return output
 
-def contour_detection(width : int, height : int, pixels : list, ignore_zones: list[list[tuple]], blur_radius=3): 
-    blurred = apply_box_blur(pixels, blur_radius)
-    threshold = 40
+def contour_detection(threshold:float, width : int, height : int, pixels : list, ignore_zones: list[list[tuple]], blur_radius=5): 
+    blurred = pixels #apply_box_blur(pixels, width,height, blur_radius)
     edges = [0] * width * height
 
     # Détection simple : différence entre pixels voisins
@@ -77,39 +76,24 @@ def contour_detection(width : int, height : int, pixels : list, ignore_zones: li
             edges[x + y * width] = 255 if gradient > threshold else 0
     return edges
 
-def intersect(width : int, height : int, img : list, stroke : list, ignore_zones: list[list[tuple]], type : int) -> list:
-    pixels = contour_detection(width, height, img, ignore_zones) 
+def intersect(width : int, height : int, img : list, stroke : list, ignore_zones: list[list[tuple]], accuracy:float, init_rib_size:float,rib_step:float) -> list:
+    pixels = contour_detection(accuracy,width, height, img, ignore_zones) 
 
     SqrtA = d2.getSqrtA(stroke)
     ribs = []
-    alpha = 0.5
-    correction = 0.7
-    dmax = 30 
+    alpha = rib_step
+    correction = init_rib_size
 
-    if type == 0 : 
-        stroke_arranged = []
-        for i in range(0, len(stroke) - 1):
-            if i !=0:
-                stroke_arranged.append(stroke[i])
+    
 
-            d = distance(stroke[i], stroke[i+1])
-            nb_points = 0 
-
-            while d >dmax :
-                nb_points += 1
-                d /= 2
-            
-            generate_points(stroke[i],stroke[i+1],nb_points, d, stroke_arranged, )
-        stroke_arranged.append(stroke[len(stroke)-1])
-    else :
-        stroke_arranged = stroke
-
-    for i in range(1, len(stroke_arranged) - 1):
+    for i in range(1, len(stroke) - 1):
 
         #Init of the two first points close to stroke point for determining the left and right point of the rib
-        p1 = stroke_arranged[i]
-        p2 = stroke_arranged[i + 1]
+        p1 = stroke[i]
+        p2 = stroke[i + 1]
         middle = ((p1[0] + p2[0]) / 2.0, (p1[1] + p2[1]) / 2.0)
+
+
 
         dx = p2[0] - middle[0]
         dy = middle[1] - p2[1]
@@ -135,7 +119,6 @@ def intersect(width : int, height : int, img : list, stroke : list, ignore_zones
             pix = (int(right_ext[0]),int(right_ext[1]))
 
             if not (0 <= pix[0] < width and 0 <= pix[1] < height):
-                print("Out of bounds")
                 r = 1
                 break
 
@@ -149,7 +132,7 @@ def intersect(width : int, height : int, img : list, stroke : list, ignore_zones
             pix = (int(left_ext[0]),int(left_ext[1]))
 
             if not (0 <= pix[0] < width and 0 <= pix[1] < height):
-                print("Out of bounds (left)")
+                ("Out of bounds (left)")
                 l = 1
                 break
 

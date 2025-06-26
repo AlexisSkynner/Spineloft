@@ -7,6 +7,7 @@ from . import intersect
 from . import gen_vol
 from . import d2
 
+
 path = None
 spline = None
 list_points = []
@@ -19,6 +20,8 @@ step=0
 
 image_width=0
 image_height=0
+
+ribs=None
 
 # Opérateur simple que notre outil lancera
 class Operator_Select_Image(bpy.types.Operator):
@@ -165,12 +168,14 @@ class Operator_Clear_Spine(bpy.types.Operator):
         delete_curve()
         return {'FINISHED'}
 
-class Operator_Generate_Volume(bpy.types.Operator):
-    """Generate your 3D volume."""
-    bl_idname = "wm.gen_vol"
-    bl_label = "Generate 3D Volume"
+class Operator_Generate_Ribs(bpy.types.Operator):
+    """Generate your ribs."""
+    bl_idname = "wm.gen_ribs"
+    bl_label = "Generate 3ribs"
     
     def invoke(self, context, event):
+        global step
+        global ribs
         ratio = max (image_width,image_height)
 
         image_dest=[0]*image_height*image_width
@@ -180,17 +185,16 @@ class Operator_Generate_Volume(bpy.types.Operator):
             b = pixels[i+2]
             image_dest[i//4]=int((r*0.2989+g*0.587+b*0.114)*255)
 
-
-        new_stroke = redistribute_stroke(list_points)
+        nb_ribs=bpy.context.scene.rib_number
+        new_stroke = redistribute_stroke(list_points,nb_ribs)
         list_points_denormalized=[(p[0]*ratio+image_width/2, -(p[1]*ratio-image_height/2)) for p in new_stroke]
 
-        print(list_points_denormalized)
-        print(image_height)
-        print(image_width)
-        print(ratio)
-
-        ribs = intersect.intersect(image_width, image_height, image_dest, list_points_denormalized, [], 1)
+        accuracy=bpy.context.scene.accuracy_slider
+        init_rib_size=bpy.context.scene.init_rib_size
+        rib_step=bpy.context.scene.rib_step
+        ribs = intersect.intersect(image_width, image_height, image_dest, list_points_denormalized, [], accuracy, init_rib_size,rib_step)
         
+
         
         edges_list = []
         for i in range(len(ribs)):
@@ -213,12 +217,36 @@ class Operator_Generate_Volume(bpy.types.Operator):
 
         #Création de la zone de data liée au volume
         crcl = bpy.data.meshes.new('circle')
-        mesh=gen_vol.giveMeTheMesh(edges_list)
+        mesh=gen_vol.giveMeTheMesh(edges_list,0)
+
         crcl.from_pydata(mesh[0],mesh[1],mesh[2])
+        ribs=crcl
         
         #Ajoute l'objet dans la collection actuelle 
         obj = bpy.data.objects.new('Circle', crcl)
         bpy.context.window.scene.collection.objects.link(obj)
+        step=3
+        return {'FINISHED'}
+
+class Operator_Generate_Volume(bpy.types.Operator):
+    """Generate your 3D volume."""
+    bl_idname = "wm.gen_vol"
+    bl_label = "Generate 3D Volume"
+    
+    def invoke(self, context, event):
+        coords = [tuple(v.co.copy()) for v in ribs.vertices]
+        print("coords=",coords)
+        
+
+        #Création de la zone de data liée au volume
+        crcl = bpy.data.meshes.new('volume_spineloft')
+        mesh=gen_vol.giveMeTheMesh(coords,1)
+        crcl.from_pydata(mesh[0],mesh[1],mesh[2])
+        
+        #Ajoute l'objet dans la collection actuelle 
+        obj = bpy.data.objects.new('SpineLoft', crcl)
+        bpy.context.window.scene.collection.objects.link(obj)
+        step=0
         return {'FINISHED'}
 
 class Panel_SpineLoft(bpy.types.Panel):
@@ -288,9 +316,9 @@ class Panel_Draw_Tools(bpy.types.Panel):
         row_right.alignment='RIGHT'
         row_right.operator("wm.clear_spine", text="", icon="TRASH")
 
-class Panel_Generate_Volume(bpy.types.Panel):
-    bl_label = "Generate Volume (Step 3)"
-    bl_idname = "SPINELOFT_PT_GENVOL"
+class Panel_Generate_Ribs(bpy.types.Panel):
+    bl_label = "Generate Ribs (Step 3)"
+    bl_idname = "SPINELOFT_PT_GENRIB"
     bl_parent_id = "SPINELOFT_PT_SPINELOFT"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
@@ -305,11 +333,47 @@ class Panel_Generate_Volume(bpy.types.Panel):
 
     def draw(self, context):
         layout = self.layout
+        layout.label(text="Generate your ribs.")
+
+        split = layout.split(factor=0.5)
+
+        col_left = split.column()
+        row1 = col_left.row()
+        row1.prop(context.scene,'rib_number')
+        row2 = col_left.row()
+        row2.prop(context.scene,'accuracy_slider')
+        
+
+        col_right = split.column()
+        row1 = col_right.row()
+        row1.prop(context.scene,'init_rib_size')
+        row2 = col_right.row()
+        row2.prop(context.scene,'rib_step')
+
+        row=layout.row()
+        row.operator("wm.gen_ribs", text="Generate ribs")
+    
+class Panel_Generate_Volume(bpy.types.Panel):
+    bl_label = "Generate Volume (Step 4)"
+    bl_idname = "SPINELOFT_PT_GENVOL"
+    bl_parent_id = "SPINELOFT_PT_SPINELOFT"
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'UI'
+    bl_context = "objectmode"
+    bl_category="Tool"
+    
+    @classmethod
+    def poll(cls, context):
+        if step<=2:
+            return False
+        return(True)
+
+    def draw(self, context):
+        layout = self.layout
         layout.label(text="Generate your volume.")
 
-        row = layout.row()
+        row=layout.row()
         row.operator("wm.gen_vol", text="Generate 3D Volume")
-
 
 
 
@@ -318,23 +382,29 @@ def register():
     bpy.utils.register_class(Panel_SpineLoft)
     bpy.utils.register_class(Panel_Select_Image)
     bpy.utils.register_class(Panel_Draw_Tools)
+    bpy.utils.register_class(Panel_Generate_Ribs)
     bpy.utils.register_class(Panel_Generate_Volume)
     bpy.utils.register_class(Operator_Select_Image)
     bpy.utils.register_class(Operator_Draw_FH)
     bpy.utils.register_class(Operator_Draw_SL)
     bpy.utils.register_class(Operator_Clear_Spine)
+    bpy.utils.register_class(Operator_Generate_Ribs)
     bpy.utils.register_class(Operator_Generate_Volume)
+    register_prop()
 
 def unregister():
     bpy.utils.unregister_class(Panel_SpineLoft)
     bpy.utils.unregister_class(Panel_Select_Image)
     bpy.utils.unregister_class(Panel_Draw_Tools)
+    bpy.utils.unregister_class(Panel_Generate_Ribs)
     bpy.utils.unregister_class(Panel_Generate_Volume)
     bpy.utils.unregister_class(Operator_Select_Image)
     bpy.utils.unregister_class(Operator_Draw_FH)
     bpy.utils.unregister_class(Operator_Draw_SL)
     bpy.utils.unregister_class(Operator_Clear_Spine)
+    bpy.utils.unregister_class(Operator_Generate_Ribs)
     bpy.utils.unregister_class(Operator_Generate_Volume)
+    unregister_prop()
 
 
 
@@ -463,15 +533,94 @@ def add_stroke_point(pos):
     
     list_points.append([pos[0], pos[1]])
 
-def redistribute_stroke(stroke : list) -> list:
-    ans = []
-    threshold = 1e-3
-    i = 0
-    while i < len(stroke) - 1:
-        for j in range(i + 1, len(stroke)):
-            currVec = (stroke[j][0] - stroke[i][0], stroke[j][1] - stroke[i][1])
-            if d2.length(currVec) > threshold:
-                ans.append(stroke[i])
-                break
-        i = j
-    return(ans)
+def redistribute_stroke(stroke : list, nb : int) -> list:
+    # Calcul longueur totale
+    L=d2.getSqrtA(stroke)**2
+
+
+    # Nouvelle stroke
+    l=L/nb
+    pt_start=stroke[0]
+    pt_next=stroke[1]
+
+
+    i=0
+    newStroke=[stroke[0]]
+    
+    for k in range(nb-2):
+        l2=l
+        d=d2.length((pt_next[0] - pt_start[0], pt_next[1] - pt_start[1]))
+        while(l2>d):
+            i+=1
+            pt_next=stroke[i+1]
+            pt_start=stroke[i]
+            l2-=d
+            d=d2.length((pt_next[0] - pt_start[0], pt_next[1] - pt_start[1]))
+
+        
+        pt_start=[pt_start[0] + l2* (pt_next[0] - pt_start[0])/d, pt_start[1] + l2* (pt_next[1] - pt_start[1])/d]
+        newStroke.append( pt_start )
+        
+
+    newStroke.append(stroke[-1])
+    return(newStroke)
+
+    # ans = []
+    # threshold = 1e-3
+    # i = 0
+    # while i < len(stroke) - 1:
+    #     for j in range(i + 1, len(stroke)):
+    #         currVec = (stroke[j][0] - stroke[i][0], stroke[j][1] - stroke[i][1])
+    #         if d2.length(currVec) > threshold:
+    #             ans.append(stroke[i])
+    #             break
+    #     i = j
+    # return(ans)
+
+
+def register_prop():
+    bpy.types.Scene.accuracy_slider = bpy.props.FloatProperty(
+        name="Contouring accuracy",
+        description="Choose an accuracy for your contouring.",
+        default=50,
+        min=1.0,
+        max=250
+    )
+
+    bpy.types.Scene.init_rib_size = bpy.props.FloatProperty(
+        name="Initial rib size",
+        description="Choose a size that define the initial length of your ribs.",
+        default=2,
+        min=0.5,
+        max=10
+    )
+
+    bpy.types.Scene.rib_step = bpy.props.FloatProperty(
+        name="Rib steps size",
+        description="Choose the size of the steps in the rib-creation process. \n(small=accurate, large=fast)",
+        default=1,
+        min=0.4,
+        max=5
+    )
+
+    bpy.types.Scene.rib_number = bpy.props.IntProperty(
+        name="Maximum number of ribs",
+        description="Choose the maximum number of ribs",
+        default=20,
+        min=5,
+        max=500
+    )
+
+    bpy.types.Scene.choose_shape = bpy.props.EnumProperty(
+    name="Shape",
+    description="Choose a shape to extrude",
+    items=[
+        ("Circle", "Circle", ""),
+        ("Square", "Square", ""),
+    ],
+    default='Circle'
+    )
+
+
+def unregister_prop():
+    del bpy.types.Scene.accuracy_slider
