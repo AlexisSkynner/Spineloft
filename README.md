@@ -21,9 +21,9 @@ In order to generate the ribs that will form the skeleton of your 3D model, you 
 - Initial rib size : this parameter set the minimal distance of the rib. Going too low may end up creating some wrong ribs. Over 0.5 is generally fine. 
 - Rib steps size : This parameter impact de ribs computing process. It sets the length of the steps of searching the contour from the spine. The higher it is, the less the computing time will be but this may lead to crossing a contour without noticing it. Therefore, the lower its value is, the longer it will take but your reducing the chance of skipping a contour. Setting it to 1.0 is usually fine.
 
-### Step 4 : Generate the volume 
+### Step 4 : Generate the volume.
 
-Once the ribs are created, you can adjust them by dragging them to the place you want them to be. When your satisfied of the skeleton you can create then volume by choosing a preset shape or by creating your own with custom shape. Then generate it. 
+Once the ribs are created, you can adjust them by dragging them to the place you want them to be. When your satisfied of the skeleton you can create the volume by choosing a preset shape or by creating your own with custom shape. Then generate it. 
 
 As a tutorial, you can click on the following link : 
 
