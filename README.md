@@ -1,4 +1,4 @@
-Spineloft is a Blender add-on set to help their users creating a 3D model from a 2D sketch/image in the process of sculpturing or 3D design. 
+Spineloft is a Blender add-on set to help their users creating a 3D model from a 2D sketch/image in the process of sculpting or 3D design. 
 
 The differents steps are the following : 
 
