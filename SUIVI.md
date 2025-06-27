@@ -89,3 +89,8 @@
 - Tests de la V2 : problème de cas de bords pour les ribs (amélioration du code non testée).
 - Amélioration de la détection des bords (blur)
 - Implémentation d'une fonctionnalité intégrant une zone d'exclusion de contours côté utilisateur pour affiner la création des ribs.
+
+# 25/06/2025
+- (Dorian) Finalisation de l'interface Blender avec l'ensemble des fonctionnalités.
+- (Alex et Alexis) optimisation des fonctions d2 et intersect.
+- (Tim) Implémentation de la fonction d'exclusion de zones avec Dorian.
