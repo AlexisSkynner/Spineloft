@@ -35,7 +35,7 @@ image_height=0
 ###########################################################################################################################################
 def createWindow():
 
-     # Création de la nouvelle scene et de la caméra #############################################
+     # Creation of the new scene and of the camera #############################################
     for scene in bpy.data.scenes:
          if scene.name==(name):
               bpy.data.scenes.remove(scene)
@@ -61,7 +61,7 @@ def createWindow():
     ###########################################################################
 
 
-    ############## Affichage de la scène concernée ###########
+    ############## Shows the concerned scene ###########
     global old_scene
     old_scene=bpy.context.scene
     
@@ -82,7 +82,7 @@ def createWindow():
 
     bpy.context.window.scene = bpy.data.scenes[name]
     save_overlay_state(space)
-    space.lock_camera = True  # Verrouiller la caméra dans la vue
+    space.lock_camera = True  # Lock the camera in view 
     space.overlay.show_axis_x = False  
     space.overlay.show_axis_y = False  
     space.overlay.show_axis_z = False  
@@ -97,7 +97,7 @@ def createWindow():
 
     
 
-    #### Image de reference ##################################################################""
+    #### Reference image ##################################################################""
     
     with bpy.context.temp_override(window=override["window"],area=override["area"],region=override["region"]):
         bpy.ops.mesh.primitive_plane_add(size=1, enter_editmode=False, align='WORLD', location=(0, 0, 0))
@@ -105,26 +105,26 @@ def createWindow():
     plane = bpy.context.active_object
     plane.name = "ImagePlane"
 
-    # Créer un nouveau matériel
+    # Create a new material
     mat = bpy.data.materials.new(name="ImageMaterial")
     mat.use_nodes = True
 
     bsdf = mat.node_tree.nodes["Principled BSDF"]
 
-    # Ajouter un node image texture
+    # add a node to the texture image 
     global tex_image
     tex_image = mat.node_tree.nodes.new('ShaderNodeTexImage')
 
-    # Connecter le node image au BSDF
+    # Connect the node image to the BSDF 
     mat.node_tree.links.new(bsdf.inputs['Base Color'], tex_image.outputs['Color'])
 
-    # Assigner le matériel au plane
+    # Assign the material to plane 
     plane.data.materials.append(mat)
     ###############################################################################################################
 
 
     #### Spine ####################################################################################################
-    # Créer un objet curve
+    # Create a curve object 
     global curve_data
     curve_data = bpy.data.curves.new(name="Spine", type='CURVE')
     curve_data.dimensions = '3D'
@@ -151,8 +151,8 @@ def createWindow():
 def set_camera_view():
     area = override["area"]
     space = area.spaces.active
-    space.region_3d.view_perspective = 'CAMERA'  # Vue caméra
-    space.lock_camera = True  # Verrouiller la caméra dans la vue   
+    space.region_3d.view_perspective = 'CAMERA'  # Camera view
+    space.lock_camera = True  # Lock the camera in view 
     bpy.context.scene.camera.location = (0, 0, 1)
     bpy.context.scene.camera.rotation_euler = (0, 0, 0)
 
@@ -162,7 +162,7 @@ def set_camera_view():
 
 
 
-########### Gestion de la fermeture de la fenêtre ###############################################
+########### Handle the closing of the window ###############################################
 def scene_manager(old_scene):
     if override==0:
         return(0.1)
@@ -198,7 +198,7 @@ def scene_manager(old_scene):
 
 
 
-###### Détecteur de click et tracage de spine ###################################################
+###### Dectector of the click and tracing of the spine ###################################################
 
 def get_mouse_3d_location(context, event):
     # Récupérer la région et les données de la vue 3D

@@ -5,7 +5,7 @@ import time
 
     
 class Operator_DrawSpine(bpy.types.Operator):
-    bl_idname = "operator.drawspine"  # L'ID unique de l'opérateur
+    bl_idname = "operator.drawspine"  # The unique ID of the operator 
     bl_label = "Draw spine"
     
          

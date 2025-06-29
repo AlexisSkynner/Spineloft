@@ -1,9 +1,8 @@
 import copy
 import math
-import bpy
 
 
-#Forme à copier
+#Form to be copied 
 class Shape():
     def __init__(self, vertices, edges, faces):
         self.vertices = vertices
@@ -111,7 +110,7 @@ def middle(p1:tuple,p2:tuple):
 #########################################################################################################################
 #Données à entrer
 
-# Figure à répéter
+# Form to be repeated
 #Heart
 A=[(0,0,0),(-2,0,2),(-2,0,3),(-1,0,4),(0,0,3),(1,0,4),(2,0,3),(2,0,2)] #Il faut une figure qui fait face vers les y (y=0 pour tout point), dont le centre est en 0,0,0, de largeur 1
 B=[(0,7)]+[(i,i+1) for i in range(7)]
@@ -148,7 +147,7 @@ shapeStart = shapeRib
 def addVertices(startShape:Shape,listPts:list):
     l=len(listPts)
     
-    #Calcul des milieux + norme de segments, et des angles avec (1,0,0)
+    #Calcul of the middles + norm of segments, and of the angles with (1,0,0)
     listMid=[]
     listAngl=[]
     listDist=[]
@@ -157,7 +156,7 @@ def addVertices(startShape:Shape,listPts:list):
         listAngl.append(cos_sin_between_vectors(diff_matrices(list(listPts[i][1]),list(listPts[i][0])) , (1,0,0) ))
         listDist.append(norm(diff_matrices(list(listPts[i][0]),list(listPts[i][1]))))
 
-    #On trace la forme finale
+    #Drawing the final shape 
     finalShape=Shape([],[],[])
     for i in range(l):
         newShape=transl(homo(rot(startShape, listAngl[i]),listDist[i]),listMid[i])
@@ -170,7 +169,7 @@ def addEdges(finalShape:Shape,startShape:Shape, listPts:list, shape:int):
     nbEdges=len(startShape.edges)
     nbVertices=len(startShape.vertices)
 
-    #Edges de la forme de départ
+    #Edges of the start shape
     for i in range( l ):
         for j in range(nbEdges):
             edge=list(startShape.edges[j])
@@ -179,7 +178,7 @@ def addEdges(finalShape:Shape,startShape:Shape, listPts:list, shape:int):
             finalShape.edges.append((edge0,edge1))
     
     if shape!=0:       
-        #Edges  de la connection
+        #Edges  of the connexion 
         for i in range(l-1):
             for j in range(nbVertices):
                 finalShape.edges.append( ( nbVertices*i+j , nbVertices*(i+1)+j ) )
@@ -200,7 +199,7 @@ def addFaces(finalShape:Shape,startShape:Shape, listPts:list):
             
             finalShape.faces.append(tuple(face))
     
-    #Ajout de la face de début et de fin
+    #add of the start and final shape
     firstFace=[]
     lastFace=[]  
     for i in range(nbVertices):
@@ -242,7 +241,7 @@ def giveMeTheMesh(listPts,shape, listVertices=None):
             newList.append([listPts[2*i],listPts[2*i+1]])
 
         print(listVertices)
-        A=[(p[0],0,p[1]) for p in listVertices] #Il faut une figure qui fait face vers les y (y=0 pour tout point), dont le centre est en 0,0,0, de largeur 1
+        A=[(p[0],0,p[1]) for p in listVertices] 
         B=[(0,len(A)-1)]+[(i,i+1) for i in range(len(A)-1)]
         C=[]
         
@@ -266,7 +265,7 @@ def giveMeTheMesh(listPts,shape, listVertices=None):
         finalShape=addFaces(finalShape,shapeCustom, newList)
 
 
-    else: #Cas de base = cercle
+    else: #Basic case : circle
         newList=[]
         for i in range(len(listPts)//2):
             newList.append([listPts[2*i],listPts[2*i+1]])
