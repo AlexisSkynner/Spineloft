@@ -88,7 +88,7 @@ def intersect(width : int, height : int, img : list, stroke : list, ignore_zones
 
     
 
-    for i in range(1, len(stroke) - 1):
+    for i in range(0, len(stroke) - 1):
 
         #Init of the two first points close to stroke point for determining the left and right point of the rib
         p1 = stroke[i]

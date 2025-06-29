@@ -849,7 +849,7 @@ def register_prop():
         name="Rib steps size",
         description="Choose the size of the steps in the rib-creation process. \n(small=accurate, large=fast)",
         default=1,
-        min=0.4,
+        min=0.2,
         max=5
     )
 
