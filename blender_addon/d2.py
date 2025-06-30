@@ -47,7 +47,7 @@ def d2grad(x : tuple, stroke : list, sqrtA : float) -> tuple:
     res : tuple = ((d2(right, stroke, sqrtA) - d2here) / dx, (d2(down, stroke, sqrtA) - d2here) / dx)
     return res
 
-# À appeler une fois au début de l'algo, puis utiliser son résultat en dernier argument de d2grad
+# Call it one time at the beginning of the algorithm, then use the result as a d2grad argument
 def getSqrtA(stroke : list) -> float:
     return sqrt(sum([length((stroke[i][0] - stroke[i - 1][0], stroke[i][1] - stroke[i - 1][1])) for i in range(1, len(stroke))]))
 

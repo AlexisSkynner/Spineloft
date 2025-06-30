@@ -201,11 +201,11 @@ def scene_manager(old_scene):
 ###### Dectector of the click and tracing of the spine ###################################################
 
 def get_mouse_3d_location(context, event):
-    # Récupérer la région et les données de la vue 3D
+    # Get the region and the coordinates of the 3D view
     region = context.region
     rv3d = context.region_data
 
-    # Convertir les coordonnées 2D du curseur en coordonnées 3D
+    # Convert the 2D coordinates of the cursor into 3D coordinates
     coord = (event.mouse_region_x, event.mouse_region_y)
 
     # Direction du rayon, depuis la vue
@@ -224,7 +224,7 @@ def get_mouse_3d_location(context, event):
 
 
 
-# Coordonnées du "bouton" (x, y, largeur, hauteur)
+# Coordinates of the "button" (x,y,width,height) 
 def button_rect():
     rect=[0, 0, 0.05, 0.05]
     if override:
@@ -251,7 +251,7 @@ buttons_color_over=[dark_red_color,light_gray_color,light_gray_color,light_gray_
 buttons_color_selected=[dark_red_color,blue_color,blue_color,blue_color,blue_color,light_green_color]
 buttons_color=[red_color,gray_color, gray_color,gray_color,gray_color,green_color]
 
-# Dessin du bouton (rectangle simple)
+# Drawing of the button (simple rectangle)
 def draw_buttons(a,b):
     global part
 
@@ -396,7 +396,7 @@ def draw_buttons(a,b):
         blf.color(font_emoji, 1.0, 1.0, 1.0, 1.0)
         blf.draw(font_emoji, "✔︎")
 
-# Affichage de l'UI et gestion des inputs
+# Display of the UI and the inputs gestion
 class Operator_UImanager(bpy.types.Operator):
     bl_idname = "view3d.ui_manager"
     bl_label = "HUD Bouton"
@@ -462,10 +462,10 @@ class Operator_UImanager(bpy.types.Operator):
             is_drawing=False
             drawing_mode="None"
             
-            # Récupérer les contours ########################################
-            # edges_list=[ [(1,1,0),(2,1,0)] , [(1,3,0),(2,2,0)], [(4,4,0), (4,3,0)]] #Liste des points de la forme, 
+            # Getting the contours ########################################
+            # edges_list=[ [(1,1,0),(2,1,0)] , [(1,3,0),(2,2,0)], [(4,4,0), (4,3,0)]] #List of the points of the shape
             # list_points = [[1,1],[2,1],[3,4]]
-            # triés dans le sens horraire
+            # Sorted clockwise 
             ################################################################
             ratio_x = min(1, image_width / image_height)
             ratio_y = min(1, image_height / image_width)
@@ -485,7 +485,6 @@ class Operator_UImanager(bpy.types.Operator):
 
             edges_list = []
             for i in range(len(ribs)):
-                # a verifier le [i][0][0] pour le format de retour de intersect
                 x1 = ribs[i][0][0]
                 y1 = ribs[i][0][1]
 
@@ -502,12 +501,12 @@ class Operator_UImanager(bpy.types.Operator):
 
             
 
-            #Création de la zone de data liée au volume
+            #Creation of the area of data linked to the volume
             crcl = bpy.data.meshes.new('circle')
             mesh=gen_vol.giveMeTheMesh(edges_list)
             crcl.from_pydata(mesh[0],mesh[1],mesh[2])
             
-            #Ajoute l'objet dans la collection actuelle 
+            #Add the object to the actual collection 
             obj = bpy.data.objects.new('Circle', crcl)
             old_scene.collection.objects.link(obj)
             is_open=False
@@ -553,10 +552,10 @@ class Operator_UImanager(bpy.types.Operator):
         global spline
         #Line
         if event.type == 'LEFTMOUSE' and event.value == 'PRESS' and drawing_mode=="Line":
-            # Récupérer la position du rayon (origine + direction)
+            # Get the position of the radius (origin + direction)
             ray_origin, view_vector = get_mouse_3d_location(context, event)
 
-            # Calculer où le rayon touche dans la scène
+            # Calculate where the radius touches the scene
             depsgraph = bpy.context.evaluated_depsgraph_get()
             result, location, normal, index, obj, matrix = context.scene.ray_cast(
                 depsgraph,
@@ -564,17 +563,17 @@ class Operator_UImanager(bpy.types.Operator):
                 view_vector
             )
 
-            # Si on touche un objet, on peut ajouter un cube ou autre à l'endroit du clic
+            # If we touch the object, we can add a cube or other à the position of the click
             if result:
 
                 if spline.points[0].hide!=True:
-                    spline.points.add(1)  # Un seul point (0 car 1 par défaut)
+                    spline.points.add(1)  # A single point (0 beacause 1 is default)
 
                 else:
                     spline.points[0].hide=False
 
                 point = spline.points[-1]
-                point.co = (location[0], location[1], 0.1,1)  # Position du point
+                point.co = (location[0], location[1], 0.1,1)  # Position of the point
                 
                 list_points.append([location[0], location[1]])
             
@@ -589,10 +588,10 @@ class Operator_UImanager(bpy.types.Operator):
 
         
         if is_drawing:
-            # Récupérer la position du rayon (origine + direction)
+            # Get the position of the radius (origin + direction) 
             ray_origin, view_vector = get_mouse_3d_location(context, event)
 
-            # Calculer où le rayon touche dans la scène
+            # Calculate where the radius touches the scene
             depsgraph = bpy.context.evaluated_depsgraph_get()
             result, location, normal, index, obj, matrix = context.scene.ray_cast(
                 depsgraph,
@@ -708,13 +707,13 @@ class Operator_SetBackgroundImage(bpy.types.Operator):
         return {'FINISHED'}
 
     def invoke(self, context, event):
-        context.window_manager.fileselect_add(self)  # ouvre la fenêtre de fichier
+        context.window_manager.fileselect_add(self)  # open the file window 
         return {'RUNNING_MODAL'}
 
 
 
 def create_spline(curve_data):
-    # Ajouter une spline avec 1 point
+    # Add a spline with one point 
     global spline
     global curve_obj
     global list_points

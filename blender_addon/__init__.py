@@ -4,27 +4,22 @@ import addon_utils
 
 bl_info = {
     "name": "SpineLoft",
-    "blender": (2, 90, 0),  # La version de Blender compatible
-    "category": "3D View",  # Catégorie sous laquelle l'addon apparaît (peut être View3D, Object, etc.)
+    "blender": (2, 90, 0),  # The compatible Blender version 
+    "category": "3D View",  # Categorie in which the addon appears
     "author": "Télécom Paris",
     "version": (1, 1),
     "description": "Addon de test.",
     "warning": "",
-    "doc_url": "",  # URL vers la documentation si nécessaire
-    "tracker_url": "",  # URL vers un tracker de bugs si nécessaire
-    "support": "COMMUNITY",  # Peut être "COMMUNITY" ou "OFFICIAL"
+    "doc_url": "",  # URL to the documentation if needed
+    "tracker_url": "",  # URL to a bug tracker if needed 
+    "support": "COMMUNITY",  # Can be "COMMUNITY" or "OFFICIAL"
 }
-
-
-
-    
-
 
 def register():
 
     everythingIsOkay=True
 
-    try: #On essaie d'installer les différentes librairies
+    try: #we try to install all libraries
         
         
         from . import register_script
@@ -51,7 +46,7 @@ def register():
 
         
 
-    except: #Si ça marche pas, on désactive le module.
+    except: 
         everythingIsOkay=False
         raise KeyboardInterrupt()
 
