@@ -562,7 +562,7 @@ class Operator_UImanager(bpy.types.Operator):
                 view_vector
             )
 
-            # If we touch the object, we can add a cube or other à the position of the click
+            # If we touch the object, we can add a cube or other at the position of the click
             if result:
 
                 if spline.points[0].hide!=True:
