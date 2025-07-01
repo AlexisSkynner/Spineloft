@@ -10,10 +10,10 @@ from . import d2
 
 
 path = None
-list_points = [[],[],[]] #Liste des points des 3 curves (stroke, exclusion area et custom shape)
+list_points = [[],[],[]] #List of the points of the 3 curves (stroke, exclusion area and custom shape)
 
-curve_obj= [None,None,None] #Pointeurs vers les objets des 3 curves (stroke, exclusion area et custom shape)
-spline=[None,None,None] #Pointeurs vers les spline des 3 curves (stroke, exclusion area et custom shape)
+curve_obj= [None,None,None] #Pointers to the objects of the 3 curves (stroke, exclusion area and custom shape)
+spline=[None,None,None] #Pointers to the spline of the 3 curves (stroke, exclusion area and custom shape)
 drawing_mode="None"
 step=0
 
@@ -24,7 +24,7 @@ ribs=None
 objects=[0,0,0,0,0]
 
 
-# Opérateur simple que notre outil lancera
+# Simple operator that will be launchedO
 class Operator_Select_Image(bpy.types.Operator):
     """Select a reference picture, that will be used to generate your 3D model. For more informations, check the documentation."""
     bl_idname = "wm.select_image"
@@ -40,7 +40,7 @@ class Operator_Select_Image(bpy.types.Operator):
         global pixels
         global objects
         try :
-            #Supprimer tous les objets créés
+            #Delete all the created objects 
             for obj in objects:
                 if obj!=0:
                     delete_obj(obj)
@@ -68,7 +68,7 @@ class Operator_Select_Image(bpy.types.Operator):
         return {'FINISHED'}
 
     def invoke(self, context, event):
-        context.window_manager.fileselect_add(self)  # ouvre la fenêtre de fichier
+        context.window_manager.fileselect_add(self)  #open the fill window
         return {'RUNNING_MODAL'}
         
 
@@ -84,7 +84,7 @@ class Operator_Delete_Image(bpy.types.Operator):
         path=None
         step=0
 
-        #Supprimer tous les objets créés
+        #Delete the created objects
         for obj in objects:
             if obj!=0:
                 delete_obj(obj)
@@ -102,7 +102,7 @@ class Operator_Draw_FH(bpy.types.Operator):
 
     def modal(self, context, event):
         if event.type == 'LEFTMOUSE' and event.value == 'PRESS':
-            # Récupérer la position du rayon (origine + direction)
+            # get the position of the radius (origin + direction)
             self.holding=True            
 
 
@@ -132,7 +132,6 @@ class Operator_Draw_FH(bpy.types.Operator):
         global step
         global objects
         
-        #Supprimer tous les objets créés (sauf image de reference)
         delete_obj(objects[1])
         for i in range(3,len(objects)):
             if objects[i]!=0:
@@ -191,7 +190,6 @@ class Operator_Draw_SL(bpy.types.Operator):
         global step
         global objects
 
-        #Supprimer tous les objets créés (sauf image de reference)
         delete_obj(objects[1])
         for i in range(3,len(objects)):
             if objects[i]!=0:
@@ -220,7 +218,6 @@ class Operator_Clear_Spine(bpy.types.Operator):
         global objects
         step=1
 
-        #Supprimer tous les objets créés (sauf image de reference)
         for i in range(1,len(objects)):
             if objects[i]!=0:
                 delete_obj(objects[i])
@@ -273,7 +270,6 @@ class Operator_Generate_Ribs(bpy.types.Operator):
         
         edges_list = []
         for i in range(len(ribs)):
-            # a verifier le [i][0][0] pour le format de retour de intersect
             x1 = ribs[i][0][0]
             y1 = ribs[i][0][1]
 
@@ -290,14 +286,14 @@ class Operator_Generate_Ribs(bpy.types.Operator):
 
         
 
-        #Création de la zone de data liée au volume
+        #Creation of the data area linked to the volume
         crcl = bpy.data.meshes.new('circle')
         mesh=gen_vol.giveMeTheMesh(edges_list,0)
 
         crcl.from_pydata(mesh[0],mesh[1],mesh[2])
         ribs=crcl
         
-        #Ajoute l'objet dans la collection actuelle 
+        #Add the object to the actual collection 
         obj = bpy.data.objects.new('Circle', crcl)
         objects[3]=(obj)
         bpy.context.window.scene.collection.objects.link(obj)
@@ -322,7 +318,7 @@ class Operator_Generate_Volume(bpy.types.Operator):
         coords = [tuple(v.co.copy()) for v in ribs.vertices]
 
 
-        #Création de la zone de data liée au volume
+        #Creation of the data area linked to the volume
         crcl = bpy.data.meshes.new('volume_spineloft')
         if (bpy.context.scene.choose_shape=="Circle"):
             mesh=gen_vol.giveMeTheMesh(coords,1)
@@ -339,14 +335,14 @@ class Operator_Generate_Volume(bpy.types.Operator):
         bm = bmesh.new()
         bm.from_mesh(crcl)
 
-        # Recalculer les normales de face
+        # Recalculate the face normals 
         bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
 
-        # Appliquer les modifications au mesh original
+        # Apply the modifications to the original mesh
         bm.to_mesh(crcl)
         bm.free()
 
-        #Ajoute l'objet dans la collection actuelle 
+        #Add the object to the actual collection 
         obj = bpy.data.objects.new('SpineLoft', crcl)
         bpy.context.window.scene.collection.objects.link(obj)
         step=1
@@ -373,7 +369,7 @@ class Operator_Draw_Custom(bpy.types.Operator):
 
     def modal(self, context, event):
         if event.type == 'LEFTMOUSE' and event.value == 'PRESS':
-            # Récupérer la position du rayon (origine + direction)
+            # get the position of the radius (origin + direction)
             self.holding=True            
 
 
@@ -409,7 +405,7 @@ class Operator_Draw_EA(bpy.types.Operator):
 
     def modal(self, context, event):
         if event.type == 'LEFTMOUSE' and event.value == 'PRESS':
-            # Récupérer la position du rayon (origine + direction)
+            # get the position of the radius (origin + direction)
             self.holding=True            
 
 
@@ -648,7 +644,7 @@ def move_view3d_to(location=(0,0,0), rotation=(0, 0, 0)):
 
                     region_3d = area.spaces.active.region_3d
                     region_3d.view_location = mathutils.Vector(location)
-                    # Rotation en radians (Euler XYZ)
+                    # Rotation in radians (Euler XYZ)
                     region_3d.view_rotation = mathutils.Euler(rotation, 'XYZ').to_quaternion()
                     return
 
@@ -657,34 +653,34 @@ def create_ref_image(image_path):
     global objects
     img = bpy.data.images.load(image_path)
 
-    # Créer un empty image dans la scène
+    # Create an empty image in the scene
     empty_img = bpy.data.objects.new("Reference_Image", None)
     empty_img.empty_display_type = 'IMAGE'
-    empty_img.data = None  # pas nécessaire pour empties
+    empty_img.data = None  
     empty_img.empty_display_size = 1
 
-    # Assigner l'image à l'empty
+    # Assign th image to the empty
     empty_img.data = img
 
-    # Ajouter à la scène active
+    # Add to the active scene
     objects[0]=(empty_img)
     bpy.context.collection.objects.link(empty_img)
 
-    # Positionner l'empty image si besoin
+    # Position the empty image if needed
     empty_img.location = (0, 0, 0)
 
 
 
 
 def get_mouse_3d_location(context, event):
-    # Récupérer la région et les données de la vue 3D
+    # Get the region and the datas of the 3D view
     region = context.region
     rv3d = context.region_data
 
-    # Convertir les coordonnées 2D du curseur en coordonnées 3D
+    # Convert the 2D coordinates of the cursor in 3D coordinates
     coord = (event.mouse_region_x, event.mouse_region_y)
 
-    # Direction du rayon, depuis la vue
+    # Direction of the radiues, from the view
     ray_origin = view3d_utils.region_2d_to_origin_3d(region, rv3d, coord)
     ray_direction = view3d_utils.region_2d_to_vector_3d(region, rv3d, coord)
 
@@ -692,12 +688,10 @@ def get_mouse_3d_location(context, event):
 
     denom = ray_direction.dot(plane_no)
     if abs(denom) < 1e-6:
-        # Le rayon est parallèle au plan XY, pas d’intersection
         return None
 
     d = -ray_origin.dot(plane_no) / denom
     if d < 0:
-        # Intersection derrière la caméra
         return None
 
     hit_pos = ray_origin + d * ray_direction
@@ -756,19 +750,22 @@ def add_stroke_point(pos,i):
         spline[i].points[0].hide=False
     
     point = spline[i].points[-1]
-    point.co = (pos[0], pos[1], 0.01,1)  # Position du point
+    point.co = (pos[0], pos[1], 0.01,1)  
     
     list_points[i].append([pos[0], pos[1]])
 
 def redistribute_stroke(stroke : list, nb : int) -> list:
+    """
+    Recreate the points of the stroke at equal distance from each others and with the written number given by the user 
+    """
     if len(stroke)<=1:
         return(stroke)
     
-    # Calcul longueur totale
+    # Total lenght calcul
     L=d2.getSqrtA(stroke)**2
 
 
-    # Nouvelle stroke
+    # New stroke
     l=L/nb
     pt_start=stroke[0]
     pt_next=stroke[1]
@@ -817,11 +814,11 @@ def delete_obj(obj):
         # Deselect all
         bpy.ops.object.select_all(action='DESELECT')
 
-        # Sélectionner et rendre actif
+        # Select and change to active
         obj.select_set(True)
         bpy.context.view_layer.objects.active = obj
 
-        # Supprimer l'objet
+        # Delete the object
         bpy.ops.object.delete()
 
         

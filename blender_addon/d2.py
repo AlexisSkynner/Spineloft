@@ -14,6 +14,9 @@ def length(x : tuple) -> float:
     return sqrt(dot(x, x))
 
 def d2(X : tuple, stroke : list, sqrtA : float) -> float:
+    """
+    This function is the core of the algorithm allowing a continuous field of distance from a stroke
+    """
     integral = 0.
     for i in range(1, len(stroke)):
         x0 = stroke[i-1]
@@ -40,6 +43,9 @@ def d2(X : tuple, stroke : list, sqrtA : float) -> float:
     return sqrtA * integral**(-1./2)
 
 def d2grad(x : tuple, stroke : list, sqrtA : float) -> tuple:
+    """
+    This is a gradient derived from the d2 function allowing the creation of the ribs
+    """
     dx = 0.2
     d2here : float = d2(x, stroke, sqrtA)
     right : tuple = (x[0] + dx, x[1])
@@ -52,6 +58,9 @@ def getSqrtA(stroke : list) -> float:
     return sqrt(sum([length((stroke[i][0] - stroke[i - 1][0], stroke[i][1] - stroke[i - 1][1])) for i in range(1, len(stroke))]))
 
 def optimizeOneRib(ribs : list, threshold : float, lengths : list, i : int):
+    """
+    This function is not a part of the v1 but allows an optimization of a rib considering its neighboors
+    """
     (beg_x, beg_y), (end_x, end_y) = ribs[i]
 
     if i <= 0: lmin = lengths[1]

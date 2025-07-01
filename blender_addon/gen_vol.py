@@ -108,18 +108,17 @@ def middle(p1:tuple,p2:tuple):
 
 
 #########################################################################################################################
-#Données à entrer
 
 # Form to be repeated
 #Heart
-A=[(0,0,0),(-2,0,2),(-2,0,3),(-1,0,4),(0,0,3),(1,0,4),(2,0,3),(2,0,2)] #Il faut une figure qui fait face vers les y (y=0 pour tout point), dont le centre est en 0,0,0, de largeur 1
+A=[(0,0,0),(-2,0,2),(-2,0,3),(-1,0,4),(0,0,3),(1,0,4),(2,0,3),(2,0,2)] 
 B=[(0,7)]+[(i,i+1) for i in range(7)]
 C=[]
 
 shapeHeart=copy.deepcopy(homo(Shape(A,B,C),0.25))
 
 #Circle
-A=[(math.cos(2*math.pi*k/20), 0, math.sin(2*math.pi*k/20)) for k in range(20)] #Il faut une figure qui fait face vers les y (y=0 pour tout point), dont le centre est en 0,0,0, de largeur 1
+A=[(math.cos(2*math.pi*k/20), 0, math.sin(2*math.pi*k/20)) for k in range(20)] 
 B=[(0,19)]+[(i,i+1) for i in range(19)]
 C=[]
 
