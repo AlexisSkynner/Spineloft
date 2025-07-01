@@ -8,7 +8,6 @@ import blf
 import gpu
 from gpu_extras.batch import batch_for_shader
 from pathlib import Path
-import matplotlib.pyplot as plt
 from . import intersect
 import math
 
