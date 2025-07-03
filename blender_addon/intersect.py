@@ -64,12 +64,12 @@ def contour_detection(threshold:float, width : int, height : int, pixels : list,
                 continue
 
             # Approximate gradient (Sobel simplified)
-            gx = abs(blurred[(height-1-y)*width+x+1] - blurred[y*width+x-1])
-            gy = abs(blurred[(height-1-(y+1))*width+x] - blurred[(y-1)*width+x])
+            gx = abs(blurred[(height-1-y)*width+x+1] - blurred[(height-1-y)*width+x-1])
+            gy = abs(blurred[(height-1-(y+1))*width+x] - blurred[(height-1-(y-1))*width+x])
             gradient = gx + gy
 
             # Threshold for the contouring
-            edges[x + y * width] = 255 if gradient > threshold else 0
+            edges[x + (height-y) * width] = 255 if gradient > threshold else 0
     return edges
 
 def intersect(width : int, height : int, img : list, stroke : list, ignore_zones: list[list[tuple]], accuracy:float, init_rib_size:float,rib_step:float) -> list:
