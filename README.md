@@ -29,3 +29,4 @@ As a tutorial, you can click on the following link :
 
 https://youtube.com/..
 
+The code is a research prototype, is not complete, and may contain errors. Please see the demo video to see how to use the plugin. Use it responsibly, as the authors and developers cannot be held liable for any issues.
