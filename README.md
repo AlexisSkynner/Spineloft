@@ -2,13 +2,13 @@ Spineloft is a Blender add-on set to help their users creating a 3D model from a
 
 The differents steps are the following : 
 
-### STEP 1 : opening the add-on and importing the image. 
+### Step 1 : opening the add-on and importing the image. 
 
 In Edit/Preferences/Add ons click on the arrow facing down and Install from Disk the .zip file. 
 Then you will find the add-on the Tool pannel as Spineloft tool.
 From there you can open an image.
 
-### STEP 2 : Drawing the spine.
+### Step 2 : Drawing the spine.
 
 This step is the most important one. From the part of the image you want to transform in 3D, draw with freehand or straight lines drawing a line called the spine. From this line will be computed "ribs" creating the skeleton of the form. 
 Moreover, you have the option to create a non-contour area. From this tool, you can draw a contour in which no contour can be detected. This is a way to avoid details that are not the contour of your image which may create uncoherente ribs. 
